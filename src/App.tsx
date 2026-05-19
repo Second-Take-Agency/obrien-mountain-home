@@ -46,6 +46,7 @@ const App = () => (
               <Route path="/services/decking" element={<CustomDecks />} />
               <Route path="/services/residential-siding" element={<ResidentialSiding />} />
               <Route path="/services/commercial-siding" element={<CommercialSiding />} />
+              <Route path="/commercial" element={<CommercialSiding />} />
               
               {/* Locations */}
               <Route path="/locations/:slug" element={<LocationPage />} />

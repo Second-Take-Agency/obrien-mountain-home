@@ -103,6 +103,7 @@ const Header = () => {
               </div>
             </div>
 
+            <Link to="/commercial" className={cn('text-sm font-medium transition-colors hover:text-primary', navTextClass)}>Commercial</Link>
             <Link to="/portfolio" className={cn('text-sm font-medium transition-colors hover:text-primary', navTextClass)}>Portfolio</Link>
             <Link to="/about" className={cn('text-sm font-medium transition-colors hover:text-primary', navTextClass)}>About</Link>
             <Link to="/blog" className={cn('text-sm font-medium transition-colors hover:text-primary', navTextClass)}>Blog</Link>
@@ -190,6 +191,7 @@ const Header = () => {
               )}
             </div>
 
+            <Link to="/commercial" className="text-xl font-bold text-slate-900">Commercial</Link>
             <Link to="/portfolio" className="text-xl font-bold text-slate-900">Portfolio</Link>
             <Link to="/about" className="text-xl font-bold text-slate-900">About</Link>
             <Link to="/blog" className="text-xl font-bold text-slate-900">Blog</Link>

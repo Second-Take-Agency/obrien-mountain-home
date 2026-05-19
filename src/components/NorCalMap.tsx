@@ -16,64 +16,54 @@ interface MapCity {
 }
 
 /**
- * California SVG — viewBox "0 0 400 600"
- * This path is traced from real CA geography:
- *   - NW border is the Oregon line (roughly top, slight diagonal NW→E)
- *   - NE corner has a small step for the Lake Tahoe region
- *   - East side runs nearly straight south to the Nevada border
- *   - SE jogs to AZ at the Colorado River
- *   - South coast curves west, then the Baja peninsula drops away
- *   - West coast runs NW from the tip of the Baja peninsula up to Oregon
- * Scaled to fill ~350px wide × 580px tall within our 400×600 viewBox.
+ * Accurate California outline for viewBox "0 0 400 600"
+ *
+ * Coordinate mapping (derived from real lat/lon):
+ *   x = (124.4 - lon) / 9.8 * 360 + 20
+ *   y = (42   - lat) / 9.5 * 560 + 20
+ *
+ * Key features preserved:
+ *   - Oregon border: straight horizontal line at y≈20
+ *   - NV border: vertical at x=182 from OR to Lake Tahoe (y=200),
+ *     then diagonal SE to AZ corner (375, 452)
+ *   - AZ border: short vertical down to Mexico
+ *   - Pacific coast: Point Conception hook (34.45°N, 120.47°W),
+ *     SF Bay / Golden Gate jog, Point Reyes, Cape Mendocino bulge
  */
 const CA_PATH = `
-  M 25,10
-  L 330,10
-  L 345,40
-  L 360,80
-  L 365,130
-  L 360,170
-  L 355,210
-  L 350,260
-  L 345,310
-  L 348,350
-  L 345,390
-  L 340,420
-  L 330,450
-  L 310,470
-  L 290,488
-  L 265,500
-  L 240,510
-  L 210,518
-  L 185,522
-  L 160,520
-  L 130,512
-  L 100,498
-  L 75,480
-  L 55,458
-  L 38,435
-  L 25,410
-  L 12,385
-  L 4,360
-  L 0,330
-  L 0,300
-  L 4,270
-  L 8,240
-  L 12,210
-  L 16,180
-  L 18,150
-  L 16,120
-  L 12,90
-  L 8,60
-  L 10,35
+  M 27,20
+  L 182,20
+  L 182,200
+  L 375,452
+  L 378,565
+  L 292,578
+  L 277,538
+  L 248,506
+  L 226,492
+  L 208,474
+  L 164,465
+  L 193,467
+  L 150,409
+  L 116,362
+  L 112,338
+  L 108,315
+  L 90,286
+  L 90,266
+  L 71,256
+  L 68,238
+  L 47,202
+  L 20,114
+  L 27,91
+  L 29,73
+  L 27,35
+  L 27,20
   Z
 `;
 
-/**
- * NorCal runs from Oregon border to roughly the Sacramento–Stockton latitude.
- */
+// y value corresponding to ~37°N (Sacramento / Bay Area latitude)
 const NORCAL_CLIP_Y = 310;
 
+// All cities mapped using the same lat/lon formula above
 const cities: MapCity[] = [
   {
     id: 'mount-shasta',
@@ -81,8 +71,8 @@ const cities: MapCity[] = [
     slug: 'mount-shasta-ca',
     county: 'Siskiyou County',
     tagline: 'Mountain climate siding & fire hardening',
-    cx: 125, cy: 75,
-    labelAnchor: 'start', labelDx: 16, labelDy: 5,
+    cx: 97, cy: 61,
+    labelAnchor: 'start', labelDx: 14, labelDy: 4,
   },
   {
     id: 'redding',
@@ -90,8 +80,8 @@ const cities: MapCity[] = [
     slug: 'redding-ca',
     county: 'Shasta County',
     tagline: 'Our home base — full services available',
-    cx: 145, cy: 128,
-    labelAnchor: 'start', labelDx: 16, labelDy: 5,
+    cx: 94, cy: 103,
+    labelAnchor: 'start', labelDx: 14, labelDy: 4,
   },
   {
     id: 'red-bluff',
@@ -99,8 +89,8 @@ const cities: MapCity[] = [
     slug: 'red-bluff-ca',
     county: 'Tehama County',
     tagline: 'Rural & heat-exposed properties',
-    cx: 155, cy: 180,
-    labelAnchor: 'start', labelDx: 16, labelDy: 5,
+    cx: 99, cy: 127,
+    labelAnchor: 'start', labelDx: 14, labelDy: 4,
   },
   {
     id: 'chico',
@@ -108,8 +98,8 @@ const cities: MapCity[] = [
     slug: 'chico-ca',
     county: 'Butte County',
     tagline: 'Residential neighborhoods & older homes',
-    cx: 185, cy: 240,
-    labelAnchor: 'start', labelDx: 16, labelDy: 5,
+    cx: 114, cy: 154,
+    labelAnchor: 'end', labelDx: -14, labelDy: -4,
   },
   {
     id: 'magalia',
@@ -117,8 +107,8 @@ const cities: MapCity[] = [
     slug: 'magalia-ca',
     county: 'Butte County',
     tagline: 'Forested mountain ember protection',
-    cx: 220, cy: 230,
-    labelAnchor: 'start', labelDx: 16, labelDy: -10,
+    cx: 130, cy: 146,
+    labelAnchor: 'start', labelDx: 14, labelDy: -6,
   },
   {
     id: 'paradise',
@@ -126,8 +116,8 @@ const cities: MapCity[] = [
     slug: 'paradise-ca',
     county: 'Butte County',
     tagline: 'Rebuilding with fire-resilient materials',
-    cx: 230, cy: 260,
-    labelAnchor: 'start', labelDx: 16, labelDy: 10,
+    cx: 126, cy: 158,
+    labelAnchor: 'start', labelDx: 14, labelDy: 10,
   },
   {
     id: 'oroville',
@@ -135,8 +125,8 @@ const cities: MapCity[] = [
     slug: 'oroville-ca',
     county: 'Butte County',
     tagline: 'Foothill homes near Lake Oroville',
-    cx: 205, cy: 280,
-    labelAnchor: 'end', labelDx: -16, labelDy: 15,
+    cx: 120, cy: 172,
+    labelAnchor: 'end', labelDx: -14, labelDy: 12,
   },
 ];
 
@@ -175,104 +165,106 @@ export default function NorCalMap() {
               aria-label="Interactive map of California highlighting Northern California service areas"
             >
               <defs>
-                {/* Subtle map grid pattern */}
+                {/* Subtle map grid */}
                 <pattern id="map-grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
                   <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" strokeWidth="0.5" />
                 </pattern>
-                
-                {/* Clip everything to CA shape */}
-                <clipPath id="ca-shape-clip">
+
+                {/* Clip to CA outline */}
+                <clipPath id="ca-clip">
                   <path d={CA_PATH} />
                 </clipPath>
-                {/* Combined: NorCal inside CA */}
-                <clipPath id="norcal-inside-ca">
-                  <path d={CA_PATH} />
+
+                {/* Clip to NorCal band */}
+                <clipPath id="norcal-clip">
+                  <rect x="0" y="0" width="400" height={NORCAL_CLIP_Y} />
+                </clipPath>
+
+                {/* Clip to SoCal band */}
+                <clipPath id="socal-clip">
+                  <rect x="0" y={NORCAL_CLIP_Y} width="400" height={600 - NORCAL_CLIP_Y} />
                 </clipPath>
               </defs>
 
-              {/* ── Full state background ── */}
-              <path
-                d={CA_PATH}
-                fill="#f8fafc"
-                stroke="#cbd5e1"
-                strokeWidth="1.5"
-              />
+              {/* ── Base state fill ── */}
+              <path d={CA_PATH} fill="#f1f5f9" stroke="#94a3b8" strokeWidth="1.5" />
 
-              {/* ── Subtle Map Grid inside CA ── */}
-              <path
-                d={CA_PATH}
-                fill="url(#map-grid)"
-                clipPath="url(#ca-shape-clip)"
-              />
-
-              {/* ── Subtle "Map Details" (Rivers/Contours) ── */}
-              <g clipPath="url(#ca-shape-clip)" opacity="0.3">
-                <path d="M 145,128 L 155,180 L 185,240 L 205,280" fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 2" />
-                <path d="M 125,75 Q 160,100 145,128" fill="none" stroke="#94a3b8" strokeWidth="1" />
-                <path d="M 220,230 L 230,260" fill="none" stroke="#94a3b8" strokeWidth="1" />
+              {/* ── Grid overlay (entire state) ── */}
+              <g clipPath="url(#ca-clip)">
+                <rect x="0" y="0" width="400" height="600" fill="url(#map-grid)" />
               </g>
 
-              {/* ── NorCal highlight — brand amber/orange, clipped to state & top band ── */}
-              <g clipPath="url(#norcal-inside-ca)">
-                <rect
-                  x="0" y="0"
-                  width="400" height={NORCAL_CLIP_Y}
-                  fill="hsl(var(--primary))"
-                  fillOpacity="0.2"
+              {/* ── SoCal muted overlay (below divider) ── */}
+              <g clipPath="url(#ca-clip)">
+                <g clipPath="url(#socal-clip)">
+                  <rect x="0" y={NORCAL_CLIP_Y} width="400" height={600 - NORCAL_CLIP_Y}
+                    fill="#94a3b8" fillOpacity="0.18" />
+                </g>
+              </g>
+
+              {/* ── NorCal service-area highlight (above divider) ── */}
+              <g clipPath="url(#ca-clip)">
+                <g clipPath="url(#norcal-clip)">
+                  <rect x="0" y="0" width="400" height={NORCAL_CLIP_Y}
+                    fill="hsl(var(--primary))" fillOpacity="0.38" />
+                </g>
+              </g>
+
+              {/* ── Sacramento River trace (subtle) ── */}
+              <g clipPath="url(#ca-clip)" opacity="0.25">
+                <path
+                  d="M 97,61 Q 96,85 94,103 Q 97,115 99,127 Q 106,140 114,154 Q 118,163 120,172"
+                  fill="none" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="3 3"
                 />
               </g>
 
-              {/* ── NorCal boundary dashed line ── */}
-              <g clipPath="url(#ca-shape-clip)">
+              {/* ── NorCal / SoCal boundary dashed line ── */}
+              <g clipPath="url(#ca-clip)">
                 <line
                   x1="0" y1={NORCAL_CLIP_Y}
                   x2="400" y2={NORCAL_CLIP_Y}
                   stroke="hsl(var(--primary))"
-                  strokeWidth="2.5"
-                  strokeDasharray="10 6"
-                  opacity="0.9"
+                  strokeWidth="2"
+                  strokeDasharray="8 5"
+                  opacity="0.85"
                 />
               </g>
 
-              {/* ── "NORTHERN CALIFORNIA" label ── */}
+              {/* ── Region labels ── */}
               <text
-                x="75" y={NORCAL_CLIP_Y - 16}
-                fontSize="11"
-                fontWeight="700"
-                fill="hsl(38 75% 30%)"
+                x="55" y={NORCAL_CLIP_Y - 14}
+                fontSize="9.5" fontWeight="800"
+                fill="hsl(38 75% 28%)"
                 fontFamily="system-ui, sans-serif"
-                letterSpacing="1"
-                opacity="0.9"
+                letterSpacing="1.2"
+                clipPath="url(#ca-clip)"
               >
-                NORTHERN CALIFORNIA
+                SERVICE AREA
               </text>
 
-              {/* ── "SOUTHERN CALIFORNIA" label ── */}
               <text
-                x="100" y={NORCAL_CLIP_Y + 50}
-                fontSize="10"
-                fontWeight="500"
+                x="130" y={NORCAL_CLIP_Y + 44}
+                fontSize="9" fontWeight="500"
                 fill="#94a3b8"
                 fontFamily="system-ui, sans-serif"
-                letterSpacing="0.5"
+                letterSpacing="0.8"
+                textAnchor="middle"
               >
-                SOUTHERN CALIFORNIA
+                SOUTHERN CA
               </text>
 
-              {/* ── Compass Rose (Subtle) ── */}
-              <g transform="translate(340, 60)" opacity="0.4">
-                <circle r="20" fill="none" stroke="#cbd5e1" strokeWidth="0.5" />
-                <path d="M 0,-15 L 3,0 L 0,15 L -3,0 Z" fill="#94a3b8" />
-                <path d="M -15,0 L 0,-3 L 15,0 L 0,3 Z" fill="#94a3b8" />
-                <text y="-22" textAnchor="middle" fontSize="10" fontWeight="700" fill="#94a3b8">N</text>
+              {/* ── Compass rose (inside SoCal portion) ── */}
+              <g transform="translate(320, 410)" opacity="0.35">
+                <circle r="16" fill="none" stroke="#94a3b8" strokeWidth="0.8" />
+                <path d="M 0,-12 L 2.5,0 L 0,12 L -2.5,0 Z" fill="#94a3b8" />
+                <path d="M -12,0 L 0,-2.5 L 12,0 L 0,2.5 Z" fill="#94a3b8" />
+                <text y="-18" textAnchor="middle" fontSize="9" fontWeight="700" fill="#94a3b8">N</text>
               </g>
 
               {/* ── City markers ── */}
               {cities.map((city) => {
                 const active = hoveredCity === city.id;
-                const lx = (city.labelAnchor === 'end')
-                  ? city.cx + (city.labelDx ?? -14)
-                  : city.cx + (city.labelDx ?? 14);
+                const lx = city.cx + (city.labelDx ?? 14);
                 const ly = city.cy + (city.labelDy ?? 5);
 
                 return (
@@ -282,46 +274,49 @@ export default function NorCalMap() {
                     onMouseLeave={handleLeave}
                     style={{ cursor: 'pointer' }}
                   >
-                    {/* Large transparent hit area to prevent hover glitching */}
-                    <circle cx={city.cx} cy={city.cy} r={32} fill="transparent" style={{ pointerEvents: 'all' }} />
+                    {/* Large transparent hit area prevents hover glitching */}
+                    <circle
+                      cx={city.cx} cy={city.cy} r={32}
+                      fill="transparent"
+                      style={{ pointerEvents: 'all' }}
+                    />
 
-                    {/* Pulse ring on hover */}
+                    {/* Outer pulse ring */}
                     <circle
                       cx={city.cx} cy={city.cy}
-                      r={active ? 20 : 0}
+                      r={active ? 18 : 0}
                       fill="none"
                       stroke="hsl(var(--primary))"
                       strokeWidth="2"
-                      opacity={active ? 0.5 : 0}
-                      style={{ transition: 'r 0.2s ease, opacity 0.2s ease' }}
+                      opacity={active ? 0.45 : 0}
+                      style={{ transition: 'r 0.22s ease, opacity 0.22s ease' }}
                     />
 
-                    {/* Dot */}
+                    {/* City dot */}
                     <circle
                       cx={city.cx} cy={city.cy}
-                      r={active ? 10 : 8}
+                      r={active ? 9 : 7}
                       fill={active ? 'hsl(var(--primary))' : '#1e293b'}
                       stroke="white"
-                      strokeWidth="2.5"
+                      strokeWidth="2"
                       style={{ transition: 'r 0.2s ease, fill 0.2s ease' }}
                     />
 
-                    {/* City label */}
+                    {/* City name label */}
                     <text
                       x={lx} y={ly}
                       textAnchor={city.labelAnchor ?? 'start'}
-                      fontSize={active ? '13' : '11'}
-                      fontWeight={active ? '800' : '600'}
-                      fill={active ? 'hsl(var(--primary-foreground))' : '#1e293b'}
+                      fontSize={active ? '12' : '10.5'}
+                      fontWeight={active ? '800' : '700'}
+                      fill={active ? 'hsl(38 75% 18%)' : '#0f172a'}
                       fontFamily="system-ui, sans-serif"
+                      stroke="white"
+                      strokeWidth="3.5"
                       style={{
                         pointerEvents: 'none',
-                        transition: 'all 0.15s ease',
+                        transition: 'font-size 0.15s ease, fill 0.15s ease',
                         paintOrder: 'stroke fill',
-                        filter: active ? 'drop-shadow(0 1px 2px rgba(0,0,0,0.2))' : 'none'
                       }}
-                      stroke="white"
-                      strokeWidth="4"
                     >
                       {city.name}
                     </text>

@@ -156,7 +156,7 @@ const Index = () => {
           <div className="container mx-auto px-4 relative z-10 py-24">
             <div className="max-w-2xl">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white [text-shadow:_0_2px_8px_rgba(0,0,0,0.4)]">
-                Fire Hardening, Decking & Siding in Redding, CA
+                Siding, Decking & Fire Hardening in Redding, CA
               </h1>
               <p className="text-lg md:text-xl text-slate-200 mb-8 leading-relaxed [text-shadow:_0_1px_4px_rgba(0,0,0,0.3)]">
                 We help Northern California homeowners protect, repair, and upgrade their homes with fire-aware materials, durable siding, custom decks, and practical hardening solutions built for the North State.

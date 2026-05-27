@@ -15,6 +15,11 @@ import PartnersSection from '@/components/PartnersSection';
 import ContactForm from '@/components/ContactForm';
 import { AnimatedSection, StaggeredGrid } from '@/components/AnimatedSection';
 import ParallaxHero from '@/components/ParallaxHero';
+import { blogs } from '@/data/blogs';
+import { locations } from '@/data/locations';
+
+const fireHardeningRelatedPosts = blogs.filter(b => b.category === 'Fire Hardening').slice(0, 2);
+const serviceAreaLocations = locations.filter(l => l.slug !== 'northern-california').slice(0, 6);
 
 const ventAreas = [
   {
@@ -76,13 +81,77 @@ const vulcanVentFacts = [
   "Available for attic, eave, and foundation vent applications",
 ];
 
+const providerBase = {
+  "@type": "LocalBusiness",
+  "name": "O'Brien Mountain Home",
+  "telephone": "+15309997495",
+  "url": "https://obrienmountainhome.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "1304 East St",
+    "addressLocality": "Redding",
+    "addressRegion": "CA",
+    "postalCode": "96001",
+    "addressCountry": "US"
+  }
+};
+
+const fireHardeningServiceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Fire Hardening",
+  "name": "Fire Hardening Services in Northern California",
+  "description": "Practical wildfire-defense upgrades for Northern California homes, including ember-resistant vents, Vulcan vents, deck and underfloor protection, and other vulnerable exterior areas.",
+  "provider": providerBase,
+  "areaServed": {
+    "@type": "State",
+    "name": "Northern California"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Fire Hardening Services",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ember-Resistant Vent Installation" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Vulcan Vent Installation" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Under-Deck Ember Protection" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Gutter Guard & Ember Screening" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fire-Resistant Siding Upgrade" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Home Fire Hardening Assessment" } }
+    ]
+  }
+};
+
+const fireHardeningFaqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": serviceFaqs["fire-hardening"].map((faq) => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
+
+const fireHardeningBreadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://obrienmountainhome.com" },
+    { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://obrienmountainhome.com/services" },
+    { "@type": "ListItem", "position": 3, "name": "Fire Hardening", "item": "https://obrienmountainhome.com/services/fire-hardening" }
+  ]
+};
+
 const FireHardening = () => {
   return (
     <div className="min-h-screen bg-white">
-      <SEO 
+      <SEO
         title="Fire Hardening Contractor in Redding CA | O'Brien Mountain Home"
         description="Protect your Northern California home with fire hardening, ember-resistant vents, Vulcan vents, gutter protection, and exterior hardening upgrades."
         canonical="/services/fire-hardening"
+        schema={[fireHardeningServiceSchema, fireHardeningFaqSchema, fireHardeningBreadcrumbSchema]}
       />
       
       <Header />
@@ -182,6 +251,29 @@ const FireHardening = () => {
         {/* FAQ */}
         <FAQ items={serviceFaqs["fire-hardening"]} title="Fire Hardening FAQ" className="bg-slate-50" />
 
+        {/* Checklist CTA */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto bg-amber-50 border border-amber-200 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-6">
+              <div className="shrink-0 w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                <ShieldCheck className="w-7 h-7 text-primary" />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-xl font-bold text-slate-900 mb-1">Free: Northern California Home Fire Hardening Checklist</h3>
+                <p className="text-slate-600 text-sm mb-4">
+                  Use our interactive checklist to identify your home's most vulnerable points — vents, decks, gutters, siding, and more.
+                </p>
+                <Link
+                  to="/fire-hardening-checklist"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-slate-900 font-bold text-sm hover:bg-primary/90 transition-colors"
+                >
+                  View the Full Checklist →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Form with background image */}
         <section className="relative py-24 overflow-hidden">
           <div className="absolute inset-0">
@@ -204,7 +296,53 @@ const FireHardening = () => {
           </div>
         </section>
 
-        <CTASection 
+        {/* ─── Service Areas ─── */}
+        <section className="py-12 bg-slate-50 border-t border-slate-100">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-lg font-semibold text-slate-700 mb-6">Fire Hardening Service Areas</h2>
+            <div className="flex flex-wrap justify-center gap-3">
+              {serviceAreaLocations.map(loc => (
+                <Link
+                  key={loc.slug}
+                  to={`/locations/${loc.slug}`}
+                  className="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium text-slate-700 hover:border-primary hover:text-primary transition-colors"
+                >
+                  {loc.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── From Our Blog ─── */}
+        {fireHardeningRelatedPosts.length > 0 && (
+          <section className="py-16 bg-white border-t border-slate-100">
+            <div className="container mx-auto px-4">
+              <AnimatedSection className="text-center mb-10">
+                <h2 className="text-2xl md:text-3xl font-bold mb-2">From Our Blog</h2>
+                <p className="text-slate-500 text-sm">Resources for Northern California homeowners</p>
+              </AnimatedSection>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                {fireHardeningRelatedPosts.map(post => (
+                  <Link
+                    key={post.id}
+                    to={`/blog/${post.slug}`}
+                    className="group bg-slate-50 rounded-2xl overflow-hidden border border-slate-100 hover:border-primary/30 hover:shadow-md transition-all"
+                  >
+                    <img src={post.image} alt={post.title} className="w-full h-40 object-cover" loading="lazy" />
+                    <div className="p-5">
+                      <h3 className="font-bold text-slate-900 group-hover:text-primary transition-colors mb-2 leading-snug">{post.title}</h3>
+                      <p className="text-sm text-slate-500 line-clamp-2">{post.excerpt}</p>
+                      <span className="inline-block mt-3 text-xs font-semibold text-primary">Read Article →</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        <CTASection
           title="Ready to Protect Your Northern California Home?"
           description="Tell us about your home and we'll help you figure out the best next step."
         />

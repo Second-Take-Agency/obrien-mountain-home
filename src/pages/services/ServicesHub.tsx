@@ -14,10 +14,32 @@ import ParallaxHero from '@/components/ParallaxHero';
 const ServicesHub = () => {
   return (
     <div className="min-h-screen bg-white">
-      <SEO 
+      <SEO
         title="Decking, Siding & Fire Hardening Services | O’Brien Mountain Home"
         description="Explore fire hardening, custom decking, residential siding, and commercial siding services from O’Brien Mountain Home in Northern California."
         canonical="/services"
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Exterior Services for Northern California Homes",
+            "url": "https://obrienmountainhome.com/services",
+            "description": "Fire hardening, custom decking, residential siding, and commercial siding services from O’Brien Mountain Home in Northern California.",
+            "provider": {
+              "@type": "LocalBusiness",
+              "name": "O’Brien Mountain Home",
+              "url": "https://obrienmountainhome.com"
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://obrienmountainhome.com" },
+              { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://obrienmountainhome.com/services" }
+            ]
+          }
+        ]}
       />
       
       <Header />
@@ -40,6 +62,12 @@ const ServicesHub = () => {
 
         <section className="py-24 bg-white">
           <div className="container mx-auto px-4">
+            <AnimatedSection className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Exterior Services for Northern California Homes</h2>
+              <p className="text-slate-600 max-w-2xl mx-auto">
+                Comprehensive solutions built for the unique challenges of North State living — from wildfire protection to custom outdoor spaces.
+              </p>
+            </AnimatedSection>
             <StaggeredGrid className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto" staggerMs={120}>
               {services.map((service) => (
                 <ServiceCard key={service.id} service={service} />

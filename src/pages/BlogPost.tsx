@@ -30,30 +30,46 @@ const BlogPost = () => {
         description={post.excerpt}
         canonical={`/blog/${post.slug}`}
         image={post.image}
-        schema={{
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          "headline": post.title,
-          "description": post.excerpt,
-          "image": post.image,
-          "author": {
-            "@type": "Person",
-            "name": post.author
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": "O'Brien Mountain Home",
-            "logo": {
-              "@type": "ImageObject",
-              "url": "https://vibe.filesafe.space/1777345871363473576/assets/4e7f7a7c-4717-499f-a454-2b64f9ad4ab5.png"
+        ogType="article"
+        publishedTime={post.date}
+        modifiedTime={post.dateModified ?? post.date}
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": post.title,
+            "description": post.excerpt,
+            "image": post.image,
+            "author": {
+              "@type": "Person",
+              "name": post.author,
+              "url": "https://obrienmountainhome.com/about"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "O'Brien Mountain Home",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://vibe.filesafe.space/1777345871363473576/assets/4e7f7a7c-4717-499f-a454-2b64f9ad4ab5.png"
+              }
+            },
+            "datePublished": post.date,
+            "dateModified": post.dateModified ?? post.date,
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": `https://obrienmountainhome.com/blog/${post.slug}`
             }
           },
-          "datePublished": post.date,
-          "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": `https://obrienmountainhome.com/blog/${post.slug}`
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://obrienmountainhome.com" },
+              { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://obrienmountainhome.com/blog" },
+              { "@type": "ListItem", "position": 3, "name": post.title, "item": `https://obrienmountainhome.com/blog/${post.slug}` }
+            ]
           }
-        }}
+        ]}
       />
 
       <Header />

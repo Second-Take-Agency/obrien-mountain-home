@@ -54,6 +54,7 @@ const ParallaxHero = ({
            */
           className="w-full h-full object-cover scale-110 origin-center will-change-transform"
           loading="eager"
+          fetchPriority="high"
         />
         {/* Primary directional overlay */}
         <div className={`absolute inset-0 ${overlayClass}`} />

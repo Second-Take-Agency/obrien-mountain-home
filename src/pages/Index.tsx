@@ -15,12 +15,90 @@ import CTASection from '@/components/CTASection';
 import GoogleReviews from '@/components/GoogleReviews';
 import PartnersSection from '@/components/PartnersSection';
 import StatCounterSection from '@/components/StatCounterSection';
+import LazySection from '@/components/LazySection';
 import { AnimatedSection, StaggeredGrid } from '@/components/AnimatedSection';
 import { useParallax } from '@/hooks/useParallax';
 import { ArrowRight, CheckCircle2, Flame, Hammer, Shield, Phone, Calendar, Tag, Star, DollarSign, ClipboardCheck } from 'lucide-react';
 const HERO_BG = "https://vibe.filesafe.space/1777345871363473576/assets/c1315190-a555-4031-ac6a-4a9b551f2b09.png";
 const FOUNDER_IMG = "https://vibe.filesafe.space/1777345871363473576/assets/af37ff4b-7817-4b91-adfe-ee6cd1e695f0.png";
 const OPTIN_BG = "https://vibe.filesafe.space/1777345871363473576/assets/ae7de53d-c036-4874-96ab-b5aa446004c4.png";
+
+// ── Homepage Structured Data ──────────────────────────────────────────────────
+// Four JSON-LD blocks: LocalBusiness entity, FAQPage (for AI Overviews),
+// Organization (with sameAs for entity disambiguation), WebSite (SearchAction).
+const LOCAL_BUSINESS_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "O'Brien Mountain Home",
+  "image": HERO_BG,
+  "telephone": "+15309997495",
+  "email": "mcrans@obrienmountainhome.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "1304 East St",
+    "addressLocality": "Redding",
+    "addressRegion": "CA",
+    "postalCode": "96001",
+    "addressCountry": "US"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 40.5865,
+    "longitude": -122.3917
+  },
+  "url": "https://obrienmountainhome.com",
+  "priceRange": "$$",
+  "areaServed": ["Redding", "Red Bluff", "Chico", "Oroville", "Paradise", "Magalia", "Mount Shasta", "Northern California"]
+};
+
+const FAQ_PAGE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.slice(0, 6).map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
+
+const ORGANIZATION_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "O'Brien Mountain Home",
+  "url": "https://obrienmountainhome.com",
+  "telephone": "+15309997495",
+  "email": "mcrans@obrienmountainhome.com",
+  "logo": "https://vibe.filesafe.space/1777345871363473576/assets/99cdc4bc-0ac2-4dd1-b0b7-0cc82cf49e32.png",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "1304 East St",
+    "addressLocality": "Redding",
+    "addressRegion": "CA",
+    "postalCode": "96001",
+    "addressCountry": "US"
+  },
+  "sameAs": ["https://www.facebook.com/obrienmountainhome"]
+};
+
+const WEBSITE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "O'Brien Mountain Home",
+  "url": "https://obrienmountainhome.com",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://obrienmountainhome.com/?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+};
+
+const homepageSchemas = [LOCAL_BUSINESS_SCHEMA, FAQ_PAGE_SCHEMA, ORGANIZATION_SCHEMA, WEBSITE_SCHEMA];
 
 const Index = () => {
   const heroImgRef = useParallax<HTMLImageElement>(0.35);
@@ -51,30 +129,7 @@ const Index = () => {
       <SEO 
         title="Fire Hardening, Decking & Siding in Redding CA"
         description="Protect and upgrade your Northern California home with fire hardening, siding, and decking from O'Brien Mountain Home in Redding, CA."
-        schema={{
-          "@context": "https://schema.org",
-          "@type": "LocalBusiness",
-          "name": "O'Brien Mountain Home",
-          "image": HERO_BG,
-          "telephone": "(530) 999-7495",
-          "email": "mcrans@obrienmountainhome.com",
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "1304 East St",
-            "addressLocality": "Redding",
-            "addressRegion": "CA",
-            "postalCode": "96001",
-            "addressCountry": "US"
-          },
-          "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": 40.5865,
-            "longitude": -122.3917
-          },
-          "url": "https://obrienmountainhome.com",
-          "priceRange": "$$",
-          "areaServed": ["Redding", "Red Bluff", "Chico", "Oroville", "Paradise", "Magalia", "Mount Shasta", "Northern California"]
-        }}
+        schema={homepageSchemas}
       />
       
       <Header />
@@ -83,11 +138,15 @@ const Index = () => {
         {/* ─── Hero Section ─── */}
         <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <img 
+            <img
               ref={heroImgRef}
               src={HERO_BG}
-              alt="Beautiful mountain home with custom siding and decking in Northern California" 
+              alt="Beautiful mountain home with custom siding and decking in Northern California"
               className="w-full h-full object-cover scale-110 origin-center will-change-transform"
+              loading="eager"
+              fetchPriority="high"
+              width="1920"
+              height="1080"
             />
             {/* Strong layered overlay for text readability */}
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/75 to-slate-900/40" />
@@ -324,22 +383,34 @@ const Index = () => {
         </section>
 
         {/* ─── Partners Section ─── */}
-        <PartnersSection />
+        <LazySection minHeight="160px">
+          <PartnersSection />
+        </LazySection>
 
         {/* ─── Portfolio Preview ─── */}
-        <PortfolioGallery limit={3} />
+        <LazySection minHeight="400px">
+          <PortfolioGallery limit={3} />
+        </LazySection>
 
         {/* ─── Stat Counter ─── */}
-        <StatCounterSection />
+        <LazySection minHeight="200px">
+          <StatCounterSection />
+        </LazySection>
 
         {/* ─── Interactive NorCal Map ─── */}
-        <NorCalMap />
+        <LazySection minHeight="600px">
+          <NorCalMap />
+        </LazySection>
 
         {/* ─── Google Reviews ─── */}
-        <GoogleReviews />
+        <LazySection minHeight="400px">
+          <GoogleReviews />
+        </LazySection>
 
         {/* ─── FAQ ─── */}
-        <FAQ items={faqs} />
+        <LazySection minHeight="300px">
+          <FAQ items={faqs} />
+        </LazySection>
 
         {/* ─── Opt-In / Lead Capture Section ─── */}
         <section className="relative py-24 overflow-hidden">

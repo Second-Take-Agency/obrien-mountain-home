@@ -129,18 +129,41 @@ const FireHardeningChecklist = () => {
     }
   };
 
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Free Fire Hardening Checklist | O'Brien Mountain Home",
-    "description": "Download the free Northern California Fire Hardening Checklist from O'Brien Mountain Home. Identify your home's vulnerable areas and take action before fire season.",
-    "url": "https://obrienmountainhome.com/fire-hardening-checklist",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "O'Brien Mountain Home",
-      "url": "https://obrienmountainhome.com"
+  const checklistSchemas = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Free Fire Hardening Checklist | O'Brien Mountain Home",
+      "description": "Download the free Northern California Fire Hardening Checklist. Identify ember entry points, vent vulnerabilities, and exterior risks on your home.",
+      "url": "https://obrienmountainhome.com/fire-hardening-checklist",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "O'Brien Mountain Home",
+        "url": "https://obrienmountainhome.com"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Northern California Home Fire Hardening Checklist",
+      "description": "A category-by-category checklist to identify and reduce wildfire vulnerability in your Northern California home.",
+      "numberOfItems": checklistItems.length,
+      "itemListElement": checklistItems.map((cat, idx) => ({
+        "@type": "ListItem",
+        "position": idx + 1,
+        "name": cat.category,
+        "description": cat.items.join(". ")
+      }))
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://obrienmountainhome.com" },
+        { "@type": "ListItem", "position": 2, "name": "Fire Hardening Checklist", "item": "https://obrienmountainhome.com/fire-hardening-checklist" }
+      ]
     }
-  };
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -148,7 +171,7 @@ const FireHardeningChecklist = () => {
         title="Free Fire Checklist Download | O'Brien Mountain Home"
         description="Download the free Northern California Fire Hardening Checklist. Identify ember entry points, vent vulnerabilities, and exterior risks on your home."
         canonical="https://obrienmountainhome.com/fire-hardening-checklist"
-        schema={schema}
+        schema={checklistSchemas}
       />
       <Header />
 

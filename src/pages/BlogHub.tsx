@@ -33,16 +33,28 @@ const BlogHub = () => {
         title="North State Homeowner's Guide | O'Brien Mountain Home Blog"
         description="Expert articles on fire hardening, Vulcan vents, decking, and siding for Northern California homeowners from O'Brien Mountain Home."
         canonical="/blog"
-        schema={{
-          "@context": "https://schema.org",
-          "@type": "Blog",
-          "name": "The North State Homeowner's Guide",
-          "description": "Expert advice on fire hardening, durable siding, and custom decking built for Northern California.",
-          "publisher": {
-            "@type": "Organization",
-            "name": "O'Brien Mountain Home"
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Blog",
+            "name": "The North State Homeowner's Guide",
+            "url": "https://obrienmountainhome.com/blog",
+            "description": "Expert advice on fire hardening, durable siding, and custom decking built for Northern California.",
+            "publisher": {
+              "@type": "Organization",
+              "name": "O'Brien Mountain Home",
+              "url": "https://obrienmountainhome.com"
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://obrienmountainhome.com" },
+              { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://obrienmountainhome.com/blog" }
+            ]
           }
-        }}
+        ]}
       />
 
       <Header />

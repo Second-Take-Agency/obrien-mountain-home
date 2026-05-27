@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnimatedSection } from './AnimatedSection';
 import { Home, ShieldCheck, Award } from 'lucide-react';
 import { useInView } from '@/hooks/useInView';
@@ -20,26 +20,32 @@ const stats: Stat[] = [
 const Counter = ({ value, suffix }: { value: number; suffix: string }) => {
   const [count, setCount] = useState(0);
   const { ref, inView } = useInView({ threshold: 0.5 });
-  
+
   useEffect(() => {
-    if (inView) {
-      let start = 0;
-      const end = value;
-      const duration = 2000;
-      const increment = end / (duration / 16);
-      
-      const timer = setInterval(() => {
-        start += increment;
-        if (start >= end) {
-          setCount(end);
-          clearInterval(timer);
-        } else {
-          setCount(Math.floor(start));
-        }
-      }, 16);
-      
-      return () => clearInterval(timer);
-    }
+    if (!inView) return;
+
+    const duration = 2000;
+    let startTime: number | null = null;
+    let rafId: number;
+
+    const step = (timestamp: number) => {
+      if (startTime === null) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // easeOutQuad: fast start, slow finish — feels snappy
+      const eased = 1 - Math.pow(1 - progress, 2);
+      setCount(Math.floor(eased * value));
+
+      if (progress < 1) {
+        rafId = requestAnimationFrame(step);
+      } else {
+        setCount(value); // ensure exact final value
+      }
+    };
+
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
   }, [inView, value]);
 
   return (

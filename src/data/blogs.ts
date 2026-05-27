@@ -7,6 +7,8 @@ export interface BlogPost {
   category: 'Fire Hardening' | 'Decking' | 'Siding' | 'Local';
   author: string;
   date: string;
+  /** ISO date string for last significant edit — used in BlogPosting schema */
+  dateModified?: string;
   image: string;
   readTime: string;
 }
@@ -99,7 +101,7 @@ export const blogs: BlogPost[] = [
 
       <p>If you own a home in Northern California — particularly in the communities of Redding, Paradise, Magalia, Chico, Red Bluff, Oroville, or Mount Shasta — a fire hardening assessment is worth scheduling before the next fire season. The cost of prevention is always less than the cost of loss.</p>
 
-      <p><strong>O'Brien Mountain Home</strong> specializes in fire hardening, siding, and decking for North State homeowners. We are a licensed California contractor (Lic# 1135995) based in Redding. Contact us to schedule your assessment.</p>
+      <p><strong>O'Brien Mountain Home</strong> specializes in <a href="/services/fire-hardening">fire hardening</a>, <a href="/services/residential-siding">siding</a>, and <a href="/services/decking">decking</a> for North State homeowners. We are a licensed California contractor (Lic# 1135995) based in Redding. <a href="/contact">Contact us to schedule your assessment</a>, or download our <a href="/fire-hardening-checklist">free fire hardening checklist</a>.</p>
     `,
     category: 'Fire Hardening',
     author: 'Marcus Crans',
@@ -182,7 +184,7 @@ export const blogs: BlogPost[] = [
 
       <h2>How to Get Started</h2>
 
-      <p>If you're planning a new deck, a deck resurfacing project, or a deck repair in the Redding area or anywhere in Northern California, <strong>O'Brien Mountain Home</strong> can help. We are a licensed California contractor (Lic# 1135995) specializing in custom decking, fire-aware exterior upgrades, and residential siding. Contact us to request an estimate and discuss the right material choices for your specific property.</p>
+      <p>If you're planning a new deck, a deck resurfacing project, or a deck repair in the <a href="/locations/redding-ca">Redding</a> area or anywhere in Northern California, <strong>O'Brien Mountain Home</strong> can help. We are a licensed California contractor (Lic# 1135995) specializing in <a href="/services/decking">custom decking</a>, <a href="/services/fire-hardening">fire-aware exterior upgrades</a>, and <a href="/services/residential-siding">residential siding</a>. <a href="/contact">Contact us to request an estimate</a> and discuss the right material choices for your specific property.</p>
     `,
     category: 'Decking',
     author: 'Marcus Crans',
@@ -269,7 +271,7 @@ export const blogs: BlogPost[] = [
 
       <p>If you're comparing siding options for your Northern California home, we're happy to walk you through the real numbers — material costs, installation costs, expected lifespan in our climate, and the fire-safety implications for your specific property. We serve Redding and the surrounding North State communities including Red Bluff, Chico, Oroville, Paradise, Magalia, and Mount Shasta.</p>
 
-      <p><strong>O'Brien Mountain Home</strong> is a licensed California contractor (Lic# 1135995) specializing in residential siding, fire hardening, and custom decking. Contact us to request your estimate.</p>
+      <p><strong>O'Brien Mountain Home</strong> is a licensed California contractor (Lic# 1135995) specializing in <a href="/services/residential-siding">residential siding</a>, <a href="/services/fire-hardening">fire hardening</a>, and <a href="/services/decking">custom decking</a>. <a href="/contact">Contact us to request your estimate</a>.</p>
     `,
     category: 'Siding',
     author: 'Marcus Crans',
@@ -349,9 +351,9 @@ export const blogs: BlogPost[] = [
 
       <p>Not every contractor has experience with WUI construction requirements, Vulcan vent installation, or the specific material specifications that apply to fire-prone ridge communities. Working with a contractor who understands the fire hardening context — not just the installation mechanics — ensures you get improvements that actually address your home's vulnerabilities rather than just checking boxes.</p>
 
-      <p><strong>O'Brien Mountain Home</strong> was founded in part because of the Camp Fire and its impact on North State communities. We serve Paradise, Magalia, and the surrounding Butte County foothill communities and bring specific knowledge of local fire conditions, WUI building requirements, and appropriate material choices for this environment. We are licensed in California (Lic# 1135995).</p>
+      <p><strong>O'Brien Mountain Home</strong> was founded in part because of the Camp Fire and its impact on North State communities. We serve <a href="/locations/paradise-ca">Paradise</a>, <a href="/locations/magalia-ca">Magalia</a>, and the surrounding Butte County foothill communities and bring specific knowledge of local fire conditions, WUI building requirements, and appropriate material choices for this environment. We are licensed in California (Lic# 1135995).</p>
 
-      <p>Contact us to schedule a fire hardening assessment for your Paradise or Magalia property.</p>
+      <p><a href="/contact">Contact us to schedule a fire hardening assessment</a> for your Paradise or Magalia property. Learn more about our <a href="/services/fire-hardening">fire hardening services</a> and what a home hardening assessment covers.</p>
     `,
     category: 'Fire Hardening',
     author: 'Marcus Crans',
@@ -421,7 +423,7 @@ export const blogs: BlogPost[] = [
 
       <p><strong>O'Brien Mountain Home</strong> provides commercial siding installation and repair across Northern California. We work with general contractors, property managers, facility managers, and commercial property owners. Our bids are clear, our communication is direct, and we understand the conditions and requirements specific to the North State market.</p>
 
-      <p>We are a licensed California contractor (Lic# 1135995) based in Redding. Contact us to discuss your project and request a bid.</p>
+      <p>We are a licensed California contractor (Lic# 1135995) based in <a href="/locations/redding-ca">Redding</a>. <a href="/contact">Contact us to discuss your project and request a bid</a> for your <a href="/services/commercial-siding">commercial siding</a> needs.</p>
     `,
     category: 'Siding',
     author: 'Marcus Crans',
@@ -506,7 +508,7 @@ export const blogs: BlogPost[] = [
 
       <p>If you're not sure what type of vents your home currently has, or whether they meet current ember-resistance standards, a fire hardening assessment can answer those questions. We walk through each vent location, assess the current product, and give you a clear picture of what the upgrade would involve and cost.</p>
 
-      <p><strong>O'Brien Mountain Home</strong> serves Redding, Paradise, Magalia, Chico, Red Bluff, Oroville, Mount Shasta, and the surrounding North State. We are a licensed California contractor (Lic# 1135995). Contact us to schedule your assessment.</p>
+      <p><strong>O'Brien Mountain Home</strong> serves <a href="/locations/redding-ca">Redding</a>, Paradise, Magalia, Chico, Red Bluff, Oroville, Mount Shasta, and the surrounding North State. We are a licensed California contractor (Lic# 1135995). <a href="/contact">Contact us to schedule your assessment</a> or learn more about our full <a href="/services/fire-hardening">fire hardening services</a>, or download our <a href="/fire-hardening-checklist">free fire hardening checklist</a>.</p>
     `,
     category: 'Fire Hardening',
     author: 'Marcus Crans',

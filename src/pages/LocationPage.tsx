@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import GoogleReviews from '@/components/GoogleReviews';
 import { locations } from '@/data/locations';
 import { services } from '@/data/services';
+import { blogs } from '@/data/blogs';
 import ServiceCard from '@/components/ServiceCard';
 import PromotionsSection from '@/components/PromotionsSection';
 import FAQ from '@/components/FAQ';
@@ -25,22 +26,76 @@ const LocationPage = () => {
     return <NotFound />;
   }
 
+  // Filter relevant blog posts: fire hardening posts for high-risk locations, all posts otherwise
+  const isFireRiskLocation = location.slug === "paradise-ca" || location.slug === "magalia-ca";
+  const relatedBlogPosts = isFireRiskLocation
+    ? blogs.filter(b => b.category === "Fire Hardening").slice(0, 2)
+    : blogs.slice(0, 2);
+
+  // Merge location-specific FAQs with general FAQs (location-specific shown first)
+  const locationFaqItems = location.faqs
+    ? [...location.faqs.map(f => ({ question: f.q, answer: f.a })), ...faqs.slice(0, 3)]
+    : faqs;
+
+  // FAQPage schema using location-specific FAQs when available
+  const locationFaqSchema = location.faqs
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": location.faqs.map(f => ({
+          "@type": "Question",
+          "name": f.q,
+          "acceptedAnswer": { "@type": "Answer", "text": f.a }
+        }))
+      }
+    : null;
+
   return (
     <div className="min-h-screen bg-white">
-      <SEO 
+      <SEO
         title={`Fire Hardening, Decking & Siding in ${location.name}`}
         description={`Protect and upgrade your ${location.name} home with fire hardening, siding, and decking from O’Brien Mountain Home.`}
         canonical={`/locations/${location.slug}`}
-        schema={{
-          "@context": "https://schema.org",
-          "@type": "LocalBusiness",
-          "name": `O’Brien Mountain Home - ${location.name}`,
-          "areaServed": location.name,
-          "provider": {
+        schema={[
+          {
+            "@context": "https://schema.org",
             "@type": "LocalBusiness",
-            "name": "O’Brien Mountain Home"
-          }
-        }}
+            "name": "O’Brien Mountain Home",
+            "telephone": "+15309997495",
+            "url": "https://obrienmountainhome.com",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "1304 East St",
+              "addressLocality": "Redding",
+              "addressRegion": "CA",
+              "postalCode": "96001",
+              "addressCountry": "US"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": location.latitude,
+              "longitude": location.longitude
+            },
+            "areaServed": {
+              "@type": "City",
+              "name": location.name,
+              "containedInPlace": {
+                "@type": "AdministrativeArea",
+                "name": location.county
+              }
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://obrienmountainhome.com" },
+              { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://obrienmountainhome.com/locations" },
+              { "@type": "ListItem", "position": 3, "name": location.name, "item": `https://obrienmountainhome.com/locations/${location.slug}` }
+            ]
+          },
+          ...(locationFaqSchema ? [locationFaqSchema] : [])
+        ]}
       />
       
       <Header />
@@ -141,7 +196,36 @@ const LocationPage = () => {
         </section>
 
         <GoogleReviews />
-        <FAQ items={faqs} title={`Local FAQ for ${location.name.split(',')[0]}`} />
+
+        {/* ─── Related Articles ─── */}
+        {relatedBlogPosts.length > 0 && (
+          <section className="py-16 bg-slate-50 border-t border-slate-100">
+            <div className="container mx-auto px-4">
+              <AnimatedSection className="text-center mb-10">
+                <h2 className="text-2xl md:text-3xl font-bold mb-2">Related Articles</h2>
+                <p className="text-slate-500 text-sm">Resources for {location.name.split(',')[0]} homeowners</p>
+              </AnimatedSection>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                {relatedBlogPosts.map(post => (
+                  <Link
+                    key={post.id}
+                    to={`/blog/${post.slug}`}
+                    className="group bg-white rounded-2xl overflow-hidden border border-slate-100 hover:border-primary/30 hover:shadow-md transition-all"
+                  >
+                    <img src={post.image} alt={post.title} className="w-full h-40 object-cover" loading="lazy" />
+                    <div className="p-5">
+                      <h3 className="font-bold text-slate-900 group-hover:text-primary transition-colors mb-2 leading-snug">{post.title}</h3>
+                      <p className="text-sm text-slate-500 line-clamp-2">{post.excerpt}</p>
+                      <span className="inline-block mt-3 text-xs font-semibold text-primary">Read Article →</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        <FAQ items={locationFaqItems} title={`Local FAQ for ${location.name.split(',')[0]}`} />
 
         <CTASection 
           title={`Ready to Protect or Upgrade Your ${location.name.split(',')[0]} Home?`}

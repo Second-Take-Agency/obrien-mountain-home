@@ -6,10 +6,11 @@ import SEO from '@/components/SEO';
 const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-white">
-      <SEO 
+      <SEO
         title="Privacy Policy | O’Brien Mountain Home"
         description="Privacy policy for O’Brien Mountain Home. Learn how we collect and use your information."
         canonical="/privacy-policy"
+        robots="noindex,follow"
       />
       
       <Header />

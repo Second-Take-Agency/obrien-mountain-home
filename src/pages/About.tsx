@@ -17,15 +17,39 @@ const About = () => {
         title="About O’Brien Mountain Home | Redding CA Contractor"
         description="Meet Marcus Crans and learn how O’Brien Mountain Home helps Northern California homeowners build safer, stronger homes."
         canonical="/about"
-        schema={{
-          "@context": "https://schema.org",
-          "@type": "AboutPage",
-          "mainEntity": {
-            "@type": "LocalBusiness",
-            "name": "O’Brien Mountain Home",
-            "description": "A North State company built around craftsmanship, resilience, and helping local homeowners protect what matters most."
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            "name": "About O’Brien Mountain Home",
+            "url": "https://obrienmountainhome.com/about",
+            "mainEntity": {
+              "@type": "LocalBusiness",
+              "name": "O’Brien Mountain Home",
+              "description": "A North State company built around craftsmanship, resilience, and helping local homeowners protect what matters most."
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "Marcus Crans",
+            "jobTitle": "Owner & Lead Contractor",
+            "url": "https://obrienmountainhome.com/about",
+            "worksFor": {
+              "@type": "Organization",
+              "name": "O’Brien Mountain Home",
+              "url": "https://obrienmountainhome.com"
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://obrienmountainhome.com" },
+              { "@type": "ListItem", "position": 2, "name": "About", "item": "https://obrienmountainhome.com/about" }
+            ]
           }
-        }}
+        ]}
       />
       
       <Header />

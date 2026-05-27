@@ -15,23 +15,35 @@ const ContactPage = () => {
         title="Contact O’Brien Mountain Home | Redding CA"
         description="Contact O’Brien Mountain Home for fire hardening, siding, decking, and commercial siding estimates in Redding and Northern California."
         canonical="/contact"
-        schema={{
-          "@context": "https://schema.org",
-          "@type": "ContactPage",
-          "mainEntity": {
-            "@type": "LocalBusiness",
-            "name": "O’Brien Mountain Home",
-            "telePhone": "(530) 999-7495",
-            "email": "mcrans@obrienmountainhome.com",
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": "1304 East St",
-              "addressLocality": "Redding",
-              "addressRegion": "CA",
-              "postalCode": "96001"
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "ContactPage",
+            "name": "Contact O’Brien Mountain Home",
+            "url": "https://obrienmountainhome.com/contact",
+            "mainEntity": {
+              "@type": "LocalBusiness",
+              "name": "O’Brien Mountain Home",
+              "telephone": "+15309997495",
+              "email": "mcrans@obrienmountainhome.com",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "1304 East St",
+                "addressLocality": "Redding",
+                "addressRegion": "CA",
+                "postalCode": "96001"
+              }
             }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://obrienmountainhome.com" },
+              { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://obrienmountainhome.com/contact" }
+            ]
           }
-        }}
+        ]}
       />
       
       <Header />

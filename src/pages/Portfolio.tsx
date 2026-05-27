@@ -40,12 +40,23 @@ const PortfolioPage = () => {
         title="Decking, Siding & Fire Hardening Projects | O'Brien Mountain Home"
         description="View recent decking, siding, commercial siding, and fire hardening projects from O'Brien Mountain Home in Northern California."
         canonical="/portfolio"
-        schema={{
-          "@context": "https://schema.org",
-          "@type": "CollectionPage",
-          "name": "O'Brien Mountain Home Portfolio",
-          "description": "A look at fire hardening, siding, decking, and exterior upgrades completed for homes and properties across Northern California."
-        }}
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "O'Brien Mountain Home Portfolio",
+            "url": "https://obrienmountainhome.com/portfolio",
+            "description": "A look at fire hardening, siding, decking, and exterior upgrades completed for homes and properties across Northern California."
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://obrienmountainhome.com" },
+              { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": "https://obrienmountainhome.com/portfolio" }
+            ]
+          }
+        ]}
       />
       
       <Header />

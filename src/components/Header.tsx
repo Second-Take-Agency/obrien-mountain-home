@@ -53,6 +53,9 @@ const Header = () => {
               src={LOGO_URL}
               alt="O'Brien Mountain Home Logo"
               className="h-14 w-auto object-contain"
+              width="200"
+              height="56"
+              loading="eager"
             />
           </Link>
 
@@ -144,7 +147,7 @@ const Header = () => {
         <div className="flex flex-col h-full pt-20 pb-8 px-6 overflow-y-auto">
           <div className="absolute top-4 left-6">
             <Link to="/" onClick={() => setIsOpen(false)}>
-              <img src={LOGO_URL} alt="O'Brien Mountain Home Logo" className="h-10 w-auto object-contain" />
+              <img src={LOGO_URL} alt="O'Brien Mountain Home Logo" className="h-10 w-auto object-contain" width="160" height="40" loading="eager" />
             </Link>
           </div>
           <button className="absolute top-4 right-6 p-2 text-slate-900" onClick={() => setIsOpen(false)} aria-label="Close menu">

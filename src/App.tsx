@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -7,24 +8,32 @@ import ScrollToTop from "./components/ScrollToTop";
 import BackToTopButton from "./components/BackToTopButton";
 import PageTransition from "./components/PageTransition";
 
-import Index from "./pages/Index";
-import About from "./pages/About";
-import BlogHub from "./pages/BlogHub";
-import BlogPost from "./pages/BlogPost";
-import Portfolio from "./pages/Portfolio";
-import ServicesHub from "./pages/services/ServicesHub";
-import FireHardening from "./pages/services/FireHardening";
-import CustomDecks from "./pages/services/CustomDecks";
-import ResidentialSiding from "./pages/services/ResidentialSiding";
-import CommercialSiding from "./pages/services/CommercialSiding";
-import FireHardeningChecklist from "./pages/FireHardeningChecklist";
-import LocationPage from "./pages/LocationPage";
-import Contact from "./pages/Contact";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Terms from "./pages/Terms";
-import NotFound from "./pages/NotFound";
+// ── Route-level code splitting ──────────────────────────────────────────────
+// Each page is a separate chunk that only downloads when the route is visited.
+// This significantly reduces the initial JS bundle the browser must parse on load,
+// improving First Contentful Paint (FCP) and PageSpeed scores.
+// NOTE: No custom manualChunks in vite.config.ts — Vite handles chunk ordering automatically.
+const Index = lazy(() => import("./pages/Index"));
+const About = lazy(() => import("./pages/About"));
+const BlogHub = lazy(() => import("./pages/BlogHub"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
+const Portfolio = lazy(() => import("./pages/Portfolio"));
+const ServicesHub = lazy(() => import("./pages/services/ServicesHub"));
+const FireHardening = lazy(() => import("./pages/services/FireHardening"));
+const CustomDecks = lazy(() => import("./pages/services/CustomDecks"));
+const ResidentialSiding = lazy(() => import("./pages/services/ResidentialSiding"));
+const CommercialSiding = lazy(() => import("./pages/services/CommercialSiding"));
+const FireHardeningChecklist = lazy(() => import("./pages/FireHardeningChecklist"));
+const LocationPage = lazy(() => import("./pages/LocationPage"));
+const Contact = lazy(() => import("./pages/Contact"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const Terms = lazy(() => import("./pages/Terms"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
+
+// Minimal fallback — white screen while route chunk downloads (typically <200ms on fast connection)
+const PageFallback = () => <div className="min-h-screen bg-white" />;
 
 const App = () => (
   <HelmetProvider>
@@ -34,32 +43,34 @@ const App = () => (
         <BrowserRouter>
           <ScrollToTop />
           <PageTransition>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/blog" element={<BlogHub />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
-              <Route path="/portfolio" element={<Portfolio />} />
+            <Suspense fallback={<PageFallback />}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/blog" element={<BlogHub />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/portfolio" element={<Portfolio />} />
 
-              {/* Services */}
-              <Route path="/services" element={<ServicesHub />} />
-              <Route path="/services/fire-hardening" element={<FireHardening />} />
-              <Route path="/services/decking" element={<CustomDecks />} />
-              <Route path="/services/residential-siding" element={<ResidentialSiding />} />
-              <Route path="/services/commercial-siding" element={<CommercialSiding />} />
-              <Route path="/commercial" element={<CommercialSiding />} />
-              <Route path="/fire-hardening-checklist" element={<FireHardeningChecklist />} />
+                {/* Services */}
+                <Route path="/services" element={<ServicesHub />} />
+                <Route path="/services/fire-hardening" element={<FireHardening />} />
+                <Route path="/services/decking" element={<CustomDecks />} />
+                <Route path="/services/residential-siding" element={<ResidentialSiding />} />
+                <Route path="/services/commercial-siding" element={<CommercialSiding />} />
+                <Route path="/commercial" element={<CommercialSiding />} />
+                <Route path="/fire-hardening-checklist" element={<FireHardeningChecklist />} />
 
-              {/* Locations */}
-              <Route path="/locations/:slug" element={<LocationPage />} />
+                {/* Locations */}
+                <Route path="/locations/:slug" element={<LocationPage />} />
 
-              {/* Support */}
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<Terms />} />
-              {/* Catch-all */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                {/* Support */}
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<Terms />} />
+                {/* Catch-all */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
           </PageTransition>
           <BackToTopButton />
 

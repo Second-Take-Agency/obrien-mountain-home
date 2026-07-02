@@ -27,8 +27,8 @@ export const portfolioProjects: PortfolioProject[] = [
     title: 'Custom Deck Build in Northern California',
     category: 'decking',
     location: 'Shasta Lake, CA',
-    challenge: 'Replacing an old, rotted wood deck with something durable and fire-aware.',
-    solution: 'Built a new TimberTech composite deck with glass railings to preserve the mountain view.',
+    challenge: 'Replacing a worn, aging wood deck and ramp with something safer, more durable, and fire-aware.',
+    solution: 'Rebuilt with TimberTech composite decking and new wood railings, keeping the accessible ramp for easy, year-round entry.',
     image: '/images/deck-1.jpg',
     images: ['/images/deck-1.jpg', '/images/deck-2.jpg', '/images/deck-3.jpg'],
     tags: ['TimberTech', 'Low Maintenance', 'Custom Design']

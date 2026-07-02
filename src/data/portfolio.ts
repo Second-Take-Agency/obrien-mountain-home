@@ -17,9 +17,10 @@ export const portfolioProjects: PortfolioProject[] = [
     title: 'Fire Hardening Upgrade in Redding',
     category: 'fire-hardening',
     location: 'Redding, CA',
-    challenge: 'Vulnerable attic and foundation vents in a high-risk WUI zone.',
-    solution: 'Installed Vulcan ember-resistant vents and added under-deck shielding.',
-    image: 'https://vibe.filesafe.space/1777345871363473576/assets/ddb097e8-c5ce-4970-8cf3-32fbe3eb0f04.png',
+    challenge: 'An older North State home needed protection against embers and radiant heat at its most vulnerable points — the roofline, eaves, and base of the walls.',
+    solution: 'Added fire-hardening upgrades including noncombustible stone veneer at the wall base, a Class-A tile roof, and sealed eaves to resist ember intrusion.',
+    image: '/images/fire-1.jpg',
+    images: ['/images/fire-1.jpg', '/images/fire-2.jpg'],
     tags: ['Vulcan Vents', 'WUI Compliant', 'Assessment']
   },
   {

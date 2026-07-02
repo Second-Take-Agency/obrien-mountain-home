@@ -19,8 +19,7 @@ export const portfolioProjects: PortfolioProject[] = [
     location: 'Redding, CA',
     challenge: 'An older North State home needed protection against embers and radiant heat at its most vulnerable points — the roofline, eaves, and base of the walls.',
     solution: 'Added fire-hardening upgrades including noncombustible stone veneer at the wall base, a Class-A tile roof, and sealed eaves to resist ember intrusion.',
-    image: '/images/fire-1.jpg',
-    images: ['/images/fire-1.jpg', '/images/fire-2.jpg'],
+    image: '/images/fire-2.jpg',
     tags: ['Vulcan Vents', 'WUI Compliant', 'Assessment']
   },
   {

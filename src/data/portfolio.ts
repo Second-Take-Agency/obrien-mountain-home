@@ -6,6 +6,8 @@ export interface PortfolioProject {
   challenge: string;
   solution: string;
   image: string;
+  /** Optional additional images. When present, the card renders a carousel. */
+  images?: string[];
   tags: string[];
 }
 
@@ -27,7 +29,8 @@ export const portfolioProjects: PortfolioProject[] = [
     location: 'Shasta Lake, CA',
     challenge: 'Replacing an old, rotted wood deck with something durable and fire-aware.',
     solution: 'Built a new TimberTech composite deck with glass railings to preserve the mountain view.',
-    image: 'https://vibe.filesafe.space/1777345871363473576/assets/b929f08b-5615-464f-824e-c2cbdb4aac67.png',
+    image: '/images/deck-1.jpg',
+    images: ['/images/deck-1.jpg', '/images/deck-2.jpg', '/images/deck-3.jpg'],
     tags: ['TimberTech', 'Low Maintenance', 'Custom Design']
   },
   {

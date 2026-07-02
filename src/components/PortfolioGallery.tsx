@@ -4,6 +4,7 @@ import { portfolioProjects as projects } from '@/data/portfolio';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, MapPin } from 'lucide-react';
+import PortfolioCarousel from '@/components/PortfolioCarousel';
 
 const categories = ["All", "Fire Hardening", "Decking", "Residential Siding", "Commercial Siding"];
 
@@ -55,13 +56,17 @@ const PortfolioGallery = ({ limit }: { limit?: number }) => {
           {displayProjects.map((project) => (
             <div key={project.id} className="group bg-white rounded-2xl overflow-hidden shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-300">
               <div className="relative h-64 overflow-hidden">
-                <img 
-                  src={project.image} 
-                  alt={project.title} 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  loading="lazy"
-                />
-                <div className="absolute top-4 right-4">
+                {project.images && project.images.length > 1 ? (
+                  <PortfolioCarousel images={project.images} alt={project.title} />
+                ) : (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                )}
+                <div className="absolute top-4 right-4 z-20">
                   <Badge className="bg-white/90 text-slate-900 hover:bg-white backdrop-blur-sm border-none font-bold capitalize">
                     {project.category.replace('-', ' ')}
                   </Badge>

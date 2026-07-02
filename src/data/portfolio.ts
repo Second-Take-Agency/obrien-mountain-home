@@ -62,8 +62,8 @@ export const portfolioProjects: PortfolioProject[] = [
     location: 'Paradise, CA',
     challenge: 'A large cedar-sided mountain lodge tucked among the pines needed protection from embers and radiant heat without losing its rustic character.',
     solution: 'Hardened the exterior with a Class-A composite-shingle roof, enclosed eaves, metal gutters and fascia, and a noncombustible stone veneer base.',
-    image: '/images/paradise-1.jpg',
-    images: ['/images/paradise-1.jpg', '/images/paradise-2.jpg', '/images/paradise-3.jpg'],
+    image: '/images/paradise-2.jpg',
+    images: ['/images/paradise-2.jpg', '/images/paradise-3.jpg'],
     tags: ['Ember-Resistant', 'Non-Combustible', 'WUI Compliant']
   },
   {

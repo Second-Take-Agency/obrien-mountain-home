@@ -95,10 +95,10 @@ const About = () => {
               <AnimatedSection variant="right" className="lg:w-1/2 relative">
                 <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl" />
                 <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl" />
-                <img 
-                  src="https://vibe.filesafe.space/1777345871363473576/assets/af37ff4b-7817-4b91-adfe-ee6cd1e695f0.png" 
-                  alt="Marcus Crans, Founder of O'Brien Mountain Home" 
-                  className="rounded-3xl shadow-2xl relative z-10 w-full object-cover aspect-[4/5]"
+                <img
+                  src="/images/team.jpg"
+                  alt="The O'Brien Mountain Home crew on a job site"
+                  className="rounded-3xl shadow-2xl relative z-10 w-full object-cover aspect-[3/2]"
                 />
               </AnimatedSection>
             </div>

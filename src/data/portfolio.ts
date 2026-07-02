@@ -54,5 +54,38 @@ export const portfolioProjects: PortfolioProject[] = [
     solution: 'Installed Commercial-Grade and fiber cement siding within a month for the business owner to open in time.',
     image: 'https://vibe.filesafe.space/1777345871363473576/attachments/4d997205-bb64-4659-8f37-b04a710a915b.webp',
     tags: ['Commercial Grade', 'Fiber Cement', 'Property Management']
+  },
+  {
+    id: '5',
+    title: 'Whole-Home Fire Hardening in Paradise',
+    category: 'fire-hardening',
+    location: 'Paradise, CA',
+    challenge: 'A ridge-community home surrounded by forest that needed to stand up to embers and radiant heat during wildfire season.',
+    solution: 'Completed a whole-home fire-hardening package — ember-resistant vents, non-combustible exterior details, and under-deck shielding.',
+    // Placeholder image — real project photos to be added.
+    image: '/placeholder.svg',
+    tags: ['Ember-Resistant', 'Non-Combustible', 'WUI Compliant']
+  },
+  {
+    id: '6',
+    title: 'Elevated Deck Rebuild in Red Bluff',
+    category: 'decking',
+    location: 'Red Bluff, CA',
+    challenge: 'A weathered, aging wood deck that had become unsafe and could not handle Tehama County’s intense summer heat.',
+    solution: 'Rebuilt with low-maintenance composite decking and new railings, engineered to last through hot North State summers.',
+    // Placeholder image — real project photos to be added.
+    image: '/placeholder.svg',
+    tags: ['Composite', 'Low Maintenance', 'Heat-Resistant']
+  },
+  {
+    id: '7',
+    title: 'Exterior Siding Refresh in Oroville',
+    category: 'residential-siding',
+    location: 'Oroville, CA',
+    challenge: 'Faded, sun-damaged siding on a foothill home that left it exposed to heat, moisture, and fire risk.',
+    solution: 'Replaced it with durable fiber cement siding and fresh trim for a low-maintenance, fire-aware exterior.',
+    // Placeholder image — real project photos to be added.
+    image: '/placeholder.svg',
+    tags: ['Fiber Cement', 'Curb Appeal', 'Fire-Aware']
   }
 ];

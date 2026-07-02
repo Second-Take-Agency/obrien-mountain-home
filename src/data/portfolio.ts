@@ -67,14 +67,13 @@ export const portfolioProjects: PortfolioProject[] = [
   },
   {
     id: '6',
-    title: 'Elevated Deck Rebuild in Red Bluff',
+    title: 'Elevated Hillside Deck Rebuild in Red Bluff',
     category: 'decking',
     location: 'Red Bluff, CA',
-    challenge: 'A weathered, aging wood deck that had become unsafe and could not handle Tehama County’s intense summer heat.',
-    solution: 'Rebuilt with low-maintenance composite decking and new railings, engineered to last through hot North State summers.',
-    // Placeholder image — real project photos to be added.
-    image: '/placeholder.svg',
-    tags: ['Composite', 'Low Maintenance', 'Heat-Resistant']
+    challenge: 'A tall, elevated deck on a sloped lot had aged and needed a safe, sturdy rebuild that could handle the height and constant sun exposure.',
+    solution: 'Rebuilt the raised deck on reinforced posts with new framing and railings — engineered for safety and built to last through hot North State summers.',
+    image: '/images/reddeck-1.jpg',
+    tags: ['Elevated Build', 'Reinforced', 'Custom Railings']
   },
   {
     id: '7',

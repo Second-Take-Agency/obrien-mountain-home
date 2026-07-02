@@ -39,9 +39,10 @@ export const portfolioProjects: PortfolioProject[] = [
     title: 'Residential Siding Replacement',
     category: 'residential-siding',
     location: 'Chico, CA',
-    challenge: 'Aging wood siding showing signs of sun damage and moisture intrusion.',
-    solution: 'Full replacement with James Hardie fiber cement siding for long-term protection.',
-    image: 'https://vibe.filesafe.space/1777345871363473576/assets/daf9d360-1208-4c29-a6bc-588321a2860d.png',
+    challenge: 'Old, faded siding that had weathered badly and left the home looking tired and under-protected.',
+    solution: 'Installed new fiber cement siding and fresh trim for a durable, low-maintenance exterior with major curb-appeal.',
+    image: '/images/siding-1.jpg',
+    images: ['/images/siding-1.jpg', '/images/siding-2.jpg', '/images/siding-3.jpg'],
     tags: ['James Hardie', 'Fiber Cement', 'Curb Appeal']
   },
   {

@@ -57,13 +57,13 @@ export const portfolioProjects: PortfolioProject[] = [
   },
   {
     id: '5',
-    title: 'Whole-Home Fire Hardening in Paradise',
+    title: 'Mountain Lodge Fire Hardening in Paradise',
     category: 'fire-hardening',
     location: 'Paradise, CA',
-    challenge: 'A ridge-community home surrounded by forest that needed to stand up to embers and radiant heat during wildfire season.',
-    solution: 'Completed a whole-home fire-hardening package — ember-resistant vents, non-combustible exterior details, and under-deck shielding.',
-    // Placeholder image — real project photos to be added.
-    image: '/placeholder.svg',
+    challenge: 'A large cedar-sided mountain lodge tucked among the pines needed protection from embers and radiant heat without losing its rustic character.',
+    solution: 'Hardened the exterior with a Class-A composite-shingle roof, enclosed eaves, metal gutters and fascia, and a noncombustible stone veneer base.',
+    image: '/images/paradise-1.jpg',
+    images: ['/images/paradise-1.jpg', '/images/paradise-2.jpg', '/images/paradise-3.jpg'],
     tags: ['Ember-Resistant', 'Non-Combustible', 'WUI Compliant']
   },
   {

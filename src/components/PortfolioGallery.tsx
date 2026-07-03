@@ -89,7 +89,7 @@ const PortfolioGallery = ({ limit }: { limit?: number }) => {
                   </div>
                 </div>
                 <Button asChild variant="ghost" className="group/btn w-full justify-between hover:bg-primary hover:text-white border border-slate-100">
-                  <Link to="/portfolio">
+                  <Link to={project.link || "/portfolio"}>
                     View Project Details
                     <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
                   </Link>

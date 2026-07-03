@@ -8,6 +8,8 @@ export interface PortfolioProject {
   image: string;
   /** Optional additional images. When present, the card renders a carousel. */
   images?: string[];
+  /** Optional destination for the card's "View Project Details" button. Defaults to /portfolio. */
+  link?: string;
   tags: string[];
 }
 
@@ -51,6 +53,7 @@ export const portfolioProjects: PortfolioProject[] = [
     challenge: 'Large commercial property that required durable processional exterior siding completed in time for their re-opening',
     solution: 'Installed Commercial-Grade and fiber cement siding within a month for the business owner to open in time.',
     image: 'https://vibe.filesafe.space/1777345871363473576/attachments/4d997205-bb64-4659-8f37-b04a710a915b.webp',
+    link: '/commercial',
     tags: ['Commercial Grade', 'Fiber Cement', 'Property Management']
   },
   {

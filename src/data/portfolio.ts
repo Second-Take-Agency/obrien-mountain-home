@@ -41,7 +41,6 @@ export const portfolioProjects: PortfolioProject[] = [
     challenge: 'Old, faded siding that had weathered badly and left the home looking tired and under-protected.',
     solution: 'Installed new fiber cement siding and fresh trim for a durable, low-maintenance exterior with major curb-appeal.',
     image: '/images/siding-1.jpg',
-    images: ['/images/siding-1.jpg', '/images/siding-2.jpg', '/images/siding-3.jpg'],
     tags: ['James Hardie', 'Fiber Cement', 'Curb Appeal']
   },
   {

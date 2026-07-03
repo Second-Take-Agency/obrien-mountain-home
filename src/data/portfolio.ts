@@ -84,5 +84,16 @@ export const portfolioProjects: PortfolioProject[] = [
     solution: 'Refreshed the lap siding and crisp white trim for a durable, low-maintenance exterior that keeps the home’s Victorian charm intact.',
     image: '/images/oroville-1.jpg',
     tags: ['Lap Siding', 'Curb Appeal', 'Historic Character']
+  },
+  {
+    id: '8',
+    title: 'Composite Deck & Aluminum Railing Build in Redding',
+    category: 'decking',
+    location: 'Redding, CA',
+    challenge: 'Creating durable, low-maintenance outdoor space — from an elevated hillside view deck to a compact patio deck — that could stand up to North State sun and weather.',
+    solution: 'Built composite decks finished with sleek black aluminum railings for a clean, modern look that resists rot, fading, and fire without the upkeep of wood.',
+    image: '/images/compdeck-1.jpg',
+    images: ['/images/compdeck-1.jpg', '/images/compdeck-2.jpg', '/images/compdeck-3.jpg'],
+    tags: ['Composite', 'Aluminum Railing', 'Low Maintenance']
   }
 ];

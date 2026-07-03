@@ -72,6 +72,7 @@ export const portfolioProjects: PortfolioProject[] = [
     challenge: 'A tall, elevated deck on a sloped lot had aged and needed a safe, sturdy rebuild that could handle the height and constant sun exposure.',
     solution: 'Rebuilt the raised deck on reinforced posts with new framing and railings — engineered for safety and built to last through hot North State summers.',
     image: '/images/reddeck-1.jpg',
+    images: ['/images/reddeck-1.jpg', '/images/reddeck-2.jpg'],
     tags: ['Elevated Build', 'Reinforced', 'Custom Railings']
   },
   {

@@ -96,5 +96,16 @@ export const portfolioProjects: PortfolioProject[] = [
     image: '/images/compdeck-1.jpg',
     images: ['/images/compdeck-1.jpg', '/images/compdeck-2.jpg', '/images/compdeck-3.jpg'],
     tags: ['Composite', 'Aluminum Railing', 'Low Maintenance']
+  },
+  {
+    id: '9',
+    title: 'Exterior Siding & Trim Refresh in Northern California',
+    category: 'residential-siding',
+    location: 'Northern California',
+    challenge: 'Older North State homes with tired, weather-worn siding needed a durable refresh and a cleaner, more modern look.',
+    solution: 'Refreshed the exteriors with new siding, bold trim, and fresh paint — a low-maintenance, fire-aware upgrade that transforms each home’s curb appeal.',
+    image: '/images/farmhouse-1.jpg',
+    images: ['/images/farmhouse-1.jpg', '/images/farmhouse-2.jpg', '/images/farmhouse-3.jpg', '/images/farmhouse-4.jpg'],
+    tags: ['Siding & Trim', 'Fresh Paint', 'Curb Appeal']
   }
 ];

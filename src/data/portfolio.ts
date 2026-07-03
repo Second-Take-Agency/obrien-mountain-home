@@ -77,13 +77,12 @@ export const portfolioProjects: PortfolioProject[] = [
   },
   {
     id: '7',
-    title: 'Exterior Siding Refresh in Oroville',
+    title: 'Victorian Home Siding Refresh in Oroville',
     category: 'residential-siding',
     location: 'Oroville, CA',
-    challenge: 'Faded, sun-damaged siding on a foothill home that left it exposed to heat, moisture, and fire risk.',
-    solution: 'Replaced it with durable fiber cement siding and fresh trim for a low-maintenance, fire-aware exterior.',
-    // Placeholder image — real project photos to be added.
-    image: '/placeholder.svg',
-    tags: ['Fiber Cement', 'Curb Appeal', 'Fire-Aware']
+    challenge: 'A classic Victorian home with weathered lap siding needed a refresh that would protect it without erasing its historic character.',
+    solution: 'Refreshed the lap siding and crisp white trim for a durable, low-maintenance exterior that keeps the home’s Victorian charm intact.',
+    image: '/images/oroville-1.jpg',
+    tags: ['Lap Siding', 'Curb Appeal', 'Historic Character']
   }
 ];

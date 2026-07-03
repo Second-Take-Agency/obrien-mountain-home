@@ -105,7 +105,7 @@ export const portfolioProjects: PortfolioProject[] = [
     challenge: 'Older North State homes with tired, weather-worn siding needed a durable refresh and a cleaner, more modern look.',
     solution: 'Refreshed the exteriors with new siding, bold trim, and fresh paint — a low-maintenance, fire-aware upgrade that transforms each home’s curb appeal.',
     image: '/images/farmhouse-1.jpg',
-    images: ['/images/farmhouse-1.jpg', '/images/farmhouse-2.jpg', '/images/farmhouse-3.jpg', '/images/farmhouse-4.jpg'],
+    images: ['/images/farmhouse-1.jpg', '/images/farmhouse-2.jpg'],
     tags: ['Siding & Trim', 'Fresh Paint', 'Curb Appeal']
   }
 ];

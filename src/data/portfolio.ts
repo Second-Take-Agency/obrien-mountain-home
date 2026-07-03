@@ -83,6 +83,7 @@ export const portfolioProjects: PortfolioProject[] = [
     challenge: 'A classic Victorian home with weathered lap siding needed a refresh that would protect it without erasing its historic character.',
     solution: 'Refreshed the lap siding and crisp white trim for a durable, low-maintenance exterior that keeps the home’s Victorian charm intact.',
     image: '/images/oroville-1.jpg',
+    images: ['/images/oroville-1.jpg', '/images/oroville-2.jpg'],
     tags: ['Lap Siding', 'Curb Appeal', 'Historic Character']
   },
   {

@@ -1,0 +1,22 @@
+name: Blog Publish Scheduler
+on:
+  schedule:
+    - cron: '0 15 * * *'   # daily ~08:00 Pacific; publishes Approved rows whose Publish date has arrived
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Publish due posts
+        env:
+          MONDAY_TOKEN: ${{ secrets.MONDAY_TOKEN }}
+          MONDAY_BOARD: '18420374601'
+          MONDAY_STATUS_COL: 'color_mm4wvg8w'
+          MONDAY_DATE_COL: 'date_mm4w89q2'
+        run: node .github/scripts/publish-scheduler.mjs

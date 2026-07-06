@@ -1,0 +1,103 @@
+{
+  "client_id": "obrien-mountain-home",
+  "client_name": "O'Brien Mountain Home",
+  "business": {
+    "legal_name": "O'Brien Mountain Home",
+    "license": "1135995",
+    "phone_display": "(530) 999-7495",
+    "phone_e164": "+15309997495",
+    "website_domain": "obrienmountainhome.com",
+    "base_url": "https://obrienmountainhome.com"
+  },
+  "service_area": {
+    "primary_city": "Redding",
+    "region": "Northern California",
+    "cities": [
+      "Redding",
+      "Paradise",
+      "Magalia",
+      "Chico",
+      "Red Bluff",
+      "Oroville",
+      "Mount Shasta"
+    ]
+  },
+  "brand": {
+    "primary_color": "#f6ad56",
+    "font_stack": "system sans-serif (Tailwind default: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto)",
+    "tone": "Helpful local expert; practical, reassuring, professional. No hype."
+  },
+  "site_tech": {
+    "framework": "Vite + React + TypeScript + shadcn/ui",
+    "deploy": "Vercel",
+    "repo": "github.com/Second-Take-Agency/obrien-mountain-home",
+    "production_branch": "main"
+  },
+  "blog_storage": {
+    "type": "ts-array-file",
+    "path": "src/data/blogs.ts",
+    "export_name": "blogs",
+    "insertion": "prepend new object to the blogs array",
+    "renderer": "src/pages/BlogPost.tsx renders `content` via dangerouslySetInnerHTML inside Tailwind `prose prose-slate`",
+    "list_page": "/blog",
+    "post_url_pattern": "/blog/{slug}"
+  },
+  "post_fields": {
+    "id": "string, unique incrementing",
+    "slug": "kebab-case, keyword-aware",
+    "title": "string",
+    "excerpt": "1-2 sentences; also used as meta description",
+    "content": "HTML string (this field holds the article body)",
+    "category": "enum",
+    "author": "enum",
+    "date": "Month D, YYYY",
+    "dateModified": "optional ISO string",
+    "image": "absolute URL; requires alt text in the body hero",
+    "readTime": "'N min read'",
+    "keywords": "comma-separated; emitted as hidden <meta name='keywords'>, not shown on page"
+  },
+  "categories": [
+    "Fire Hardening",
+    "Decking",
+    "Siding",
+    "Local"
+  ],
+  "authors": [
+    "Marcus Crans"
+  ],
+  "links": {
+    "estimate_cta": "/contact",
+    "services": {
+      "fire-hardening": "/services/fire-hardening",
+      "decking": "/services/decking",
+      "residential-siding": "/services/residential-siding",
+      "commercial-siding": "/services/commercial-siding"
+    },
+    "resources": {
+      "fire-hardening-checklist": "/fire-hardening-checklist"
+    },
+    "location_pattern": "/locations/{city-slug}"
+  },
+  "image_strategy": {
+    "mode": "reuse existing asset library first, else generate",
+    "asset_host": "vibe.filesafe.space",
+    "require_alt_text": true,
+    "default": "https://vibe.filesafe.space/1777345871363473576/assets/7110ee51-5a64-47f5-bd0c-253e37766ae8.png"
+  },
+  "content_rules": {
+    "h2_sections": "5-8",
+    "min_inline_images": 1,
+    "min_internal_links": 2,
+    "closing_business_block": "required",
+    "service_area_mentions": "primary_city + region required in intro and closing block",
+    "keywords": "hidden meta + woven naturally into body/title/excerpt"
+  },
+  "content_context": {
+    "primary_source": "client website — service pages + existing blog posts (read at generation time for full, accurate context)",
+    "service_pages_path": "src/pages/services/ and src/data/services.ts",
+    "existing_posts_path": "src/data/blogs.ts (used to avoid duplicate topics)",
+    "note": "Do NOT use the Client Directory 'Services Sold'/'Niche' fields for topic context — those describe what the agency sells the client, not the client's own customer-facing services. Directory is used only for business metadata (website, phone, location, Google Business URL)."
+  },
+  "deploy_preview_base": "obrien-mountain-home",
+  "vercel_scope": "secondtake"
+}

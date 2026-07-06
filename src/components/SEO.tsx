@@ -16,6 +16,8 @@ interface SEOProps {
   modifiedTime?: string;
   /** Override robots meta tag — use "noindex,follow" for legal/utility pages */
   robots?: string;
+  /** Comma-separated target keywords — rendered as a hidden SEO meta tag, not visible on the page */
+  keywords?: string;
 }
 
 const SEO: React.FC<SEOProps> = ({
@@ -28,6 +30,7 @@ const SEO: React.FC<SEOProps> = ({
   publishedTime,
   modifiedTime,
   robots,
+  keywords,
 }) => {
   const siteName = "O'Brien Mountain Home";
   const fullTitle = `${title} | ${siteName}`;
@@ -46,6 +49,7 @@ const SEO: React.FC<SEOProps> = ({
     <Helmet>
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
+      {keywords && <meta name="keywords" content={keywords} />}
       <link rel="canonical" href={fullUrl} />
       {robots && <meta name="robots" content={robots} />}
 

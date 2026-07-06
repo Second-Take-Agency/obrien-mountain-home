@@ -28,6 +28,7 @@ const BlogPost = () => {
       <SEO
         title={`${post.title} | O'Brien Mountain Home`}
         description={post.excerpt}
+        keywords={post.keywords}
         canonical={`/blog/${post.slug}`}
         image={post.image}
         ogType="article"

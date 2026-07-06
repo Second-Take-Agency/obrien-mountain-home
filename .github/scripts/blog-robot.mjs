@@ -21,7 +21,7 @@ async function callAI(system, user){
       body:JSON.stringify({model:E.AI_MODEL||'claude-sonnet-4-5',max_tokens:4000,system,messages:[{role:'user',content:user}]})});
     const d = await r.json(); return d.content[0].text;
   }
-  const model = E.AI_MODEL||'gemini-2.0-flash';
+  const model = E.AI_MODEL||'gemini-2.5-flash';
   const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,{
     method:'POST',headers:{'content-type':'application/json','x-goog-api-key':E.GEMINI_API_KEY},
     body:JSON.stringify({system_instruction:{parts:[{text:system}]},contents:[{role:'user',parts:[{text:user}]}],generationConfig:{temperature:0.6,maxOutputTokens:4000}})});

@@ -22,10 +22,12 @@ async function callAI(system, user){
     const d = await r.json(); return d.content[0].text;
   }
   const model = E.AI_MODEL||'gemini-2.0-flash';
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${E.GEMINI_API_KEY}`,{
-    method:'POST',headers:{'content-type':'application/json'},
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,{
+    method:'POST',headers:{'content-type':'application/json','x-goog-api-key':E.GEMINI_API_KEY},
     body:JSON.stringify({system_instruction:{parts:[{text:system}]},contents:[{role:'user',parts:[{text:user}]}],generationConfig:{temperature:0.6,maxOutputTokens:4000}})});
-  const d = await r.json(); return d.candidates[0].content.parts[0].text;
+  const d = await r.json();
+  if(!(d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts && d.candidates[0].content.parts[0] && d.candidates[0].content.parts[0].text)) throw new Error('Gemini API error ('+r.status+'): '+JSON.stringify(d).slice(0,600));
+  return d.candidates[0].content.parts[0].text;
 }
 
 // ---------- read the client's own site for context ----------

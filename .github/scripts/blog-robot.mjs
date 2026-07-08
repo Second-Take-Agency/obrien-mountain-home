@@ -69,9 +69,16 @@ async function generate(revise){
   const user = `SERVICES (source of truth):\n${services.map(s=>`- ${s.title}: ${s.detail}`).join('\n')}\n\nEXISTING TITLES (never duplicate):\n${titles.join('\n')}\n\nTopic: "${E.BLOG_TOPIC||''}"\nPrimary keyword: "${E.BLOG_PRIMARY_KEYWORD||''}"\nSupporting keywords: "${E.BLOG_SUPPORTING||''}"\n${revise?`REVISE the post per these editor notes: ${E.BLOG_EDIT_NOTES||''}`:''}\nRules: 800-1100 words. Intro sets ${prof.service_area.primary_city}/${prof.service_area.region} context. Use 5-8 <h2> sections; add <h3> only for genuine sub-points. At least 2 internal links from ${JSON.stringify(prof.links)}. Weave keywords in naturally. Do NOT write the closing/contact block.\nFORMAT FOR READABILITY (important): Write clear, formal, flowing prose in <p> paragraphs of 2-4 full sentences each, with space between ideas. Do NOT stack bold inline labels like "<strong>Label:</strong> text" — write natural sentences instead. Use <ul>/<ol> at most once per section and only for genuine lists, never as a substitute for prose. Keep it scannable and professional, not dense.\nOUTPUT JSON keys: {"title","slug","excerpt","category","readTime","body_html"}`;
   let raw = (await callAI(sys,user)).trim().replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
   const g = JSON.parse(raw);
+  const bodyHtml = g.body_html.trim()
+    .replace(/<h2>/g,'<h2 style="margin:2.75rem 0 1rem;font-weight:700;">')
+    .replace(/<h3>/g,'<h3 style="margin:2rem 0 0.75rem;font-weight:700;">')
+    .replace(/<p>/g,'<p style="margin:0 0 1.5rem;line-height:1.8;">')
+    .replace(/<ul>/g,'<ul style="margin:1.25rem 0 1.5rem;padding-left:1.5rem;">')
+    .replace(/<ol>/g,'<ol style="margin:1.25rem 0 1.5rem;padding-left:1.5rem;">')
+    .replace(/<li>/g,'<li style="margin:0.5rem 0;line-height:1.7;">');
   return {
     id:String(Date.now()).slice(-7), slug:g.slug, title:g.title, excerpt:g.excerpt,
-    content:'\n      '+g.body_html.trim()+'\n\n      '+closingBlock(services)+'\n    ',
+    content:'\n      '+bodyHtml+'\n\n      '+closingBlock(services)+'\n    ',
     category:E.BLOG_CATEGORY||g.category||prof.categories[0], author:prof.authors[0],
     date:E.BLOG_DATE||new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
     image:(prof.image_strategy&&prof.image_strategy.default)||services[0]?.image||'',

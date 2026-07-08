@@ -40,18 +40,19 @@ function context(){
 }
 function closingBlock(services){
   const sa=prof.service_area,b=prof.business;
-  return [`<hr />`,
-   `<h2>Serving ${sa.primary_city} &amp; ${sa.region}</h2>`,
-   `<p><strong>${prof.client_name}</strong> provides professional ${services.map(s=>s.title.toLowerCase()).join(', ')} services throughout <strong>${sa.primary_city} and ${sa.region}</strong> — including ${sa.cities.slice(1).join(', ')}. Licensed California contractor (Lic# ${b.license}).</p>`,
-   `<p><strong>Website:</strong> <a href="${b.base_url}">${b.website_domain}</a><br />`,
-   `<strong>Phone:</strong> <a href="tel:${b.phone_e164}">${b.phone_display}</a></p>`,
-   `<p><a href="${prof.links.estimate_cta}" style="display:inline-block;background:${prof.brand.primary_color};color:#0f172a;font-weight:700;padding:14px 30px;border-radius:999px;text-decoration:none;">Request an Estimate &rarr;</a></p>`].join('\n      ');
+  return `<div style="margin-top:3.5rem;padding:2rem 1.75rem;border:1px solid #e5e7eb;border-radius:16px;background:#f8fafc;">
+        <h2 style="margin-top:0;margin-bottom:0.75rem;">Serving ${sa.primary_city} &amp; ${sa.region}</h2>
+        <p style="margin:0 0 1rem;line-height:1.7;">${prof.client_name} provides professional ${services.map(s=>s.title.toLowerCase()).join(', ')} services throughout ${sa.primary_city} and ${sa.region} — including ${sa.cities.slice(1).join(', ')}. Licensed California contractor (Lic# ${b.license}).</p>
+        <p style="margin:0 0 1.5rem;line-height:1.7;"><strong>Website:</strong> <a href="${b.base_url}">${b.website_domain}</a><br />
+        <strong>Phone:</strong> <a href="tel:${b.phone_e164}">${b.phone_display}</a></p>
+        <p style="margin:0;"><a href="${prof.links.estimate_cta}" style="display:inline-block;background:${prof.brand.primary_color};color:#0f172a;font-weight:700;padding:15px 32px;border-radius:999px;text-decoration:none;">Request an Estimate &rarr;</a></p>
+      </div>`;
 }
 
 async function generate(revise){
   const {services,titles} = context();
   const sys = `You are a senior SEO copywriter for ${prof.client_name}, a ${prof.service_area.primary_city}/${prof.service_area.region} contractor. Voice: ${prof.brand.tone}. Write ONLY about the client's real services. Output STRICT JSON only, no code fences.`;
-  const user = `SERVICES (source of truth):\n${services.map(s=>`- ${s.title}: ${s.detail}`).join('\n')}\n\nEXISTING TITLES (never duplicate):\n${titles.join('\n')}\n\nTopic: "${E.BLOG_TOPIC||''}"\nPrimary keyword: "${E.BLOG_PRIMARY_KEYWORD||''}"\nSupporting keywords: "${E.BLOG_SUPPORTING||''}"\n${revise?`REVISE the post per these editor notes: ${E.BLOG_EDIT_NOTES||''}`:''}\nRules: 800-1100 words. Intro sets ${prof.service_area.primary_city}/${prof.service_area.region} context. 5-8 <h2> sections with <h3>, lists, <strong>. At least 2 internal links from ${JSON.stringify(prof.links)}. Weave keywords in naturally. Do NOT write the closing/contact block.\nOUTPUT JSON keys: {"title","slug","excerpt","category","readTime","body_html"}`;
+  const user = `SERVICES (source of truth):\n${services.map(s=>`- ${s.title}: ${s.detail}`).join('\n')}\n\nEXISTING TITLES (never duplicate):\n${titles.join('\n')}\n\nTopic: "${E.BLOG_TOPIC||''}"\nPrimary keyword: "${E.BLOG_PRIMARY_KEYWORD||''}"\nSupporting keywords: "${E.BLOG_SUPPORTING||''}"\n${revise?`REVISE the post per these editor notes: ${E.BLOG_EDIT_NOTES||''}`:''}\nRules: 800-1100 words. Intro sets ${prof.service_area.primary_city}/${prof.service_area.region} context. Use 5-8 <h2> sections; add <h3> only for genuine sub-points. At least 2 internal links from ${JSON.stringify(prof.links)}. Weave keywords in naturally. Do NOT write the closing/contact block.\nFORMAT FOR READABILITY (important): Write clear, formal, flowing prose in <p> paragraphs of 2-4 full sentences each, with space between ideas. Do NOT stack bold inline labels like "<strong>Label:</strong> text" — write natural sentences instead. Use <ul>/<ol> at most once per section and only for genuine lists, never as a substitute for prose. Keep it scannable and professional, not dense.\nOUTPUT JSON keys: {"title","slug","excerpt","category","readTime","body_html"}`;
   let raw = (await callAI(sys,user)).trim().replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
   const g = JSON.parse(raw);
   return {

@@ -13,13 +13,15 @@ const prof = JSON.parse(fs.readFileSync(`${REPO}/.github/blog-profile.json`,'utf
 const sh = (c) => execSync(c,{cwd:REPO}).toString();
 
 // ---------- AI (provider-swappable: gemini free-tier by default, or anthropic) ----------
-async function callAI(system, user){
+async function callOnce(system, user){
   const provider = (E.AI_PROVIDER||'gemini').toLowerCase();
   if(provider==='anthropic'){
     const r = await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
       headers:{'x-api-key':E.ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01','content-type':'application/json'},
-      body:JSON.stringify({model:E.AI_MODEL||'claude-sonnet-4-5',max_tokens:4000,system,messages:[{role:'user',content:user}]})});
-    const d = await r.json(); return d.content[0].text;
+      body:JSON.stringify({model:E.AI_MODEL||'claude-sonnet-4-5',max_tokens:8192,system,messages:[{role:'user',content:user}]})});
+    const d = await r.json();
+    if(!(d.content && d.content[0] && d.content[0].text)) throw new Error('Anthropic API error ('+r.status+'): '+JSON.stringify(d).slice(0,600));
+    return d.content[0].text;
   }
   const model = E.AI_MODEL||'gemini-2.5-flash';
   const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,{
@@ -28,6 +30,18 @@ async function callAI(system, user){
   const d = await r.json();
   if(!(d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts && d.candidates[0].content.parts[0] && d.candidates[0].content.parts[0].text)) throw new Error('Gemini API error ('+r.status+'): '+JSON.stringify(d).slice(0,600));
   return d.candidates[0].content.parts[0].text;
+}
+async function callAI(system, user){
+  let last;
+  for(let i=0;i<5;i++){
+    try{ return await callOnce(system,user); }
+    catch(e){ last=e; const m=String((e && e.message) || e);
+      if(i<4 && /(503|502|500|429|UNAVAILABLE|overloaded|high demand|RESOURCE_EXHAUSTED|fetch failed|ECONN|ETIMEDOUT)/i.test(m)){
+        console.log('transient AI error, retrying in '+(3*(i+1))+'s: '+m.slice(0,120));
+        await new Promise(res=>setTimeout(res,3000*(i+1))); continue; }
+      throw e; }
+  }
+  throw last;
 }
 
 // ---------- read the client's own site for context ----------

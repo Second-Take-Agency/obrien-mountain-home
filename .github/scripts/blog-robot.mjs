@@ -81,21 +81,20 @@ async function mondayName(name){ if(!item||!E.MONDAY_TOKEN) return;
   await fetch('https://api.monday.com/v2',{method:'POST',headers:{'Authorization':E.MONDAY_TOKEN,'content-type':'application/json','API-Version':'2024-01'},
     body:JSON.stringify({query:`mutation($b:ID!,$i:ID!,$v:String!){change_simple_column_value(board_id:$b,item_id:$i,column_id:"name",value:$v){id}}`,
       variables:{b:E.MONDAY_BOARD,i:item,v:name}})}); }
-function previewUrl(){ const b=branch.replace(/[^a-zA-Z0-9]/g,'-'); return `https://${prof.deploy_preview_base}-git-${b}-${prof.vercel_scope}.vercel.app`; }
+function previewUrl(slug){ const b=branch.replace(/[^a-zA-Z0-9]/g,'-'); return `https://${prof.deploy_preview_base}-git-${b}-${prof.vercel_scope}.vercel.app/blog/${slug}`; }
 
 (async()=>{
   sh(`git config user.email "automation@secondtake.agency"`); sh(`git config user.name "Blog Automation"`); sh(`git fetch origin`);
   if(action==='draft'||action==='revise'){
-    try{ sh(`git checkout ${branch} 2>/dev/null || git checkout -b ${branch} origin/main`);}catch{ sh(`git checkout -b ${branch} origin/main`);}    
+    sh(`git checkout -B ${branch} origin/main`);    
     const post = await generate(action==='revise');
-    if(action==='revise') removeSlug(post.slug);
     insert(post);
     sh(`git add src/data/blogs.ts`);
     sh(`git commit -m "${action==='revise'?'Revise':'Add'} blog: ${post.title.replace(/["'`$]/g,'')}"`);
-    sh(`git push -u origin ${branch} --force-with-lease`);
-    await monday({[E.MONDAY_STATUS_COL]:{label:'Preview ready'},[E.MONDAY_LINK_COL]:{url:previewUrl(),text:'Open preview'}});
+    sh(`git push -u origin ${branch} --force`);
+    await monday({[E.MONDAY_STATUS_COL]:{label:'Preview ready'},[E.MONDAY_LINK_COL]:{url:previewUrl(post.slug),text:'Open preview'}});
     if(E.BLOG_NAME_PREFIX) await mondayName(`${E.BLOG_NAME_PREFIX}: ${post.title}`);
-    console.log('OK', action, '->', previewUrl());
+    console.log('OK', action, '->', previewUrl(post.slug));
   } else if(action==='publish'){
     sh(`git checkout main`); sh(`git pull origin main`);
     sh(`git merge --no-ff origin/${branch} -m "Publish blog (item ${item})"`);

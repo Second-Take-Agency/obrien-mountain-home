@@ -130,6 +130,14 @@ const BlogPost = () => {
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
 
+          {/* Company details */}
+          <div style={{marginTop:'3.5rem',padding:'2rem 1.75rem',border:'1px solid #e5e7eb',borderRadius:'16px',background:'#f8fafc'}}>
+            <h2 style={{margin:'0 0 0.75rem',fontSize:'24px',fontWeight:700}}>Serving Redding &amp; Northern California</h2>
+            <p style={{margin:'0 0 1rem',lineHeight:1.7}}>O'Brien Mountain Home provides professional fire hardening, custom decks, residential siding, and commercial siding throughout Redding and Northern California — including Paradise, Magalia, Chico, Red Bluff, Oroville, and Mount Shasta. Licensed California contractor (Lic# 1135995).</p>
+            <p style={{margin:'0 0 1.5rem',lineHeight:1.7}}><strong>Website:</strong> <a href="https://obrienmountainhome.com" className="text-primary">obrienmountainhome.com</a><br /><strong>Phone:</strong> <a href="tel:+15309997495" className="text-primary">(530) 999-7495</a></p>
+            <p style={{margin:0}}><Link to="/contact" style={{display:'inline-block',background:'#f6ad56',color:'#0f172a',fontWeight:700,padding:'15px 32px',borderRadius:'999px',textDecoration:'none'}}>Request an Estimate →</Link></p>
+          </div>
+
           {/* Back to Blog */}
           <div className="mt-16 pt-8 border-t border-slate-100">
             <Link

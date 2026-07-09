@@ -84,7 +84,7 @@ async function generate(revise){
     .replace(/<li>/g,'<li style="margin:0.5rem 0;line-height:1.7;">');
   return {
     id:String(Date.now()).slice(-7), slug:g.slug, title:g.title, excerpt:g.excerpt,
-    content:'\n      '+bodyHtml+'\n\n      '+closingBlock(services)+'\n    ',
+    content:'\n      '+bodyHtml+'\n    ',
     category:E.BLOG_CATEGORY||g.category||prof.categories[0], author:prof.authors[0],
     date:E.BLOG_DATE||new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
     image:pickImage(E.BLOG_CATEGORY||g.category||prof.categories[0], services),

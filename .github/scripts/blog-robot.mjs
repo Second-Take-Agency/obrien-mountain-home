@@ -6,7 +6,8 @@ import { execSync } from 'child_process';
 
 const E = process.env;
 const REPO = process.cwd();
-const action = E.BLOG_ACTION;
+let action = E.BLOG_ACTION||'';
+let rowStatus='', rowPublishDate='';
 const item   = E.BLOG_MONDAY_ITEM || '';
 const branch = `blog/item-${item || (E.BLOG_SLUG||'adhoc')}`;
 const prof = JSON.parse(fs.readFileSync(`${REPO}/.github/blog-profile.json`,'utf8'));
@@ -111,7 +112,30 @@ async function mondayName(name){ if(!item||!E.MONDAY_TOKEN) return;
       variables:{b:E.MONDAY_BOARD,i:item,v:name}})}); }
 function previewUrl(slug){ const b=branch.replace(/[^a-zA-Z0-9]/g,'-'); return `https://${prof.deploy_preview_base}-git-${b}-${prof.vercel_scope}.vercel.app/blog/${slug}`; }
 
+async function loadInputs(){
+  if(!item || !E.MONDAY_TOKEN) return;
+  const cols=["color_mm4wvg8w","long_text_mm4wmww","text_mm4xd3eq","long_text_mm4x1wk3","long_text_mm4x29jz","date_mm4w89q2"];
+  const r=await fetch('https://api.monday.com/v2',{method:'POST',headers:{'Authorization':E.MONDAY_TOKEN,'content-type':'application/json','API-Version':'2024-01'},body:JSON.stringify({query:`query($i:[ID!]){items(ids:$i){id name column_values(ids:${JSON.stringify(cols)}){id text}}}`,variables:{i:[item]}})});
+  const j=await r.json(); const it=j.data&&j.data.items&&j.data.items[0]; if(!it) return;
+  const cv=Object.fromEntries(it.column_values.map(c=>[c.id,(c.text||'').trim()]));
+  rowStatus=cv['color_mm4wvg8w']||''; rowPublishDate=cv['date_mm4w89q2']||'';
+  E.BLOG_TOPIC = E.BLOG_TOPIC || cv['long_text_mm4wmww'] || '';
+  E.BLOG_PRIMARY_KEYWORD = E.BLOG_PRIMARY_KEYWORD || cv['text_mm4xd3eq'] || '';
+  E.BLOG_SUPPORTING = E.BLOG_SUPPORTING || cv['long_text_mm4x1wk3'] || '';
+  E.BLOG_EDIT_NOTES = E.BLOG_EDIT_NOTES || cv['long_text_mm4x29jz'] || '';
+  if(!E.BLOG_DATE && cv['date_mm4w89q2']){ try{ E.BLOG_DATE=new Date(cv['date_mm4w89q2']+'T00:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}); }catch{} }
+  if(!E.BLOG_NAME_PREFIX){ const m=(it.name||'').match(/^(.*?-\s*Blog\s*\d+)\b/i); if(m) E.BLOG_NAME_PREFIX=m[1]; }
+}
 (async()=>{
+  await loadInputs();
+  if(!action){
+    const t=new Date().toISOString().slice(0,10);
+    if(rowStatus==='Push for Blog Creation') action='draft';
+    else if(rowStatus==='Needs edits') action='revise';
+    else if(rowStatus==='Approved' && (!rowPublishDate || rowPublishDate<=t)) action='publish';
+    else { console.log('No actionable status ('+(rowStatus||'-')+') — nothing to do.'); process.exit(0); }
+    console.log('derived action from status:', action);
+  }
   sh(`git config user.email "automation@secondtake.agency"`); sh(`git config user.name "Blog Automation"`); sh(`git fetch origin`);
   if(action==='draft'||action==='revise'){
     sh(`git checkout -B ${branch} origin/main`);    

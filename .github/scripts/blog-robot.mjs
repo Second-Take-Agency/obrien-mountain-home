@@ -47,7 +47,7 @@ async function callAI(system, user){
 // ---------- read the client's own site for context ----------
 function context(){
   const svc = fs.readFileSync(`${REPO}/src/data/services.ts`,'utf8');
-  const services = [...svc.matchAll(/title:\s*"([^"]+)"[\s\S]*?longDescription:\s*"([^"]+)"/g)].map(m=>({title:m[1],detail:m[2]}));
+  const services = [...svc.matchAll(/title:\s*"([^"]+)"[\s\S]*?longDescription:\s*"([^"]+)"[\s\S]*?image:\s*"([^"]+)"/g)].map(m=>({title:m[1],detail:m[2],image:m[3]}));
   const blog = fs.readFileSync(`${REPO}/src/data/blogs.ts`,'utf8');
   const titles = [...blog.matchAll(/\n\s{4}title:\s*"([^"]+)"/g)].map(m=>m[1]);
   return {services,titles};
@@ -55,7 +55,7 @@ function context(){
 function closingBlock(services){
   const sa=prof.service_area,b=prof.business;
   return `<div style="margin-top:3.5rem;padding:2rem 1.75rem;border:1px solid #e5e7eb;border-radius:16px;background:#f8fafc;">
-        <h2 style="margin-top:0;margin-bottom:0.75rem;">Serving ${sa.primary_city} &amp; ${sa.region}</h2>
+        <h2 style="margin:0 0 0.75rem;font-size:24px;font-weight:700;">Serving ${sa.primary_city} &amp; ${sa.region}</h2>
         <p style="margin:0 0 1rem;line-height:1.7;">${prof.client_name} provides professional ${services.map(s=>s.title.toLowerCase()).join(', ')} services throughout ${sa.primary_city} and ${sa.region} — including ${sa.cities.slice(1).join(', ')}. Licensed California contractor (Lic# ${b.license}).</p>
         <p style="margin:0 0 1.5rem;line-height:1.7;"><strong>Website:</strong> <a href="${b.base_url}">${b.website_domain}</a><br />
         <strong>Phone:</strong> <a href="tel:${b.phone_e164}">${b.phone_display}</a></p>
@@ -63,6 +63,12 @@ function closingBlock(services){
       </div>`;
 }
 
+function pickImage(category, services){
+  const c=(category||'').toLowerCase();
+  const key = c.includes('deck')?'deck' : c.includes('siding')?'siding' : c.includes('fire')?'fire' : null;
+  if(key){ const m=services.find(s=>s.title.toLowerCase().includes(key)); if(m&&m.image) return m.image; }
+  return (prof.image_strategy&&prof.image_strategy.default)||services[0]?.image||'';
+}
 async function generate(revise){
   const {services,titles} = context();
   const sys = `You are a senior SEO copywriter for ${prof.client_name}, a ${prof.service_area.primary_city}/${prof.service_area.region} contractor. Voice: ${prof.brand.tone}. Write ONLY about the client's real services. Output STRICT JSON only, no code fences.`;
@@ -81,7 +87,7 @@ async function generate(revise){
     content:'\n      '+bodyHtml+'\n\n      '+closingBlock(services)+'\n    ',
     category:E.BLOG_CATEGORY||g.category||prof.categories[0], author:prof.authors[0],
     date:E.BLOG_DATE||new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
-    image:(prof.image_strategy&&prof.image_strategy.default)||services[0]?.image||'',
+    image:pickImage(E.BLOG_CATEGORY||g.category||prof.categories[0], services),
     readTime:g.readTime||'8 min read',
     keywords:[E.BLOG_PRIMARY_KEYWORD,E.BLOG_SUPPORTING].filter(Boolean).join(', ')
   };

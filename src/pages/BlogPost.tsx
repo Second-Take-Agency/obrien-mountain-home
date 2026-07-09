@@ -6,7 +6,6 @@ import SEO from '@/components/SEO';
 import { blogs } from '@/data/blogs';
 import { Calendar, User, Clock, ArrowLeft, ArrowRight } from 'lucide-react';
 import NotFound from './NotFound';
-import ContactForm from '@/components/ContactForm';
 import GoogleReviews from '@/components/GoogleReviews';
 
 const categoryColors: Record<string, string> = {
@@ -197,8 +196,10 @@ const BlogPost = () => {
                 Tell us what you're working on and we'll help you figure out the best next step. We reply within 24 business hours.
               </p>
             </div>
-            <div className="bg-slate-50 border border-slate-100 rounded-3xl p-8 md:p-12">
-              <ContactForm />
+            <div className="text-center">
+              <Link to="/contact" className="inline-block bg-primary text-slate-900 font-bold px-8 py-4 rounded-full hover:opacity-90 transition-opacity">
+                Get in Touch →
+              </Link>
             </div>
           </div>
         </section>

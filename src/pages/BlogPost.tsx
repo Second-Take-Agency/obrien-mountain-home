@@ -73,7 +73,7 @@ const BlogPost = () => {
 
       <Header />
 
-      <main className="pt-20">
+      <main>
 
         {/* Hero */}
         <section className="relative h-[55vh] min-h-[420px] overflow-hidden">
@@ -83,6 +83,7 @@ const BlogPost = () => {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/70 to-slate-900/30" />
+          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-slate-950/80 to-transparent" />
           <div className="absolute inset-0 flex flex-col justify-end pb-14 px-4">
             <div className="container mx-auto max-w-4xl">
               <span className={`inline-block text-xs font-bold px-4 py-1.5 rounded-full mb-4 uppercase tracking-widest ${categoryColors[post.category] ?? 'bg-primary/20 text-primary'}`}>

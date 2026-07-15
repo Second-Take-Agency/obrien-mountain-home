@@ -13,6 +13,9 @@ const ctx = JSON.parse(execFileSync('node', ['extract-context.mjs', repo], { enc
 
 // ---- 2. deterministic closing block built from the profile (never left to the AI) ----
 const sa = prof.service_area, b = prof.business;
+// Per-row target city: pull "Target city:" from the Topic, else fall back to the primary city.
+const targetCity = (topicArg.match(/Target city:\s*([^\n.,;|]+)/i)?.[1] || '').trim() || sa.primary_city;
+const nearbyTowns = (sa.cities||[]).filter(c=>c!==targetCity).slice(0,2).join(', ');
 const closing = [
   `<hr />`,
   `<h2>Serving ${sa.primary_city} &amp; ${sa.region}</h2>`,
@@ -41,9 +44,9 @@ TASK: ${topicArg ? `Write a blog post on this topic: "${topicArg}".` : `Pick the
 STRUCTURE (required):
 - 2000-2400 words (2000 minimum, non-negotiable — reach length through depth, examples, and sub-topics, never filler).
 - READING LEVEL: write at a 6th-grade reading level — short, clear sentences and simple everyday words; explain any technical terms in plain language; no collegiate or academic phrasing. Voice is friendly and plain-spoken, not formal.
-- LOCAL FOCUS: the post TITLE must include the service area / primary city (e.g. "What Does a New Composite Deck Cost in ${sa.primary_city}, CA?"). Reference ${sa.primary_city}, ${sa.region}, and nearby service-area towns (${(sa.cities||[]).slice(1).join(', ')}) naturally throughout the body.
+- LOCAL FOCUS: This post targets ONE specific service-area city: ${targetCity}. The post TITLE must include ${targetCity} (e.g. "What Does a New Composite Deck Cost in ${targetCity}, CA?"). Center the article on ${targetCity}, and also reference ${sa.region} and one or two nearby towns (${nearbyTowns}) naturally in the body.
 - ANTI-AI-SLOP (strict): No em-dashes or en-dashes anywhere; use commas, periods, or a hyphen for number ranges. No sentences framed as a profound reveal like "Here's what no one wants to admit...". No correlative-conjunction constructions like "It's not X, not Y, it's just Z". No rule-of-three staccato fragments like "Fast. Simple. Effective.". No ta-da phrases like "but here's the truth"; just use "But". Say things plainly, with no fluff or padding.
-- Intro: 1-2 short paragraphs setting local (${sa.primary_city}/${sa.region}) context.
+- Intro: 1-2 short paragraphs setting local (${targetCity}/${sa.region}) context.
 - Body: 8-11 <h2> sections; use <h3>, <ul>/<ol>, and <strong>; include at least 2 internal links to the client's own pages using these paths: ${JSON.stringify(prof.links)}.
 - Weave the target keywords in naturally.
 - Do NOT write the closing business block or contact section — the system appends that automatically.

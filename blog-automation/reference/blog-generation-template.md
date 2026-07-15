@@ -13,7 +13,7 @@ Same generator + different profile = a post that matches each client's structure
 
 ## A. Universal content structure (every post, every client)
 
-1. **Title** — the H1 (stored in the `title` field; rendered by the client's own template). **Must include the service area / primary city** (e.g. "What Does a New Composite Deck Cost in Redding, CA?").
+1. **Title** — the H1 (stored in the `title` field; rendered by the client's own template). **Must include the post's target city** — the per-row city named in the Topic (`Target city:`), falling back to the primary city if none is named (e.g. "What Does a New Composite Deck Cost in Redding, CA?").
 2. **Excerpt** — 1–2 sentence summary (stored in `excerpt`; also used as the meta description).
 3. **Featured image** — hero image (stored in `image`) with descriptive alt text.
 4. **Intro** — 1–2 short paragraphs that set local context. *Must reference the client's primary city + region.*
@@ -26,7 +26,7 @@ Same generator + different profile = a post that matches each client's structure
    - Website line + Phone line
    - **Request an Estimate** button → the client's estimate/contact URL (styled in the client's brand color)
 8. **Hidden SEO** — target keywords stored in the `keywords` field and emitted as a hidden `<meta name="keywords">` tag (never shown on the page). Keywords are also woven **naturally** into the body, title, and excerpt — that's where the real ranking value is.
-9. **Service-area rule** — the primary city appears in the **title**, and the primary city, region, and nearby service-area towns are referenced naturally throughout the body (at minimum in the intro and closing block).
+9. **Service-area rule** — each post targets ONE city: the per-row target city from the Topic (`Target city:`), or the primary city as fallback. That target city appears in the **title** and is the article's focus; the region and one or two nearby service-area towns are referenced naturally in the body (at minimum in the intro and closing block).
 
 ---
 

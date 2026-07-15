@@ -25,6 +25,8 @@ Trigger on: "generate a blog for {client}", "write a blog post", "publish a blog
 3. **Choose the topic:** if the user gave one, use it. If not, pick a single high-value topic that (a) does NOT overlap any existing title, (b) is grounded in the services above, and (c) fits the season/time of year.
 
 4. **Write the article BODY** as HTML: **2,000 words minimum** (target 2,000–2,400), 1–2 paragraph intro with local (primary city / region) context, 8–11 `<h2>` sections with `<h3>`, lists, and `<strong>`, at least one inline image, and at least 2 internal links using the paths in `profile.links`. Weave the target keywords in naturally. **Do NOT write the closing/contact block** — it is appended automatically.
+   - **Reading level:** write at a 6th-grade reading level — short, clear sentences and simple everyday words; explain any technical terms in plain language; no collegiate or academic phrasing. Voice is friendly and plain-spoken, not formal.
+   - **Local focus:** the post **TITLE must include the service area / primary city** (e.g. "What Does a New Composite Deck Cost in Redding, CA?"), and the body should naturally reference the primary city, region, and nearby service-area towns throughout.
 
 5. **Assemble the post object** with fields: `id` (next integer), `slug` (kebab-case), `title`, `excerpt` (1–2 sentences, also the meta description), `content` (body + the deterministic closing block built from the profile: "Serving {city} & {region}", website, phone, Request-an-Estimate button), `category` (from allowed list), `author`, `date`, `image`, `readTime`, `keywords` (hidden SEO meta). Save as `post.json`.
 

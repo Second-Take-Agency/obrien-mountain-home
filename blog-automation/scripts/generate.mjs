@@ -40,6 +40,8 @@ TASK: ${topicArg ? `Write a blog post on this topic: "${topicArg}".` : `Pick the
 
 STRUCTURE (required):
 - 2000-2400 words (2000 minimum, non-negotiable — reach length through depth, examples, and sub-topics, never filler).
+- READING LEVEL: write at a 6th-grade reading level — short, clear sentences and simple everyday words; explain any technical terms in plain language; no collegiate or academic phrasing. Voice is friendly and plain-spoken, not formal.
+- LOCAL FOCUS: the post TITLE must include the service area / primary city (e.g. "What Does a New Composite Deck Cost in ${sa.primary_city}, CA?"). Reference ${sa.primary_city}, ${sa.region}, and nearby service-area towns (${(sa.cities||[]).slice(1).join(', ')}) naturally throughout the body.
 - Intro: 1-2 short paragraphs setting local (${sa.primary_city}/${sa.region}) context.
 - Body: 8-11 <h2> sections; use <h3>, <ul>/<ol>, and <strong>; include at least 2 internal links to the client's own pages using these paths: ${JSON.stringify(prof.links)}.
 - Weave the target keywords in naturally.

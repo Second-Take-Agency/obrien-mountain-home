@@ -13,11 +13,11 @@ Same generator + different profile = a post that matches each client's structure
 
 ## A. Universal content structure (every post, every client)
 
-1. **Title** — the H1 (stored in the `title` field; rendered by the client's own template).
+1. **Title** — the H1 (stored in the `title` field; rendered by the client's own template). **Must include the service area / primary city** (e.g. "What Does a New Composite Deck Cost in Redding, CA?").
 2. **Excerpt** — 1–2 sentence summary (stored in `excerpt`; also used as the meta description).
 3. **Featured image** — hero image (stored in `image`) with descriptive alt text.
 4. **Intro** — 1–2 short paragraphs that set local context. *Must reference the client's primary city + region.*
-5. **Body** — **2,000 words minimum** (target 2,000–2,400) across **8–11 `H2` sections**. Use `H3` subsections, bullet/numbered lists, and `<strong>` emphasis. Include **at least one in-body image**. Include **at least two internal links** to the client's own pages (services, contact, resources). Reach length through genuine depth (examples, sub-topics, comparisons) — never filler.
+5. **Body** — **2,000 words minimum** (target 2,000–2,400) across **8–11 `H2` sections**. Use `H3` subsections, bullet/numbered lists, and `<strong>` emphasis. Include **at least one in-body image**. Include **at least two internal links** to the client's own pages (services, contact, resources). Reach length through genuine depth (examples, sub-topics, comparisons) — never filler. **Reading level:** write at a 6th-grade reading level — short, clear sentences and simple everyday words, technical terms explained in plain language, no collegiate or academic phrasing; voice is friendly and plain-spoken, not formal.
 6. **Value section** (recommended) — e.g. "When to bring in a professional."
 7. **Standard closing block** (fixed for every post):
    - horizontal rule
@@ -26,7 +26,7 @@ Same generator + different profile = a post that matches each client's structure
    - Website line + Phone line
    - **Request an Estimate** button → the client's estimate/contact URL (styled in the client's brand color)
 8. **Hidden SEO** — target keywords stored in the `keywords` field and emitted as a hidden `<meta name="keywords">` tag (never shown on the page). Keywords are also woven **naturally** into the body, title, and excerpt — that's where the real ranking value is.
-9. **Service-area rule** — the primary city and region appear in the intro and the closing block at minimum.
+9. **Service-area rule** — the primary city appears in the **title**, and the primary city, region, and nearby service-area towns are referenced naturally throughout the body (at minimum in the intro and closing block).
 
 ---
 

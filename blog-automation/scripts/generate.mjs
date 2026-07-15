@@ -42,6 +42,7 @@ STRUCTURE (required):
 - 2000-2400 words (2000 minimum, non-negotiable — reach length through depth, examples, and sub-topics, never filler).
 - READING LEVEL: write at a 6th-grade reading level — short, clear sentences and simple everyday words; explain any technical terms in plain language; no collegiate or academic phrasing. Voice is friendly and plain-spoken, not formal.
 - LOCAL FOCUS: the post TITLE must include the service area / primary city (e.g. "What Does a New Composite Deck Cost in ${sa.primary_city}, CA?"). Reference ${sa.primary_city}, ${sa.region}, and nearby service-area towns (${(sa.cities||[]).slice(1).join(', ')}) naturally throughout the body.
+- ANTI-AI-SLOP (strict): No em-dashes or en-dashes anywhere; use commas, periods, or a hyphen for number ranges. No sentences framed as a profound reveal like "Here's what no one wants to admit...". No correlative-conjunction constructions like "It's not X, not Y, it's just Z". No rule-of-three staccato fragments like "Fast. Simple. Effective.". No ta-da phrases like "but here's the truth"; just use "But". Say things plainly, with no fluff or padding.
 - Intro: 1-2 short paragraphs setting local (${sa.primary_city}/${sa.region}) context.
 - Body: 8-11 <h2> sections; use <h3>, <ul>/<ol>, and <strong>; include at least 2 internal links to the client's own pages using these paths: ${JSON.stringify(prof.links)}.
 - Weave the target keywords in naturally.
@@ -61,10 +62,13 @@ if (dry) {
 const res = await fetch('https://api.anthropic.com/v1/messages', {
   method: 'POST',
   headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-  body: JSON.stringify({ model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5', max_tokens: 4000, system, messages: [{ role: 'user', content: user }] })
+  body: JSON.stringify({ model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5', max_tokens: 16384, system, messages: [{ role: 'user', content: user }] })
 });
 const data = await res.json();
 const post = JSON.parse(data.content[0].text);
+// Safety net: models emit em/en-dashes despite the prompt. Strip them from all text fields.
+const deDash=(t='')=>String(t).replace(/(\$?\d[\d,.]*)\s*[—–]\s*(\$?\d[\d,.]*)/g,'$1-$2').replace(/(\w)\s*[—–]\s*(\w)/g,'$1, $2').replace(/\s*[—–]\s*/g,', ');
+post.title=deDash(post.title); post.excerpt=deDash(post.excerpt); post.body_html=deDash(post.body_html);
 
 // ---- 5. assemble final post object (engine sets id/author/date/image + closing block) ----
 const nextId = String(Math.max(0, ...ctx.__ids || [0]) + 1);

@@ -12,7 +12,7 @@ async function setPublished(item){ await mondayQuery(`mutation($b:ID!,$i:ID!,$v:
 (async()=>{
   const d=await mondayQuery(`query($b:[ID!]){boards(ids:$b){items_page(limit:200){items{id column_values(ids:["${E.MONDAY_STATUS_COL}","${E.MONDAY_DATE_COL}"]){id text}}}}}`,{b:[E.MONDAY_BOARD]});
   const items=d.boards[0].items_page.items;
-  sh(`git config user.email "automation@secondtake.agency"`); sh(`git config user.name "Blog Automation"`); sh(`git fetch origin "+refs/heads/*:refs/remotes/origin/*"`);
+  sh(`git config user.email "41898282+github-actions[bot]@users.noreply.github.com"`); sh(`git config user.name "github-actions[bot]"`); sh(`git fetch origin "+refs/heads/*:refs/remotes/origin/*"`);
   let n=0, failed=0;
   for(const it of items){
     const cv=Object.fromEntries(it.column_values.map(c=>[c.id,c.text]));

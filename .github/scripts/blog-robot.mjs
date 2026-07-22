@@ -157,7 +157,28 @@ async function loadInputs(){
     console.log('OK', action, '->', previewUrl(post.slug));
   } else if(action==='publish'){
     sh(`git checkout main`); sh(`git pull origin main`);
-    sh(`git merge --no-ff origin/${branch} -m "Publish blog (item ${item})"`);
+    const branchFile = sh(`git show origin/${branch}:src/data/blogs.ts`);
+    const anchor = 'export const blogs: BlogPost[] = [';
+    const ai = branchFile.indexOf(anchor);
+    if(ai<0) throw new Error('anchor not found on preview branch');
+    const after = branchFile.slice(ai + anchor.length);
+    const start = after.indexOf('\n  {');
+    const end = after.indexOf('\n  },', start);
+    if(start<0 || end<0) throw new Error('could not extract post from branch');
+    const block = after.slice(start, end + '\n  },'.length);
+    const f = `${REPO}/src/data/blogs.ts`;
+    let cur = fs.readFileSync(f,'utf8');
+    const sm = block.match(/slug:\s*"([^"]+)"/);
+    if(sm && cur.includes('slug: "'+sm[1]+'"')){
+      console.log('post already on main, skipping insert');
+    } else {
+      cur = cur.replace(anchor, anchor + block);
+      if(!cur.trimEnd().endsWith('];')) throw new Error('publish insert sanity failed');
+      fs.writeFileSync(f, cur);
+    }
+    try { sh(`git checkout origin/${branch} -- public/blog-images`); } catch(e) {}
+    sh(`git add -A`);
+    sh(`git commit -m "Publish blog (item ${item})"`);
     sh(`git push origin main`);
     await monday({[E.MONDAY_STATUS_COL]:{label:'Published'}});
     console.log('PUBLISHED item', item);

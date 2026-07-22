@@ -142,7 +142,7 @@ async function loadInputs(){
     else { console.log('No actionable status ('+(rowStatus||'-')+') — nothing to do.'); process.exit(0); }
     console.log('derived action from status:', action);
   }
-  sh(`git config user.email "automation@secondtake.agency"`); sh(`git config user.name "Blog Automation"`); sh(`git fetch origin`);
+  sh(`git config user.email "automation@secondtake.agency"`); sh(`git config user.name "Blog Automation"`); sh(`git fetch origin "+refs/heads/*:refs/remotes/origin/*"`);
   if(action==='draft'||action==='revise'){
     sh(`git checkout -B ${branch} origin/main`);    
     const post = await generate(action==='revise');

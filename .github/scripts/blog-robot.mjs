@@ -11,7 +11,9 @@ let rowStatus='', rowPublishDate='';
 const item   = E.BLOG_MONDAY_ITEM || '';
 const branch = `blog/item-${item || (E.BLOG_SLUG||'adhoc')}`;
 const prof = JSON.parse(fs.readFileSync(`${REPO}/.github/blog-profile.json`,'utf8'));
-const sh = (c) => execSync(c,{cwd:REPO}).toString();
+const sh = (c) => { try { return execSync(c,{cwd:REPO}).toString(); }
+  catch(e){ const out=[e.stdout&&e.stdout.toString(), e.stderr&&e.stderr.toString()].filter(Boolean).join('\n').trim();
+    throw new Error(e.message + (out ? '\n--- git output ---\n'+out : '')); } };
 
 // ---------- AI (provider-swappable: gemini free-tier by default, or anthropic) ----------
 async function callOnce(system, user){

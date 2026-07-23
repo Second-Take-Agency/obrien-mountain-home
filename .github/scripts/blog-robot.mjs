@@ -66,6 +66,16 @@ function closingBlock(services){
       </div>`;
 }
 
+// Map any model-suggested category to one of the site's allowed categories,
+// so the /blog category filter (which matches exact values) always has a match.
+function normCategory(category){
+  const c=(category||'').toLowerCase();
+  if(c.includes('deck')) return 'Decking';
+  if(c.includes('fire')||c.includes('harden')) return 'Fire Hardening';
+  if(c.includes('siding')) return 'Siding';
+  if(c.includes('local')) return 'Local';
+  return prof.categories.includes(category)? category : prof.categories[0];
+}
 function pickImage(category, services){
   const c=(category||'').toLowerCase();
   const key = c.includes('deck')?'deck' : c.includes('siding')?'siding' : c.includes('fire')?'fire' : null;
@@ -140,7 +150,7 @@ async function generate(revise){
     .replace(/<ul>/g,'<ul style="margin:1.25rem 0 1.5rem;padding-left:1.5rem;">')
     .replace(/<ol>/g,'<ol style="margin:1.25rem 0 1.5rem;padding-left:1.5rem;">')
     .replace(/<li>/g,'<li style="margin:0.5rem 0;line-height:1.7;">');
-  const cat = E.BLOG_CATEGORY||g.category||prof.categories[0];
+  const cat = normCategory(E.BLOG_CATEGORY||g.category||prof.categories[0]);
   const post = {
     id:String(Date.now()).slice(-7), slug:g.slug, title:g.title, excerpt:g.excerpt,
     content:'\n      '+bodyHtml+'\n    ',

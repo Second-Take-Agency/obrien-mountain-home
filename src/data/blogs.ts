@@ -23,7 +23,7 @@ export const blogs: BlogPost[] = [
     category: "Decking",
     author: "Marcus Crans",
     date: "July 31, 2026",
-    image: "https://vibe.filesafe.space/1777345871363473576/assets/b0779543-7b3d-41c3-a095-1e0570bcece6.png",
+    image: "/blog-images/redding-ca-composite-deck-costs-2026-pricing-guide.png",
     readTime: "12-15 min",
     keywords: "composite deck cost Mount Shasta CA, composite deck cost California, cost to build a deck 2026, Trex deck price, how much does a new deck cost"
   },

@@ -85,21 +85,39 @@ async function heroImage(promptText, slug, cat, services){
     return `/blog-images/${slug}.png`;
   }catch(e){ console.log('image gen failed, using fallback:', String((e&&e.message)||e).slice(0,160)); return fallback; }
 }
+async function genImageOnce(model, prompt){
+  if(/^imagen/i.test(model)){
+    // Imagen models use the :predict endpoint (paid-tier on the Gemini API).
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:predict`,{
+      method:'POST', headers:{'content-type':'application/json','x-goog-api-key':E.GEMINI_API_KEY},
+      body:JSON.stringify({instances:[{prompt}],parameters:{sampleCount:1,aspectRatio:'16:9'}})});
+    const d = await r.json();
+    const b64 = d && d.predictions && d.predictions[0] && d.predictions[0].bytesBase64Encoded;
+    if(!b64) throw new Error('Imagen error ('+r.status+'): '+JSON.stringify(d).slice(0,300));
+    return b64;
+  }
+  // Gemini native image generation returns the image inline via :generateContent.
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,{
+    method:'POST', headers:{'content-type':'application/json','x-goog-api-key':E.GEMINI_API_KEY},
+    body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt+' Photorealistic 16:9 landscape hero photograph. No text, words, letters, numbers, signs, logos, or watermarks anywhere.'}]}],generationConfig:{responseModalities:['TEXT','IMAGE']}})});
+  const d = await r.json();
+  const parts = d && d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts;
+  const img = parts && parts.find(p=>p.inlineData && p.inlineData.data);
+  if(!img) throw new Error('Gemini image error ('+r.status+'): '+JSON.stringify(d).slice(0,300));
+  return img.inlineData.data;
+}
 async function genImage(prompt){
-  const model = E.IMAGE_MODEL || 'imagen-3.0-generate-002';
+  // Try each model in turn; skip to the next on a non-transient error (e.g. model not available on this key).
+  const models = E.IMAGE_MODEL ? [E.IMAGE_MODEL]
+    : ['gemini-2.5-flash-image','gemini-2.0-flash-preview-image-generation','imagen-3.0-generate-002'];
   let last;
-  for(let i=0;i<4;i++){
-    try{
-      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:predict`,{
-        method:'POST', headers:{'content-type':'application/json','x-goog-api-key':E.GEMINI_API_KEY},
-        body:JSON.stringify({instances:[{prompt}],parameters:{sampleCount:1,aspectRatio:'16:9'}})});
-      const d = await r.json();
-      const b64 = d && d.predictions && d.predictions[0] && d.predictions[0].bytesBase64Encoded;
-      if(!b64) throw new Error('Imagen error ('+r.status+'): '+JSON.stringify(d).slice(0,300));
-      return b64;
-    }catch(e){ last=e; const m=String((e&&e.message)||e);
-      if(i<3 && /(503|502|500|429|UNAVAILABLE|overloaded|RESOURCE_EXHAUSTED|fetch failed)/i.test(m)){ await new Promise(res=>setTimeout(res,3000*(i+1))); continue; }
-      throw e; }
+  for(const model of models){
+    for(let i=0;i<3;i++){
+      try{ const b64 = await genImageOnce(model, prompt); console.log('image model used:', model); return b64; }
+      catch(e){ last=e; const m=String((e&&e.message)||e);
+        if(i<2 && /(503|502|500|429|UNAVAILABLE|overloaded|RESOURCE_EXHAUSTED|fetch failed)/i.test(m)){ await new Promise(res=>setTimeout(res,3000*(i+1))); continue; }
+        console.log('image model failed ('+model+'):', m.slice(0,180)); break; }
+    }
   }
   throw last;
 }
@@ -241,14 +259,14 @@ async function loadInputs(){
       ).catch(()=> '');
       const newImg = await heroImage(String(ip).trim(), slug, cat, services);
       const newBlock = block.replace(/(\n    image: )(["'])[\s\S]*?\2/, `$1${JSON.stringify(newImg)}`);
-      if(newBlock===block){ console.log('reimage: no image field updated for', slug); }
+      if(newBlock===block){ console.log('reimage: image unchanged for', slug, '(generation failed, kept existing image)'); continue; }
       cur = cur.slice(0,objStart) + newBlock + cur.slice(objEnd + '\n  },'.length);
       if(!cur.trimEnd().endsWith('];')) throw new Error('reimage sanity failed: file no longer ends with ];');
       fs.writeFileSync(f, cur);
       changed++;
       console.log('reimaged', slug, '->', newImg);
     }
-    if(!changed){ console.log('reimage: nothing changed'); process.exit(0); }
+    if(!changed){ console.log('reimage: no images could be regenerated (nothing to commit)'); process.exit(0); }
     sh(`git add -A`);
     sh(`git commit -m "Regenerate hero image(s): ${slugs.join(', ')}"`);
     sh(`git push origin main`);

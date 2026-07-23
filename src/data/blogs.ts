@@ -23,7 +23,7 @@ export const blogs: BlogPost[] = [
     category: "Residential Siding",
     author: "Marcus Crans",
     date: "July 15, 2026",
-    image: "https://vibe.filesafe.space/1777345871363473576/assets/317434ae-1d2e-46bd-9dd1-37acd5e6a934.png",
+    image: "/blog-images/choosing-james-hardie-siding-colors-paradise-ca-colorplus-technology.png",
     readTime: 11,
     keywords: "James Hardie siding colors, ColorPlus technology, Hardie Statement Collection colors, best siding colors 2026, fade-resistant siding"
   },
@@ -36,7 +36,7 @@ export const blogs: BlogPost[] = [
     category: "Residential Siding",
     author: "Marcus Crans",
     date: "July 15, 2026",
-    image: "https://vibe.filesafe.space/1777345871363473576/assets/317434ae-1d2e-46bd-9dd1-37acd5e6a934.png",
+    image: "/blog-images/siding-cost-redding-ca-2026.png",
     readTime: 11,
     keywords: "siding cost Redding CA, house siding cost per square foot, fiber cement siding cost California, vinyl siding cost Redding, cost to replace siding 2026"
   },

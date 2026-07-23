@@ -23,7 +23,7 @@ export const blogs: BlogPost[] = [
     category: "Commercial Siding",
     author: "Marcus Crans",
     date: "July 15, 2026",
-    image: "https://vibe.filesafe.space/1777345871363473576/assets/317434ae-1d2e-46bd-9dd1-37acd5e6a934.png",
+    image: "/blog-images/multifamily-siding-replacement-oroville.png",
     readTime: 15,
     keywords: "multifamily siding replacement, apartment siding contractor, when to replace apartment siding, HOA siding replacement, multifamily exterior maintenance"
   },

@@ -23,7 +23,7 @@ export const blogs: BlogPost[] = [
     category: "Decking",
     author: "Marcus Crans",
     date: "July 15, 2026",
-    image: "https://vibe.filesafe.space/1777345871363473576/assets/b0779543-7b3d-41c3-a095-1e0570bcece6.png",
+    image: "/blog-images/magalia-ca-decking-composite-vs-wood-longevity-total-cost.png",
     readTime: 10,
     keywords: "composite decking vs wood, composite vs wood deck cost, low maintenance decking, does composite decking last longer, best decking for sun"
   },

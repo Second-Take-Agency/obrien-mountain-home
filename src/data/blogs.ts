@@ -23,7 +23,7 @@ export const blogs: BlogPost[] = [
     category: "Commercial Siding",
     author: "Marcus Crans",
     date: "July 15, 2026",
-    image: "https://vibe.filesafe.space/1777345871363473576/assets/317434ae-1d2e-46bd-9dd1-37acd5e6a934.png",
+    image: "/blog-images/metal-panels-vs-fiber-cement-commercial-siding-chico-ca.png",
     readTime: 11,
     keywords: "commercial siding materials, metal panel vs fiber cement commercial, best commercial building siding, fiber cement cladding, commercial cladding options"
   },

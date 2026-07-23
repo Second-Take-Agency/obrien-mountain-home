@@ -72,13 +72,44 @@ function pickImage(category, services){
   if(key){ const m=services.find(s=>s.title.toLowerCase().includes(key)); if(m&&m.image) return m.image; }
   return (prof.image_strategy&&prof.image_strategy.default)||services[0]?.image||'';
 }
+async function heroImage(promptText, slug, cat, services){
+  const dir = `${REPO}/public/blog-images`;
+  fs.mkdirSync(dir,{recursive:true});
+  const fallback = pickImage(cat, services);
+  if((E.IMAGE_GEN||'on').toLowerCase()==='off') return fallback;
+  const prompt = promptText || `Professional photorealistic 16:9 photograph relevant to ${prof.client_name} in ${prof.service_area.region}. Natural daylight, no people. No text or watermarks.`;
+  try{
+    const b64 = await genImage(prompt);
+    fs.writeFileSync(`${dir}/${slug}.png`, Buffer.from(b64,'base64'));
+    console.log('generated hero image for', slug);
+    return `/blog-images/${slug}.png`;
+  }catch(e){ console.log('image gen failed, using fallback:', String((e&&e.message)||e).slice(0,160)); return fallback; }
+}
+async function genImage(prompt){
+  const model = E.IMAGE_MODEL || 'imagen-3.0-generate-002';
+  let last;
+  for(let i=0;i<4;i++){
+    try{
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:predict`,{
+        method:'POST', headers:{'content-type':'application/json','x-goog-api-key':E.GEMINI_API_KEY},
+        body:JSON.stringify({instances:[{prompt}],parameters:{sampleCount:1,aspectRatio:'16:9'}})});
+      const d = await r.json();
+      const b64 = d && d.predictions && d.predictions[0] && d.predictions[0].bytesBase64Encoded;
+      if(!b64) throw new Error('Imagen error ('+r.status+'): '+JSON.stringify(d).slice(0,300));
+      return b64;
+    }catch(e){ last=e; const m=String((e&&e.message)||e);
+      if(i<3 && /(503|502|500|429|UNAVAILABLE|overloaded|RESOURCE_EXHAUSTED|fetch failed)/i.test(m)){ await new Promise(res=>setTimeout(res,3000*(i+1))); continue; }
+      throw e; }
+  }
+  throw last;
+}
 async function generate(revise){
   const {services,titles} = context();
   const sys = `You are a senior SEO copywriter for ${prof.client_name}, a ${prof.service_area.primary_city}/${prof.service_area.region} contractor. Voice: ${prof.brand.tone}. Write ONLY about the client's real services. Output STRICT JSON only, no code fences.`;
   // Per-row target city: pull "Target city:" from the Topic, else fall back to the primary city.
   const targetCity = ((E.BLOG_TOPIC||'').match(/Target city:\s*([^\n.,;|]+)/i)?.[1] || '').trim() || prof.service_area.primary_city;
   const nearbyTowns = prof.service_area.cities.filter(c=>c!==targetCity).slice(0,2).join(', ');
-  const user = `SERVICES (source of truth):\n${services.map(s=>`- ${s.title}: ${s.detail}`).join('\n')}\n\nEXISTING TITLES (never duplicate):\n${titles.join('\n')}\n\nTopic: "${E.BLOG_TOPIC||''}"\nPrimary keyword: "${E.BLOG_PRIMARY_KEYWORD||''}"\nSupporting keywords: "${E.BLOG_SUPPORTING||''}"\n${revise?`REVISE the post per these editor notes: ${E.BLOG_EDIT_NOTES||''}`:''}\nRules: 2000-2400 words (2000 minimum, non-negotiable — if the draft is short, add depth, examples, and sub-topics, never filler). Intro sets ${targetCity}/${prof.service_area.region} context. LOCAL FOCUS (important): This post targets ONE specific service-area city: ${targetCity}. The post TITLE must include ${targetCity} (e.g. "What Does a New Composite Deck Cost in ${targetCity}, CA?"). Center the article on ${targetCity}, and also reference ${prof.service_area.region} and one or two nearby towns (${nearbyTowns}) naturally in the body. Use 8-11 <h2> sections; add <h3> only for genuine sub-points. At least 2 internal links from ${JSON.stringify(prof.links)}. Weave keywords in naturally. Do NOT write the closing/contact block.\nREADING LEVEL (important): write at a 6th-grade reading level — short, clear sentences and simple everyday words. Explain any technical terms in plain language. No collegiate or academic phrasing.\nFORMAT FOR READABILITY (important): Write clear, friendly, plain-spoken prose in <p> paragraphs of 2-4 full sentences each, with space between ideas. Do NOT stack bold inline labels like "<strong>Label:</strong> text" — write natural sentences instead. Use <ul>/<ol> at most once per section and only for genuine lists, never as a substitute for prose. Keep it scannable and professional, not dense.\nANTI-AI-SLOP (strict): No em-dashes or en-dashes anywhere; use commas, periods, or a hyphen for number ranges. No sentences framed as a profound reveal like "Here's what no one wants to admit...". No correlative-conjunction constructions like "It's not X, not Y, it's just Z". No rule-of-three staccato fragments like "Fast. Simple. Effective.". No ta-da phrases like "but here's the truth"; just use "But". Say things plainly, with no fluff or padding.\nOUTPUT JSON keys: {"title","slug","excerpt","category","readTime","body_html"}`;
+  const user = `SERVICES (source of truth):\n${services.map(s=>`- ${s.title}: ${s.detail}`).join('\n')}\n\nEXISTING TITLES (never duplicate):\n${titles.join('\n')}\n\nTopic: "${E.BLOG_TOPIC||''}"\nPrimary keyword: "${E.BLOG_PRIMARY_KEYWORD||''}"\nSupporting keywords: "${E.BLOG_SUPPORTING||''}"\n${revise?`REVISE the post per these editor notes: ${E.BLOG_EDIT_NOTES||''}`:''}\nRules: 2000-2400 words (2000 minimum, non-negotiable — if the draft is short, add depth, examples, and sub-topics, never filler). Intro sets ${targetCity}/${prof.service_area.region} context. LOCAL FOCUS (important): This post targets ONE specific service-area city: ${targetCity}. The post TITLE must include ${targetCity} (e.g. "What Does a New Composite Deck Cost in ${targetCity}, CA?"). Center the article on ${targetCity}, and also reference ${prof.service_area.region} and one or two nearby towns (${nearbyTowns}) naturally in the body. Use 8-11 <h2> sections; add <h3> only for genuine sub-points. At least 2 internal links from ${JSON.stringify(prof.links)}. Weave keywords in naturally. Do NOT write the closing/contact block.\nREADING LEVEL (important): write at a 6th-grade reading level — short, clear sentences and simple everyday words. Explain any technical terms in plain language. No collegiate or academic phrasing.\nFORMAT FOR READABILITY (important): Write clear, friendly, plain-spoken prose in <p> paragraphs of 2-4 full sentences each, with space between ideas. Do NOT stack bold inline labels like "<strong>Label:</strong> text" — write natural sentences instead. Use <ul>/<ol> at most once per section and only for genuine lists, never as a substitute for prose. Keep it scannable and professional, not dense.\nANTI-AI-SLOP (strict): No em-dashes or en-dashes anywhere; use commas, periods, or a hyphen for number ranges. No sentences framed as a profound reveal like "Here's what no one wants to admit...". No correlative-conjunction constructions like "It's not X, not Y, it's just Z". No rule-of-three staccato fragments like "Fast. Simple. Effective.". No ta-da phrases like "but here's the truth"; just use "But". Say things plainly, with no fluff or padding.\nIMAGE (important): The "image_prompt" must vividly describe a PHOTOREALISTIC 16:9 hero photo that fits THIS specific article (a real, concrete scene relevant to the topic and the target city). Absolutely NO text, words, letters, numbers, signs, logos, or watermarks anywhere in the image.\nOUTPUT JSON keys: {"title","slug","excerpt","category","readTime","body_html","image_prompt"}`;
   let raw = (await callAI(sys,user)).trim().replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
   const g = JSON.parse(raw);
   // Safety net: models emit em/en-dashes despite the prompt. Strip them from all text fields.
@@ -91,15 +122,17 @@ async function generate(revise){
     .replace(/<ul>/g,'<ul style="margin:1.25rem 0 1.5rem;padding-left:1.5rem;">')
     .replace(/<ol>/g,'<ol style="margin:1.25rem 0 1.5rem;padding-left:1.5rem;">')
     .replace(/<li>/g,'<li style="margin:0.5rem 0;line-height:1.7;">');
-  return {
+  const cat = E.BLOG_CATEGORY||g.category||prof.categories[0];
+  const post = {
     id:String(Date.now()).slice(-7), slug:g.slug, title:g.title, excerpt:g.excerpt,
     content:'\n      '+bodyHtml+'\n    ',
-    category:E.BLOG_CATEGORY||g.category||prof.categories[0], author:prof.authors[0],
+    category:cat, author:prof.authors[0],
     date:E.BLOG_DATE||new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
-    image:pickImage(E.BLOG_CATEGORY||g.category||prof.categories[0], services),
     readTime:g.readTime||'10 min read',
     keywords:[E.BLOG_PRIMARY_KEYWORD,E.BLOG_SUPPORTING].filter(Boolean).join(', ')
   };
+  post.image = await heroImage(g.image_prompt, post.slug, cat, services);
+  return post;
 }
 function removeSlug(slug){ const f=`${REPO}/src/data/blogs.ts`; let s=fs.readFileSync(f,'utf8');
   s=s.replace(new RegExp(`\\n  \\{\\n(?:[\\s\\S]*?)    slug: ${JSON.stringify(slug)}[\\s\\S]*?\\n  \\},`),''); fs.writeFileSync(f,s); }
@@ -149,7 +182,7 @@ async function loadInputs(){
     sh(`git checkout -B ${branch} origin/main`);    
     const post = await generate(action==='revise');
     insert(post);
-    sh(`git add src/data/blogs.ts`);
+    sh(`git add -A`);
     sh(`git commit -m "${action==='revise'?'Revise':'Add'} blog: ${post.title.replace(/["'`$]/g,'')}"`);
     sh(`git push -u origin ${branch} --force`);
     await monday({[E.MONDAY_STATUS_COL]:{label:'Preview ready'},[E.MONDAY_LINK_COL]:{url:previewUrl(post.slug),text:'Open preview'}});

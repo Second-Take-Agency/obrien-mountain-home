@@ -20,36 +20,12 @@ async function setPublished(item){ await mondayQuery(`mutation($b:ID!,$i:ID!,$v:
     const status=cv[E.MONDAY_STATUS_COL]; const date=(cv[E.MONDAY_DATE_COL]||'').trim();
     if(status!=='Approved') continue;
     if(date && date>today) continue;            // future publish date -> wait
-    const branch=`blog/item-${it.id}`;
     try{
-      sh(`git checkout main`); sh(`git pull origin main`);
-      // Re-apply the branch's post onto current main instead of merging, so queued
-      // posts never conflict at the top of the blogs array (idempotent by slug).
-      const branchFile = sh(`git show origin/${branch}:src/data/blogs.ts`);
-      const anchor = 'export const blogs: BlogPost[] = [';
-      const ai = branchFile.indexOf(anchor);
-      if(ai<0) throw new Error('anchor not found on preview branch');
-      const after = branchFile.slice(ai + anchor.length);
-      const start = after.indexOf('\n  {');
-      const end = after.indexOf('\n  },', start);
-      if(start<0 || end<0) throw new Error('could not extract post from branch');
-      const blk = after.slice(start, end + '\n  },'.length);
-      const f = `${REPO}/src/data/blogs.ts`;
-      let cur = fs.readFileSync(f,'utf8');
-      const sm = blk.match(/slug:\s*"([^"]+)"/);
-      if(sm && cur.includes('slug: "'+sm[1]+'"')){
-        console.log('post already on main, skipping insert for item', it.id);
-      } else {
-        cur = cur.replace(anchor, anchor + blk);
-        if(!cur.trimEnd().endsWith('];')) throw new Error('publish insert sanity failed');
-        fs.writeFileSync(f, cur);
-      }
-      try { sh(`git checkout origin/${branch} -- public/blog-images`); } catch(e) {}
-      sh(`git add -A`);
-      try { sh(`git commit -m "Publish blog (item ${it.id})"`); }
-      catch(e){ console.log('nothing new to commit for item', it.id); }
-      sh(`git push origin main`);
-      await setPublished(it.id); n++;
+      // Delegate the actual publish to the robot so it runs the single canonical
+      // publish path (conflict-proof re-apply + unique hero-image generation).
+      execSync(`node .github/scripts/blog-robot.mjs`, {cwd:REPO, stdio:'inherit',
+        env:{...process.env, BLOG_ACTION:'publish', BLOG_MONDAY_ITEM:String(it.id)}});
+      n++;
       console.log('published item', it.id);
     }catch(e){ failed++; console.error('FAILED to publish item', it.id, e.message); }
   }

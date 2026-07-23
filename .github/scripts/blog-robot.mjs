@@ -216,10 +216,29 @@ async function loadInputs(){
     const start = after.indexOf('\n  {');
     const end = after.indexOf('\n  },', start);
     if(start<0 || end<0) throw new Error('could not extract post from branch');
-    const block = after.slice(start, end + '\n  },'.length);
+    let block = after.slice(start, end + '\n  },'.length);
     const f = `${REPO}/src/data/blogs.ts`;
     let cur = fs.readFileSync(f,'utf8');
     const sm = block.match(/slug:\s*"([^"]+)"/);
+    const pslug = sm && sm[1];
+    // Ship a unique hero image: if the queued post still points at a generic (non-local)
+    // stock image, generate a topic-matched one before publishing.
+    const pimg = (block.match(/\n    image:\s*(["'])([\s\S]*?)\1/)||[])[2] || '';
+    if(pslug && !pimg.startsWith('/blog-images/')){
+      try{
+        const {services} = context();
+        const ptitle = (block.match(/title:\s*"([^"]+)"/)||[])[1] || pslug;
+        const pexcerpt = (block.match(/excerpt:\s*"([^"]+)"/)||[])[1] || '';
+        const pcat = (block.match(/category:\s*"([^"]+)"/)||[])[1] || '';
+        const pip = await callAI(
+          'You write prompts for an image generator. Output ONE vivid sentence, no quotes, no preamble.',
+          `Write an image_prompt for a PHOTOREALISTIC 16:9 hero photo for this blog post. Describe a real, concrete scene relevant to the topic and to ${prof.service_area.region}. Absolutely NO text, words, letters, numbers, signs, logos, or watermarks anywhere. Title: "${ptitle}". Summary: "${pexcerpt}".`
+        ).catch(()=> '');
+        const nimg = await heroImage(String(pip).trim(), pslug, pcat, services);
+        if(nimg && nimg.startsWith('/blog-images/')){ block = block.replace(/(\n    image: )(["'])[\s\S]*?\2/, `$1${JSON.stringify(nimg)}`); console.log('publish: generated unique hero image for', pslug); }
+        else console.log('publish: image generation unavailable, keeping existing image for', pslug);
+      }catch(e){ console.log('publish: image step failed, keeping existing image:', String((e&&e.message)||e).slice(0,140)); }
+    }
     if(sm && cur.includes('slug: "'+sm[1]+'"')){
       console.log('post already on main, skipping insert');
     } else {
@@ -229,7 +248,8 @@ async function loadInputs(){
     }
     try { sh(`git checkout origin/${branch} -- public/blog-images`); } catch(e) {}
     sh(`git add -A`);
-    sh(`git commit -m "Publish blog (item ${item})"`);
+    try { sh(`git commit -m "Publish blog (item ${item})"`); }
+    catch(e){ console.log('nothing new to commit for item', item); }
     sh(`git push origin main`);
     await monday({[E.MONDAY_STATUS_COL]:{label:'Published'}});
     console.log('PUBLISHED item', item);
@@ -237,8 +257,20 @@ async function loadInputs(){
     // Regenerate ONLY the hero image for one or more existing posts (by slug). Content is untouched.
     sh(`git checkout main`); sh(`git pull origin main`);
     const f = `${REPO}/src/data/blogs.ts`;
-    const slugs = (E.BLOG_SLUGS||'').split(',').map(s=>s.trim()).filter(Boolean);
-    if(!slugs.length) throw new Error('reimage: BLOG_SLUGS is empty');
+    let slugs = (E.BLOG_SLUGS||'').split(',').map(s=>s.trim()).filter(Boolean);
+    if(!slugs.length){
+      // No slugs given: target every post that still uses a generic (non-local) image.
+      const src = fs.readFileSync(f,'utf8');
+      slugs = [];
+      const re = /\n    slug:\s*(['"])([^'"]+)\1/g; let mm;
+      while((mm=re.exec(src))){
+        const blk = src.slice(src.lastIndexOf('\n  {', mm.index), src.indexOf('\n  }', mm.index));
+        const img = (blk.match(/\n    image:\s*(['"])([^'"]+)\1/)||[])[2] || '';
+        if(!img.startsWith('/blog-images/')) slugs.push(mm[2]);
+      }
+      console.log('reimage: no slugs given; targeting generic-image posts:', slugs.join(', ')||'(none)');
+    }
+    if(!slugs.length){ console.log('reimage: nothing to regenerate'); process.exit(0); }
     const {services} = context();
     let changed = 0;
     for(const slug of slugs){

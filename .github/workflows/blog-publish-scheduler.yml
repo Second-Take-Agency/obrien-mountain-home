@@ -15,8 +15,12 @@ jobs:
         with: { node-version: '20' }
       - name: Publish due posts
         env:
+          AI_PROVIDER: gemini
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           MONDAY_TOKEN: ${{ secrets.MONDAY_TOKEN }}
           MONDAY_BOARD: '18420374601'
           MONDAY_STATUS_COL: 'color_mm4wvg8w'
+          MONDAY_LINK_COL: 'link_mm4whgv0'
           MONDAY_DATE_COL: 'date_mm4w89q2'
         run: node .github/scripts/publish-scheduler.mjs

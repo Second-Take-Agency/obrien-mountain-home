@@ -313,5 +313,59 @@ async function loadInputs(){
     sh(`git commit -m "Regenerate hero image(s): ${slugs.join(', ')}"`);
     sh(`git push origin main`);
     console.log('REIMAGED', changed, 'post(s)');
+  } else if(action==='reimage-queue'){
+    // Regenerate hero images directly on the preview branches of all Approved (queued)
+    // posts, so each preview shows its final unique image before it publishes.
+    if(!E.MONDAY_TOKEN) throw new Error('reimage-queue: MONDAY_TOKEN required');
+    const statusCol = E.MONDAY_STATUS_COL;
+    const rq = await fetch('https://api.monday.com/v2',{method:'POST',
+      headers:{'Authorization':E.MONDAY_TOKEN,'content-type':'application/json','API-Version':'2024-01'},
+      body:JSON.stringify({query:`query($b:[ID!]){boards(ids:$b){items_page(limit:200){items{id column_values(ids:["${statusCol}"]){id text}}}}}`,variables:{b:[E.MONDAY_BOARD]}})});
+    const rj = await rq.json();
+    const rows = ((((rj.data||{}).boards||[])[0]||{}).items_page||{}).items || [];
+    const approved = rows.filter(it=>Object.fromEntries(it.column_values.map(c=>[c.id,c.text]))[statusCol]==='Approved').map(it=>String(it.id));
+    console.log('reimage-queue: approved items:', approved.join(', ')||'(none)');
+    if(!approved.length){ console.log('reimage-queue: nothing to do'); process.exit(0); }
+    const anchor = 'export const blogs: BlogPost[] = [';
+    const {services} = context();
+    let done=0;
+    for(const id of approved){
+      const branch=`blog/item-${id}`;
+      try{
+        sh(`git checkout -B ${branch} origin/${branch}`);
+        const f=`${REPO}/src/data/blogs.ts`;
+        let cur=fs.readFileSync(f,'utf8');
+        const base=cur.indexOf(anchor)+anchor.length;
+        const after=cur.slice(base);
+        const start=after.indexOf('\n  {'); const end=after.indexOf('\n  },',start);
+        if(start<0||end<0){ console.log('reimage-queue: no post on', branch); continue; }
+        const bo=base+start, eo=base+end;
+        const block=cur.slice(bo, eo+'\n  },'.length);
+        const slug=(block.match(/slug:\s*["']([^"']+)["']/)||[])[1];
+        const img=(block.match(/\n    image:\s*["']([^"']+)["']/)||[])[1]||'';
+        if(!slug){ console.log('reimage-queue: no slug on', branch); continue; }
+        if(img.startsWith('/blog-images/')){ console.log('reimage-queue: already unique, skip', slug); continue; }
+        const title=(block.match(/title:\s*"([^"]+)"/)||[])[1]||slug;
+        const excerpt=(block.match(/excerpt:\s*"([^"]+)"/)||[])[1]||'';
+        const cat=(block.match(/category:\s*["']([^"']+)["']/)||[])[1]||'';
+        const ip=await callAI(
+          'You write prompts for an image generator. Output ONE vivid sentence, no quotes, no preamble.',
+          `Write an image_prompt for a PHOTOREALISTIC 16:9 hero photo for this blog post. Describe a real, concrete scene relevant to the topic and to ${prof.service_area.region}. Absolutely NO text, words, letters, numbers, signs, logos, or watermarks anywhere. Title: "${title}". Summary: "${excerpt}".`
+        ).catch(()=> '');
+        const newImg=await heroImage(String(ip).trim(), slug, cat, services);
+        if(!newImg.startsWith('/blog-images/')){ console.log('reimage-queue: image gen unavailable for', slug); continue; }
+        const newBlock=block.replace(/(\n    image: )(["'])[\s\S]*?\2/, `$1${JSON.stringify(newImg)}`);
+        cur=cur.slice(0,bo)+newBlock+cur.slice(eo+'\n  },'.length);
+        if(!cur.trimEnd().endsWith('];')) throw new Error('sanity failed on '+branch);
+        fs.writeFileSync(f,cur);
+        sh(`git add -A`);
+        sh(`git commit -m "Regenerate hero image for preview (item ${id})"`);
+        sh(`git push origin ${branch}`);
+        done++;
+        console.log('reimaged preview', branch, '->', newImg);
+      }catch(e){ console.error('reimage-queue: failed for', branch, String((e&&e.message)||e).slice(0,160)); }
+    }
+    try{ sh(`git checkout main`); }catch(e){}
+    console.log('reimage-queue done, updated', done, 'preview branch(es)');
   } else throw new Error('unknown BLOG_ACTION: '+action);
 })().catch(e=>{ console.error('robot error:', e.message); process.exit(1); });

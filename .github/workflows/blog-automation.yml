@@ -4,7 +4,7 @@ on:
     types: [blog-run]
   workflow_dispatch:
     inputs:
-      action: { description: 'draft | revise | publish | reimage', required: true, default: 'draft' }
+      action: { description: 'draft | revise | publish | reimage | reimage-queue', required: true, default: 'draft' }
       monday_item: { required: false }
       slugs: { description: 'reimage only: comma-separated post slugs', required: false }
       topic: { required: false }

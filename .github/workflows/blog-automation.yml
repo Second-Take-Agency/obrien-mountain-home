@@ -4,8 +4,9 @@ on:
     types: [blog-run]
   workflow_dispatch:
     inputs:
-      action: { description: 'draft | revise | publish', required: true, default: 'draft' }
+      action: { description: 'draft | revise | publish | reimage', required: true, default: 'draft' }
       monday_item: { required: false }
+      slugs: { description: 'reimage only: comma-separated post slugs', required: false }
       topic: { required: false }
       primary_keyword: { required: false }
       supporting: { required: false }
@@ -27,6 +28,7 @@ jobs:
         env:
           BLOG_ACTION: ${{ github.event.inputs.action || github.event.client_payload.action }}
           BLOG_MONDAY_ITEM: ${{ github.event.inputs.monday_item || github.event.client_payload.monday_item }}
+          BLOG_SLUGS: ${{ github.event.inputs.slugs || github.event.client_payload.slugs }}
           BLOG_TOPIC: ${{ github.event.inputs.topic || github.event.client_payload.topic }}
           BLOG_PRIMARY_KEYWORD: ${{ github.event.inputs.primary_keyword || github.event.client_payload.primary_keyword }}
           BLOG_SUPPORTING: ${{ github.event.inputs.supporting || github.event.client_payload.supporting }}

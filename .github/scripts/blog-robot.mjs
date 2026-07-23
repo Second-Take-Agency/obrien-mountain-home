@@ -215,5 +215,43 @@ async function loadInputs(){
     sh(`git push origin main`);
     await monday({[E.MONDAY_STATUS_COL]:{label:'Published'}});
     console.log('PUBLISHED item', item);
+  } else if(action==='reimage'){
+    // Regenerate ONLY the hero image for one or more existing posts (by slug). Content is untouched.
+    sh(`git checkout main`); sh(`git pull origin main`);
+    const f = `${REPO}/src/data/blogs.ts`;
+    const slugs = (E.BLOG_SLUGS||'').split(',').map(s=>s.trim()).filter(Boolean);
+    if(!slugs.length) throw new Error('reimage: BLOG_SLUGS is empty');
+    const {services} = context();
+    let changed = 0;
+    for(const slug of slugs){
+      let cur = fs.readFileSync(f,'utf8');
+      const key = `slug: ${JSON.stringify(slug)}`;
+      const si = cur.indexOf(key);
+      if(si<0){ console.log('reimage: slug not found, skipping', slug); continue; }
+      const objStart = cur.lastIndexOf('\n  {', si);
+      const objEnd = cur.indexOf('\n  },', si);
+      if(objStart<0 || objEnd<0){ console.log('reimage: could not bound object, skipping', slug); continue; }
+      const block = cur.slice(objStart, objEnd + '\n  },'.length);
+      const title = (block.match(/title:\s*"([^"]+)"/)||[])[1] || slug;
+      const excerpt = (block.match(/excerpt:\s*"([^"]+)"/)||[])[1] || '';
+      const cat = (block.match(/category:\s*"([^"]+)"/)||[])[1] || '';
+      const ip = await callAI(
+        'You write prompts for an image generator. Output ONE vivid sentence, no quotes, no preamble.',
+        `Write an image_prompt for a PHOTOREALISTIC 16:9 hero photo for this blog post. Describe a real, concrete scene relevant to the topic and to ${prof.service_area.region}. Absolutely NO text, words, letters, numbers, signs, logos, or watermarks anywhere in the image. Title: "${title}". Summary: "${excerpt}".`
+      ).catch(()=> '');
+      const newImg = await heroImage(String(ip).trim(), slug, cat, services);
+      const newBlock = block.replace(/(\n    image: )(["'])[\s\S]*?\2/, `$1${JSON.stringify(newImg)}`);
+      if(newBlock===block){ console.log('reimage: no image field updated for', slug); }
+      cur = cur.slice(0,objStart) + newBlock + cur.slice(objEnd + '\n  },'.length);
+      if(!cur.trimEnd().endsWith('];')) throw new Error('reimage sanity failed: file no longer ends with ];');
+      fs.writeFileSync(f, cur);
+      changed++;
+      console.log('reimaged', slug, '->', newImg);
+    }
+    if(!changed){ console.log('reimage: nothing changed'); process.exit(0); }
+    sh(`git add -A`);
+    sh(`git commit -m "Regenerate hero image(s): ${slugs.join(', ')}"`);
+    sh(`git push origin main`);
+    console.log('REIMAGED', changed, 'post(s)');
   } else throw new Error('unknown BLOG_ACTION: '+action);
 })().catch(e=>{ console.error('robot error:', e.message); process.exit(1); });

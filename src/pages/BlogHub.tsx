@@ -83,7 +83,7 @@ const BlogHub = () => {
         </ParallaxHero>
 
         {/* Filter tabs */}
-        <section className="bg-slate-50 border-b border-slate-100 sticky top-[72px] z-30">
+        <section className="bg-slate-50 border-b border-slate-100">
           <div className="container mx-auto px-4">
             <div className="flex gap-2 overflow-x-auto py-3 scrollbar-none">
               {categories.map(cat => (

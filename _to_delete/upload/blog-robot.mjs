@@ -1,0 +1,464 @@
+// Blog Automation robot — runs unattended in GitHub Actions.
+// Actions: draft (preview branch) | revise (rewrite branch from edit notes) | publish (merge branch -> main).
+// Branch is keyed on the Monday item id so every step maps 1:1 to its board row.
+import fs from 'fs';
+import { execSync } from 'child_process';
+
+const E = process.env;
+const REPO = process.cwd();
+let action = E.BLOG_ACTION||'';
+let rowStatus='', rowPublishDate='';
+const item   = E.BLOG_MONDAY_ITEM || '';
+const branch = `blog/item-${item || (E.BLOG_SLUG||'adhoc')}`;
+const prof = JSON.parse(fs.readFileSync(`${REPO}/.github/blog-profile.json`,'utf8'));
+const sh = (c) => { try { return execSync(c,{cwd:REPO}).toString(); }
+  catch(e){ const out=[e.stdout&&e.stdout.toString(), e.stderr&&e.stderr.toString()].filter(Boolean).join('\n').trim();
+    throw new Error(e.message + (out ? '\n--- git output ---\n'+out : '')); } };
+
+// ---------- publish-date helpers ----------
+// The date a reader sees on the client's site must be the day the post actually
+// went live, never the day it was drafted. Both formats below are derived in the
+// client's own timezone so a UTC Actions runner can't shift the date by a day.
+const CLIENT_TZ = (prof.site_tech && prof.site_tech.timezone) || prof.timezone || 'America/Los_Angeles';
+const MONDAY_DATE_COL = E.MONDAY_DATE_COL || 'date_mm4w89q2';
+const displayDate = (d = new Date()) => d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric', timeZone: CLIENT_TZ });
+const isoDate = (d = new Date()) => new Intl.DateTimeFormat('en-CA', { year:'numeric', month:'2-digit', day:'2-digit', timeZone: CLIENT_TZ }).format(d);
+// Matches the post object's own `date:` line only (either quote style).
+const DATE_FIELD_RE = /(\n\s{4}date:\s*)(['"])(?:\\.|(?!\2)[^\\\n])*\2/;
+// Returns the block with its date replaced, or null when the block has no date field.
+function stampDate(block, dateText){
+  if(!DATE_FIELD_RE.test(block)) return null;
+  return block.replace(DATE_FIELD_RE, `$1${JSON.stringify(dateText)}`);
+}
+
+// ---------- AI (provider-swappable: gemini free-tier by default, or anthropic) ----------
+async function callOnce(system, user){
+  const provider = (E.AI_PROVIDER||'gemini').toLowerCase();
+  if(provider==='anthropic'){
+    const r = await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+      headers:{'x-api-key':E.ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01','content-type':'application/json'},
+      body:JSON.stringify({model:E.AI_MODEL||'claude-sonnet-4-5',max_tokens:16384,system,messages:[{role:'user',content:user}]})});
+    const d = await r.json();
+    if(!(d.content && d.content[0] && d.content[0].text)) throw new Error('Anthropic API error ('+r.status+'): '+JSON.stringify(d).slice(0,600));
+    return d.content[0].text;
+  }
+  const model = E.AI_MODEL||'gemini-2.5-flash';
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,{
+    method:'POST',headers:{'content-type':'application/json','x-goog-api-key':E.GEMINI_API_KEY},
+    body:JSON.stringify({system_instruction:{parts:[{text:system}]},contents:[{role:'user',parts:[{text:user}]}],generationConfig:{temperature:0.6,maxOutputTokens:16384,responseMimeType:'application/json'}})});
+  const d = await r.json();
+  if(!(d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts && d.candidates[0].content.parts[0] && d.candidates[0].content.parts[0].text)) throw new Error('Gemini API error ('+r.status+'): '+JSON.stringify(d).slice(0,600));
+  return d.candidates[0].content.parts[0].text;
+}
+async function callAI(system, user){
+  let last;
+  for(let i=0;i<5;i++){
+    try{ return await callOnce(system,user); }
+    catch(e){ last=e; const m=String((e && e.message) || e);
+      if(i<4 && /(503|502|500|429|UNAVAILABLE|overloaded|high demand|RESOURCE_EXHAUSTED|fetch failed|ECONN|ETIMEDOUT)/i.test(m)){
+        console.log('transient AI error, retrying in '+(3*(i+1))+'s: '+m.slice(0,120));
+        await new Promise(res=>setTimeout(res,3000*(i+1))); continue; }
+      throw e; }
+  }
+  throw last;
+}
+
+// ---------- read the client's own site for context ----------
+function context(){
+  const svc = fs.readFileSync(`${REPO}/src/data/services.ts`,'utf8');
+  const services = [...svc.matchAll(/title:\s*"([^"]+)"[\s\S]*?longDescription:\s*"([^"]+)"[\s\S]*?image:\s*"([^"]+)"/g)].map(m=>({title:m[1],detail:m[2],image:m[3]}));
+  const blog = fs.readFileSync(`${REPO}/src/data/blogs.ts`,'utf8');
+  const titles = [...blog.matchAll(/\n\s{4}title:\s*"([^"]+)"/g)].map(m=>m[1]);
+  return {services,titles};
+}
+function closingBlock(services){
+  const sa=prof.service_area,b=prof.business;
+  return `<div style="margin-top:3.5rem;padding:2rem 1.75rem;border:1px solid #e5e7eb;border-radius:16px;background:#f8fafc;">
+        <h2 style="margin:0 0 0.75rem;font-size:24px;font-weight:700;">Serving ${sa.primary_city} &amp; ${sa.region}</h2>
+        <p style="margin:0 0 1rem;line-height:1.7;">${prof.client_name} provides professional ${services.map(s=>s.title.toLowerCase()).join(', ')} services throughout ${sa.primary_city} and ${sa.region} — including ${sa.cities.slice(1).join(', ')}. Licensed California contractor (Lic# ${b.license}).</p>
+        <p style="margin:0 0 1.5rem;line-height:1.7;"><strong>Website:</strong> <a href="${b.base_url}">${b.website_domain}</a><br />
+        <strong>Phone:</strong> <a href="tel:${b.phone_e164}">${b.phone_display}</a></p>
+        <p style="margin:0;"><a href="${prof.links.estimate_cta}" style="display:inline-block;background:${prof.brand.primary_color};color:#0f172a;font-weight:700;padding:15px 32px;border-radius:999px;text-decoration:none;">Request an Estimate &rarr;</a></p>
+      </div>`;
+}
+
+// Map any model-suggested category to one of the site's allowed categories,
+// so the /blog category filter (which matches exact values) always has a match.
+function normCategory(category){
+  const c=(category||'').toLowerCase();
+  if(c.includes('deck')) return 'Decking';
+  if(c.includes('fire')||c.includes('harden')) return 'Fire Hardening';
+  if(c.includes('siding')) return 'Siding';
+  if(c.includes('local')) return 'Local';
+  return prof.categories.includes(category)? category : prof.categories[0];
+}
+function pickImage(category, services){
+  const c=(category||'').toLowerCase();
+  const key = c.includes('deck')?'deck' : c.includes('siding')?'siding' : c.includes('fire')?'fire' : null;
+  if(key){ const m=services.find(s=>s.title.toLowerCase().includes(key)); if(m&&m.image) return m.image; }
+  return (prof.image_strategy&&prof.image_strategy.default)||services[0]?.image||'';
+}
+async function heroImage(promptText, slug, cat, services){
+  const dir = `${REPO}/public/blog-images`;
+  fs.mkdirSync(dir,{recursive:true});
+  const fallback = pickImage(cat, services);
+  if((E.IMAGE_GEN||'on').toLowerCase()==='off') return fallback;
+  const prompt = promptText || `Professional photorealistic 16:9 photograph relevant to ${prof.client_name} in ${prof.service_area.region}. Natural daylight, no people. No text or watermarks.`;
+  try{
+    const b64 = await genImage(prompt);
+    fs.writeFileSync(`${dir}/${slug}.png`, Buffer.from(b64,'base64'));
+    console.log('generated hero image for', slug);
+    return `/blog-images/${slug}.png`;
+  }catch(e){ console.log('image gen failed, using fallback:', String((e&&e.message)||e).slice(0,160)); return fallback; }
+}
+async function genImageOnce(model, prompt){
+  if(/^imagen/i.test(model)){
+    // Imagen models use the :predict endpoint (paid-tier on the Gemini API).
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:predict`,{
+      method:'POST', headers:{'content-type':'application/json','x-goog-api-key':E.GEMINI_API_KEY},
+      body:JSON.stringify({instances:[{prompt}],parameters:{sampleCount:1,aspectRatio:'16:9'}})});
+    const d = await r.json();
+    const b64 = d && d.predictions && d.predictions[0] && d.predictions[0].bytesBase64Encoded;
+    if(!b64) throw new Error('Imagen error ('+r.status+'): '+JSON.stringify(d).slice(0,300));
+    return b64;
+  }
+  // Gemini native image generation returns the image inline via :generateContent.
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,{
+    method:'POST', headers:{'content-type':'application/json','x-goog-api-key':E.GEMINI_API_KEY},
+    body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt+' Photorealistic 16:9 landscape hero photograph. No text, words, letters, numbers, signs, logos, or watermarks anywhere.'}]}],generationConfig:{responseModalities:['TEXT','IMAGE']}})});
+  const d = await r.json();
+  const parts = d && d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts;
+  const img = parts && parts.find(p=>p.inlineData && p.inlineData.data);
+  if(!img) throw new Error('Gemini image error ('+r.status+'): '+JSON.stringify(d).slice(0,300));
+  return img.inlineData.data;
+}
+async function genImage(prompt){
+  // Try each model in turn; skip to the next on a non-transient error (e.g. model not available on this key).
+  const models = E.IMAGE_MODEL ? [E.IMAGE_MODEL]
+    : ['gemini-2.5-flash-image','gemini-2.0-flash-preview-image-generation','imagen-3.0-generate-002'];
+  let last;
+  for(const model of models){
+    for(let i=0;i<3;i++){
+      try{ const b64 = await genImageOnce(model, prompt); console.log('image model used:', model); return b64; }
+      catch(e){ last=e; const m=String((e&&e.message)||e);
+        if(i<2 && /(503|502|500|429|UNAVAILABLE|overloaded|RESOURCE_EXHAUSTED|fetch failed)/i.test(m)){ await new Promise(res=>setTimeout(res,3000*(i+1))); continue; }
+        console.log('image model failed ('+model+'):', m.slice(0,180)); break; }
+    }
+  }
+  throw last;
+}
+async function generate(revise){
+  const {services,titles} = context();
+  const sys = `You are a senior SEO copywriter for ${prof.client_name}, a ${prof.service_area.primary_city}/${prof.service_area.region} contractor. Voice: ${prof.brand.tone}. Write ONLY about the client's real services. Output STRICT JSON only, no code fences.`;
+  // Per-row target city: pull "Target city:" from the Topic, else fall back to the primary city.
+  const targetCity = ((E.BLOG_TOPIC||'').match(/Target city:\s*([^\n.,;|]+)/i)?.[1] || '').trim() || prof.service_area.primary_city;
+  const nearbyTowns = prof.service_area.cities.filter(c=>c!==targetCity).slice(0,2).join(', ');
+  const user = `SERVICES (source of truth):\n${services.map(s=>`- ${s.title}: ${s.detail}`).join('\n')}\n\nEXISTING TITLES (never duplicate):\n${titles.join('\n')}\n\nTopic: "${E.BLOG_TOPIC||''}"\nPrimary keyword: "${E.BLOG_PRIMARY_KEYWORD||''}"\nSupporting keywords: "${E.BLOG_SUPPORTING||''}"\n${revise?`REVISE the post per these editor notes: ${E.BLOG_EDIT_NOTES||''}`:''}\nRules: 2000-2400 words (2000 minimum, non-negotiable — if the draft is short, add depth, examples, and sub-topics, never filler). Intro sets ${targetCity}/${prof.service_area.region} context. LOCAL FOCUS (important): This post targets ONE specific service-area city: ${targetCity}. The post TITLE must include ${targetCity} (e.g. "What Does a New Composite Deck Cost in ${targetCity}, CA?"). Center the article on ${targetCity}, and also reference ${prof.service_area.region} and one or two nearby towns (${nearbyTowns}) naturally in the body. Use 8-11 <h2> sections; add <h3> only for genuine sub-points. At least 2 internal links from ${JSON.stringify(prof.links)}. Weave keywords in naturally. Do NOT write the closing/contact block.\nREADING LEVEL (important): write at a 6th-grade reading level — short, clear sentences and simple everyday words. Explain any technical terms in plain language. No collegiate or academic phrasing.\nFORMAT FOR READABILITY (important): Write clear, friendly, plain-spoken prose in <p> paragraphs of 2-4 full sentences each, with space between ideas. Do NOT stack bold inline labels like "<strong>Label:</strong> text" — write natural sentences instead. Use <ul>/<ol> at most once per section and only for genuine lists, never as a substitute for prose. Keep it scannable and professional, not dense.\nANTI-AI-SLOP (strict): No em-dashes or en-dashes anywhere; use commas, periods, or a hyphen for number ranges. No sentences framed as a profound reveal like "Here's what no one wants to admit...". No correlative-conjunction constructions like "It's not X, not Y, it's just Z". No rule-of-three staccato fragments like "Fast. Simple. Effective.". No ta-da phrases like "but here's the truth"; just use "But". Say things plainly, with no fluff or padding.\nIMAGE (important): The "image_prompt" must vividly describe a PHOTOREALISTIC 16:9 hero photo that fits THIS specific article (a real, concrete scene relevant to the topic and the target city). Absolutely NO text, words, letters, numbers, signs, logos, or watermarks anywhere in the image.\nOUTPUT JSON keys: {"title","slug","excerpt","category","readTime","body_html","image_prompt"}`;
+  let raw = (await callAI(sys,user)).trim().replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
+  const g = JSON.parse(raw);
+  // Safety net: models emit em/en-dashes despite the prompt. Strip them from all text fields.
+  const deDash=(t='')=>String(t).replace(/(\$?\d[\d,.]*)\s*[—–]\s*(\$?\d[\d,.]*)/g,'$1-$2').replace(/(\w)\s*[—–]\s*(\w)/g,'$1, $2').replace(/\s*[—–]\s*/g,', ');
+  g.title=deDash(g.title); g.excerpt=deDash(g.excerpt); g.body_html=deDash(g.body_html);
+  const bodyHtml = g.body_html.trim()
+    .replace(/<h2>/g,'<h2 style="margin:2.75rem 0 1rem;font-weight:700;">')
+    .replace(/<h3>/g,'<h3 style="margin:2rem 0 0.75rem;font-weight:700;">')
+    .replace(/<p>/g,'<p style="margin:0 0 1.5rem;line-height:1.8;">')
+    .replace(/<ul>/g,'<ul style="margin:1.25rem 0 1.5rem;padding-left:1.5rem;">')
+    .replace(/<ol>/g,'<ol style="margin:1.25rem 0 1.5rem;padding-left:1.5rem;">')
+    .replace(/<li>/g,'<li style="margin:0.5rem 0;line-height:1.7;">');
+  const cat = normCategory(E.BLOG_CATEGORY||g.category||prof.categories[0]);
+  const post = {
+    id:String(Date.now()).slice(-7), slug:g.slug, title:g.title, excerpt:g.excerpt,
+    content:'\n      '+bodyHtml+'\n    ',
+    category:cat, author:prof.authors[0],
+    // Provisional: shown on the preview branch. The publish step below
+    // re-stamps it with the real go-live date before it reaches main.
+    date:E.BLOG_DATE||displayDate(),
+    readTime:g.readTime||'10 min read',
+    keywords:[E.BLOG_PRIMARY_KEYWORD,E.BLOG_SUPPORTING].filter(Boolean).join(', ')
+  };
+  post.image = await heroImage(g.image_prompt, post.slug, cat, services);
+  return post;
+}
+function removeSlug(slug){ const f=`${REPO}/src/data/blogs.ts`; let s=fs.readFileSync(f,'utf8');
+  s=s.replace(new RegExp(`\\n  \\{\\n(?:[\\s\\S]*?)    slug: ${JSON.stringify(slug)}[\\s\\S]*?\\n  \\},`),''); fs.writeFileSync(f,s); }
+function insert(post){ const f=`${REPO}/src/data/blogs.ts`; const s=fs.readFileSync(f,'utf8');
+  const order=['id','slug','title','excerpt','content','category','author','date','dateModified','image','readTime','keywords'];
+  const body=order.filter(k=>post[k]!==undefined).map(k=>`    ${k}: ${JSON.stringify(post[k])}`).join(',\n');
+  const anchor='export const blogs: BlogPost[] = [';
+  const out=s.replace(anchor,`${anchor}\n  {\n${body}\n  },`);
+  if(!out.trimEnd().endsWith('];')) throw new Error('insert sanity failed'); fs.writeFileSync(f,out); }
+
+async function monday(cols){ if(!item||!E.MONDAY_TOKEN) return;
+  await fetch('https://api.monday.com/v2',{method:'POST',headers:{'Authorization':E.MONDAY_TOKEN,'content-type':'application/json','API-Version':'2024-01'},
+    body:JSON.stringify({query:`mutation($b:ID!,$i:ID!,$v:JSON!){change_multiple_column_values(board_id:$b,item_id:$i,column_values:$v){id}}`,
+      variables:{b:E.MONDAY_BOARD,i:item,v:JSON.stringify(cols)}})}); }
+async function mondayName(name){ if(!item||!E.MONDAY_TOKEN) return;
+  await fetch('https://api.monday.com/v2',{method:'POST',headers:{'Authorization':E.MONDAY_TOKEN,'content-type':'application/json','API-Version':'2024-01'},
+    body:JSON.stringify({query:`mutation($b:ID!,$i:ID!,$v:String!){change_simple_column_value(board_id:$b,item_id:$i,column_id:"name",value:$v){id}}`,
+      variables:{b:E.MONDAY_BOARD,i:item,v:name}})}); }
+function previewUrl(slug){ const b=branch.replace(/[^a-zA-Z0-9]/g,'-'); return `https://${prof.deploy_preview_base}-git-${b}-${prof.vercel_scope}.vercel.app/blog/${slug}`; }
+
+async function loadInputs(){
+  if(!item || !E.MONDAY_TOKEN) return;
+  const cols=["color_mm4wvg8w","long_text_mm4wmww","text_mm4xd3eq","long_text_mm4x1wk3","long_text_mm4x29jz",MONDAY_DATE_COL];
+  const r=await fetch('https://api.monday.com/v2',{method:'POST',headers:{'Authorization':E.MONDAY_TOKEN,'content-type':'application/json','API-Version':'2024-01'},body:JSON.stringify({query:`query($i:[ID!]){items(ids:$i){id name column_values(ids:${JSON.stringify(cols)}){id text}}}`,variables:{i:[item]}})});
+  const j=await r.json(); const it=j.data&&j.data.items&&j.data.items[0]; if(!it) return;
+  const cv=Object.fromEntries(it.column_values.map(c=>[c.id,(c.text||'').trim()]));
+  rowStatus=cv['color_mm4wvg8w']||''; rowPublishDate=cv[MONDAY_DATE_COL]||'';
+  E.BLOG_TOPIC = E.BLOG_TOPIC || cv['long_text_mm4wmww'] || '';
+  E.BLOG_PRIMARY_KEYWORD = E.BLOG_PRIMARY_KEYWORD || cv['text_mm4xd3eq'] || '';
+  E.BLOG_SUPPORTING = E.BLOG_SUPPORTING || cv['long_text_mm4x1wk3'] || '';
+  E.BLOG_EDIT_NOTES = E.BLOG_EDIT_NOTES || cv['long_text_mm4x29jz'] || '';
+  if(!E.BLOG_DATE && cv[MONDAY_DATE_COL]){ try{ E.BLOG_DATE=displayDate(new Date(cv[MONDAY_DATE_COL]+'T12:00:00Z')); }catch{} }
+  if(!E.BLOG_NAME_PREFIX){ const m=(it.name||'').match(/^(.*?-\s*Blog\s*\d+)\b/i); if(m) E.BLOG_NAME_PREFIX=m[1]; }
+}
+(async()=>{
+  await loadInputs();
+  if(!action){
+    const t=new Date().toISOString().slice(0,10);
+    if(rowStatus==='Push for Blog Creation') action='draft';
+    else if(rowStatus==='Needs edits') action='revise';
+    else if(rowStatus==='Approved' && (!rowPublishDate || rowPublishDate<=t)) action='publish';
+    else { console.log('No actionable status ('+(rowStatus||'-')+') — nothing to do.'); process.exit(0); }
+    console.log('derived action from status:', action);
+  }
+  sh(`git config user.email "41898282+github-actions[bot]@users.noreply.github.com"`); sh(`git config user.name "github-actions[bot]"`); sh(`git fetch origin "+refs/heads/*:refs/remotes/origin/*"`);
+  if(action==='draft'||action==='revise'){
+    sh(`git checkout -B ${branch} origin/main`);    
+    const post = await generate(action==='revise');
+    insert(post);
+    sh(`git add -A`);
+    sh(`git commit -m "${action==='revise'?'Revise':'Add'} blog: ${post.title.replace(/["'`$]/g,'')}"`);
+    sh(`git push -u origin ${branch} --force`);
+    await monday({[E.MONDAY_STATUS_COL]:{label:'Preview ready'},[E.MONDAY_LINK_COL]:{url:previewUrl(post.slug),text:'Open preview'}});
+    if(E.BLOG_NAME_PREFIX) await mondayName(`${E.BLOG_NAME_PREFIX}: ${post.title}`);
+    console.log('OK', action, '->', previewUrl(post.slug));
+  } else if(action==='publish'){
+    sh(`git checkout main`); sh(`git pull origin main`);
+    const branchFile = sh(`git show origin/${branch}:src/data/blogs.ts`);
+    const anchor = 'export const blogs: BlogPost[] = [';
+    const ai = branchFile.indexOf(anchor);
+    if(ai<0) throw new Error('anchor not found on preview branch');
+    const after = branchFile.slice(ai + anchor.length);
+    const start = after.indexOf('\n  {');
+    const end = after.indexOf('\n  },', start);
+    if(start<0 || end<0) throw new Error('could not extract post from branch');
+    let block = after.slice(start, end + '\n  },'.length);
+    const f = `${REPO}/src/data/blogs.ts`;
+    let cur = fs.readFileSync(f,'utf8');
+    const sm = block.match(/slug:\s*"([^"]+)"/);
+    const pslug = sm && sm[1];
+    // Stamp the real go-live date. The queued block still carries the date it was
+    // drafted with, which is wrong the moment approval or the schedule moves.
+    const goLiveIso = isoDate();
+    const goLiveDisplay = displayDate();
+    const restamped = stampDate(block, goLiveDisplay);
+    if(restamped){
+      if(restamped !== block) console.log('publish: stamped go-live date', goLiveDisplay, '(tz ' + CLIENT_TZ + ')');
+      block = restamped;
+    } else console.log('publish: WARNING no date field on the queued post, left as-is');
+    // Ship a unique hero image: if the queued post still points at a generic (non-local)
+    // stock image, generate a topic-matched one before publishing.
+    const pimg = (block.match(/\n    image:\s*(["'])([\s\S]*?)\1/)||[])[2] || '';
+    if(pslug && !pimg.startsWith('/blog-images/')){
+      try{
+        const {services} = context();
+        const ptitle = (block.match(/title:\s*"([^"]+)"/)||[])[1] || pslug;
+        const pexcerpt = (block.match(/excerpt:\s*"([^"]+)"/)||[])[1] || '';
+        const pcat = (block.match(/category:\s*"([^"]+)"/)||[])[1] || '';
+        const pip = await callAI(
+          'You write prompts for an image generator. Output ONE vivid sentence, no quotes, no preamble.',
+          `Write an image_prompt for a PHOTOREALISTIC 16:9 hero photo for this blog post. Describe a real, concrete scene relevant to the topic and to ${prof.service_area.region}. Absolutely NO text, words, letters, numbers, signs, logos, or watermarks anywhere. Title: "${ptitle}". Summary: "${pexcerpt}".`
+        ).catch(()=> '');
+        const nimg = await heroImage(String(pip).trim(), pslug, pcat, services);
+        if(nimg && nimg.startsWith('/blog-images/')){ block = block.replace(/(\n    image: )(["'])[\s\S]*?\2/, `$1${JSON.stringify(nimg)}`); console.log('publish: generated unique hero image for', pslug); }
+        else console.log('publish: image generation unavailable, keeping existing image for', pslug);
+      }catch(e){ console.log('publish: image step failed, keeping existing image:', String((e&&e.message)||e).slice(0,140)); }
+    }
+    if(sm && cur.includes('slug: "'+sm[1]+'"')){
+      console.log('post already on main, skipping insert');
+    } else {
+      cur = cur.replace(anchor, anchor + block);
+      if(!cur.trimEnd().endsWith('];')) throw new Error('publish insert sanity failed');
+      fs.writeFileSync(f, cur);
+    }
+    try { sh(`git checkout origin/${branch} -- public/blog-images`); } catch(e) {}
+    sh(`git add -A`);
+    try { sh(`git commit -m "Publish blog (item ${item})"`); }
+    catch(e){ console.log('nothing new to commit for item', item); }
+    sh(`git push origin main`);
+    // Keep the board's Publish date equal to what the site shows, so the GBP
+    // promo CSV (which schedules off this column) never points at a 404.
+    await monday({[E.MONDAY_STATUS_COL]:{label:'Published'},[MONDAY_DATE_COL]:{date:goLiveIso}});
+    console.log('PUBLISHED item', item);
+  } else if(action==='reimage'){
+    // Regenerate ONLY the hero image for one or more existing posts (by slug). Content is untouched.
+    sh(`git checkout main`); sh(`git pull origin main`);
+    const f = `${REPO}/src/data/blogs.ts`;
+    let slugs = (E.BLOG_SLUGS||'').split(',').map(s=>s.trim()).filter(Boolean);
+    if(!slugs.length){
+      // No slugs given: target every post that still uses a generic (non-local) image.
+      const src = fs.readFileSync(f,'utf8');
+      slugs = [];
+      const re = /\n    slug:\s*(['"])([^'"]+)\1/g; let mm;
+      while((mm=re.exec(src))){
+        const blk = src.slice(src.lastIndexOf('\n  {', mm.index), src.indexOf('\n  }', mm.index));
+        const img = (blk.match(/\n    image:\s*(['"])([^'"]+)\1/)||[])[2] || '';
+        if(!img.startsWith('/blog-images/')) slugs.push(mm[2]);
+      }
+      console.log('reimage: no slugs given; targeting generic-image posts:', slugs.join(', ')||'(none)');
+    }
+    if(!slugs.length){ console.log('reimage: nothing to regenerate'); process.exit(0); }
+    const {services} = context();
+    let changed = 0;
+    for(const slug of slugs){
+      let cur = fs.readFileSync(f,'utf8');
+      const key = `slug: ${JSON.stringify(slug)}`;
+      const si = cur.indexOf(key);
+      if(si<0){ console.log('reimage: slug not found, skipping', slug); continue; }
+      const objStart = cur.lastIndexOf('\n  {', si);
+      const objEnd = cur.indexOf('\n  },', si);
+      if(objStart<0 || objEnd<0){ console.log('reimage: could not bound object, skipping', slug); continue; }
+      const block = cur.slice(objStart, objEnd + '\n  },'.length);
+      const title = (block.match(/title:\s*"([^"]+)"/)||[])[1] || slug;
+      const excerpt = (block.match(/excerpt:\s*"([^"]+)"/)||[])[1] || '';
+      const cat = (block.match(/category:\s*"([^"]+)"/)||[])[1] || '';
+      const ip = await callAI(
+        'You write prompts for an image generator. Output ONE vivid sentence, no quotes, no preamble.',
+        `Write an image_prompt for a PHOTOREALISTIC 16:9 hero photo for this blog post. Describe a real, concrete scene relevant to the topic and to ${prof.service_area.region}. Absolutely NO text, words, letters, numbers, signs, logos, or watermarks anywhere in the image. Title: "${title}". Summary: "${excerpt}".`
+      ).catch(()=> '');
+      const newImg = await heroImage(String(ip).trim(), slug, cat, services);
+      const newBlock = block.replace(/(\n    image: )(["'])[\s\S]*?\2/, `$1${JSON.stringify(newImg)}`);
+      if(newBlock===block){ console.log('reimage: image unchanged for', slug, '(generation failed, kept existing image)'); continue; }
+      cur = cur.slice(0,objStart) + newBlock + cur.slice(objEnd + '\n  },'.length);
+      if(!cur.trimEnd().endsWith('];')) throw new Error('reimage sanity failed: file no longer ends with ];');
+      fs.writeFileSync(f, cur);
+      changed++;
+      console.log('reimaged', slug, '->', newImg);
+    }
+    if(!changed){ console.log('reimage: no images could be regenerated (nothing to commit)'); process.exit(0); }
+    sh(`git add -A`);
+    sh(`git commit -m "Regenerate hero image(s): ${slugs.join(', ')}"`);
+    sh(`git push origin main`);
+    console.log('REIMAGED', changed, 'post(s)');
+  } else if(action==='reimage-queue'){
+    // Regenerate hero images directly on the preview branches of all Approved (queued)
+    // posts, so each preview shows its final unique image before it publishes.
+    if(!E.MONDAY_TOKEN) throw new Error('reimage-queue: MONDAY_TOKEN required');
+    const statusCol = E.MONDAY_STATUS_COL;
+    const rq = await fetch('https://api.monday.com/v2',{method:'POST',
+      headers:{'Authorization':E.MONDAY_TOKEN,'content-type':'application/json','API-Version':'2024-01'},
+      body:JSON.stringify({query:`query($b:[ID!]){boards(ids:$b){items_page(limit:200){items{id column_values(ids:["${statusCol}"]){id text}}}}}`,variables:{b:[E.MONDAY_BOARD]}})});
+    const rj = await rq.json();
+    const rows = ((((rj.data||{}).boards||[])[0]||{}).items_page||{}).items || [];
+    const approved = rows.filter(it=>Object.fromEntries(it.column_values.map(c=>[c.id,c.text]))[statusCol]==='Approved').map(it=>String(it.id));
+    console.log('reimage-queue: approved items:', approved.join(', ')||'(none)');
+    if(!approved.length){ console.log('reimage-queue: nothing to do'); process.exit(0); }
+    const anchor = 'export const blogs: BlogPost[] = [';
+    const {services} = context();
+    let done=0;
+    for(const id of approved){
+      const branch=`blog/item-${id}`;
+      try{
+        sh(`git checkout -B ${branch} origin/${branch}`);
+        const f=`${REPO}/src/data/blogs.ts`;
+        let cur=fs.readFileSync(f,'utf8');
+        const base=cur.indexOf(anchor)+anchor.length;
+        const after=cur.slice(base);
+        const start=after.indexOf('\n  {'); const end=after.indexOf('\n  },',start);
+        if(start<0||end<0){ console.log('reimage-queue: no post on', branch); continue; }
+        const bo=base+start, eo=base+end;
+        const block=cur.slice(bo, eo+'\n  },'.length);
+        const slug=(block.match(/slug:\s*["']([^"']+)["']/)||[])[1];
+        const img=(block.match(/\n    image:\s*["']([^"']+)["']/)||[])[1]||'';
+        if(!slug){ console.log('reimage-queue: no slug on', branch); continue; }
+        if(img.startsWith('/blog-images/')){ console.log('reimage-queue: already unique, skip', slug); continue; }
+        const title=(block.match(/title:\s*"([^"]+)"/)||[])[1]||slug;
+        const excerpt=(block.match(/excerpt:\s*"([^"]+)"/)||[])[1]||'';
+        const cat=(block.match(/category:\s*["']([^"']+)["']/)||[])[1]||'';
+        const ip=await callAI(
+          'You write prompts for an image generator. Output ONE vivid sentence, no quotes, no preamble.',
+          `Write an image_prompt for a PHOTOREALISTIC 16:9 hero photo for this blog post. Describe a real, concrete scene relevant to the topic and to ${prof.service_area.region}. Absolutely NO text, words, letters, numbers, signs, logos, or watermarks anywhere. Title: "${title}". Summary: "${excerpt}".`
+        ).catch(()=> '');
+        const newImg=await heroImage(String(ip).trim(), slug, cat, services);
+        if(!newImg.startsWith('/blog-images/')){ console.log('reimage-queue: image gen unavailable for', slug); continue; }
+        const newBlock=block.replace(/(\n    image: )(["'])[\s\S]*?\2/, `$1${JSON.stringify(newImg)}`);
+        cur=cur.slice(0,bo)+newBlock+cur.slice(eo+'\n  },'.length);
+        if(!cur.trimEnd().endsWith('];')) throw new Error('sanity failed on '+branch);
+        fs.writeFileSync(f,cur);
+        sh(`git add -A`);
+        sh(`git commit -m "Regenerate hero image for preview (item ${id})"`);
+        sh(`git push origin ${branch}`);
+        done++;
+        console.log('reimaged preview', branch, '->', newImg);
+      }catch(e){ console.error('reimage-queue: failed for', branch, String((e&&e.message)||e).slice(0,160)); }
+    }
+    try{ sh(`git checkout main`); }catch(e){}
+    console.log('reimage-queue done, updated', done, 'preview branch(es)');
+  } else if(action==='redate'){
+    // Backfill: make already-published posts show the day they actually went live.
+    // Dry run by default. Set BLOG_APPLY=1 to write, commit and push.
+    // BLOG_REDATE takes explicit overrides: "slug=2026-07-27,other-slug=2026-07-24".
+    sh(`git checkout main`); sh(`git pull origin main`);
+    const f = `${REPO}/src/data/blogs.ts`;
+    let cur = fs.readFileSync(f,'utf8');
+    const pairs = {};
+    for(const p of (E.BLOG_REDATE||'').split(',').map(x=>x.trim()).filter(Boolean)){
+      const i = p.indexOf('='); if(i<0) continue;
+      pairs[p.slice(0,i).trim()] = p.slice(i+1).trim();
+    }
+    const rows = [];
+    const slugRe = /\n    slug:\s*(['"])([^'"]+)\1/g; let mm;
+    while((mm = slugRe.exec(cur))){
+      const slug = mm[2];
+      const objStart = cur.lastIndexOf('\n  {', mm.index);
+      const objEnd = cur.indexOf('\n  },', mm.index);
+      if(objStart<0 || objEnd<0) continue;
+      const block = cur.slice(objStart, objEnd + '\n  },'.length);
+      const shown = (block.match(/\n    date:\s*(['"])([^'"]+)\1/)||[])[2] || '';
+      let iso = pairs[slug] || '';
+      let why = iso ? 'given' : '';
+      if(!iso){
+        // Truth for "when did this go live" is the commit that first put the post on main.
+        let out = '';
+        try{ out = sh(`git log --first-parent --format=%H%x09%aI%x09%s -S${JSON.stringify('slug: '+JSON.stringify(slug))} -- src/data/blogs.ts`).trim(); }
+        catch(e){ out = ''; }
+        const line = out.split('\n').filter(Boolean).pop() || '';
+        const parts = line.split('\t');
+        const when = parts[1], subject = parts[2] || '';
+        if(!when){ rows.push({slug, shown, want:'', why:'no commit found, skipped'}); continue; }
+        if(!/^(publish|add) blog/i.test(subject)){ rows.push({slug, shown, want:'', why:'seeded post ("'+subject.slice(0,38)+'"), skipped'}); continue; }
+        iso = isoDate(new Date(when)); why = 'go-live commit';
+      }
+      rows.push({slug, shown, want: displayDate(new Date(iso+'T12:00:00Z')), why});
+    }
+    console.log('post | date shown | actual go-live | source');
+    for(const r of rows) console.log([r.slug, r.shown||'-', r.want||'-', r.why].join(' | '));
+    const changes = rows.filter(r=>r.want && r.want!==r.shown);
+    if(!changes.length){ console.log('redate: every post already shows its go-live date'); process.exit(0); }
+    if(E.BLOG_APPLY!=='1'){ console.log('redate: DRY RUN,', changes.length, 'post(s) would change. Re-run with apply=1 to write.'); process.exit(0); }
+    const before = (cur.match(/\n    slug:/g)||[]).length;
+    for(const r of changes){
+      const key = `slug: ${JSON.stringify(r.slug)}`;
+      const si = cur.indexOf(key);
+      if(si<0){ console.log('redate: slug not found, skipping', r.slug); continue; }
+      const objStart = cur.lastIndexOf('\n  {', si);
+      const objEnd = cur.indexOf('\n  },', si);
+      if(objStart<0 || objEnd<0){ console.log('redate: could not bound object, skipping', r.slug); continue; }
+      const block = cur.slice(objStart, objEnd + '\n  },'.length);
+      const nb = stampDate(block, r.want);
+      if(!nb){ console.log('redate: no date field on', r.slug, '- skipped'); continue; }
+      cur = cur.slice(0,objStart) + nb + cur.slice(objEnd + '\n  },'.length);
+      console.log('redated', r.slug, ':', r.shown||'(none)', '->', r.want);
+    }
+    const after = (cur.match(/\n    slug:/g)||[]).length;
+    if(after !== before) throw new Error('redate sanity failed: post count changed '+before+' -> '+after);
+    if(!cur.trimEnd().endsWith('];')) throw new Error('redate sanity failed: file no longer ends with ];');
+    fs.writeFileSync(f, cur);
+    sh(`git add -A`);
+    sh(`git commit -m "Correct blog post dates to their actual publish dates"`);
+    sh(`git push origin main`);
+    console.log('REDATED', changes.length, 'post(s)');
+  } else throw new Error('unknown BLOG_ACTION: '+action);
+})().catch(e=>{ console.error('robot error:', e.message); process.exit(1); });

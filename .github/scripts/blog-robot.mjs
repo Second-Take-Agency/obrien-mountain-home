@@ -228,7 +228,7 @@ async function loadInputs(){
     sh(`git checkout -B ${branch} origin/main`);    
     const post = await generate(action==='revise');
     insert(post);
-    sh(`git add -A`);
+    sh(`git add src/data/blogs.ts public/blog-images`);
     sh(`git commit -m "${action==='revise'?'Revise':'Add'} blog: ${post.title.replace(/["'`$]/g,'')}"`);
     sh(`git push -u origin ${branch} --force`);
     await monday({[E.MONDAY_STATUS_COL]:{label:'Preview ready'},[E.MONDAY_LINK_COL]:{url:previewUrl(post.slug),text:'Open preview'}});
@@ -284,7 +284,7 @@ async function loadInputs(){
       fs.writeFileSync(f, cur);
     }
     try { sh(`git checkout origin/${branch} -- public/blog-images`); } catch(e) {}
-    sh(`git add -A`);
+    sh(`git add src/data/blogs.ts public/blog-images`);
     try { sh(`git commit -m "Publish blog (item ${item})"`); }
     catch(e){ console.log('nothing new to commit for item', item); }
     sh(`git push origin main`);
@@ -338,7 +338,7 @@ async function loadInputs(){
       console.log('reimaged', slug, '->', newImg);
     }
     if(!changed){ console.log('reimage: no images could be regenerated (nothing to commit)'); process.exit(0); }
-    sh(`git add -A`);
+    sh(`git add src/data/blogs.ts public/blog-images`);
     sh(`git commit -m "Regenerate hero image(s): ${slugs.join(', ')}"`);
     sh(`git push origin main`);
     console.log('REIMAGED', changed, 'post(s)');
@@ -387,7 +387,7 @@ async function loadInputs(){
         cur=cur.slice(0,bo)+newBlock+cur.slice(eo+'\n  },'.length);
         if(!cur.trimEnd().endsWith('];')) throw new Error('sanity failed on '+branch);
         fs.writeFileSync(f,cur);
-        sh(`git add -A`);
+        sh(`git add src/data/blogs.ts public/blog-images`);
         sh(`git commit -m "Regenerate hero image for preview (item ${id})"`);
         sh(`git push origin ${branch}`);
         done++;
@@ -456,7 +456,7 @@ async function loadInputs(){
     if(after !== before) throw new Error('redate sanity failed: post count changed '+before+' -> '+after);
     if(!cur.trimEnd().endsWith('];')) throw new Error('redate sanity failed: file no longer ends with ];');
     fs.writeFileSync(f, cur);
-    sh(`git add -A`);
+    sh(`git add src/data/blogs.ts`);
     sh(`git commit -m "Correct blog post dates to their actual publish dates"`);
     sh(`git push origin main`);
     console.log('REDATED', changes.length, 'post(s)');

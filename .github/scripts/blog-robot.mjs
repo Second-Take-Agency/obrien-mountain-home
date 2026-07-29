@@ -15,6 +15,22 @@ const sh = (c) => { try { return execSync(c,{cwd:REPO}).toString(); }
   catch(e){ const out=[e.stdout&&e.stdout.toString(), e.stderr&&e.stderr.toString()].filter(Boolean).join('\n').trim();
     throw new Error(e.message + (out ? '\n--- git output ---\n'+out : '')); } };
 
+// ---------- publish-date helpers ----------
+// The date a reader sees on the client's site must be the day the post actually
+// went live, never the day it was drafted. Both formats below are derived in the
+// client's own timezone so a UTC Actions runner can't shift the date by a day.
+const CLIENT_TZ = (prof.site_tech && prof.site_tech.timezone) || prof.timezone || 'America/Los_Angeles';
+const MONDAY_DATE_COL = E.MONDAY_DATE_COL || 'date_mm4w89q2';
+const displayDate = (d = new Date()) => d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric', timeZone: CLIENT_TZ });
+const isoDate = (d = new Date()) => new Intl.DateTimeFormat('en-CA', { year:'numeric', month:'2-digit', day:'2-digit', timeZone: CLIENT_TZ }).format(d);
+// Matches the post object's own `date:` line only (either quote style).
+const DATE_FIELD_RE = /(\n\s{4}date:\s*)(['"])(?:\\.|(?!\2)[^\\\n])*\2/;
+// Returns the block with its date replaced, or null when the block has no date field.
+function stampDate(block, dateText){
+  if(!DATE_FIELD_RE.test(block)) return null;
+  return block.replace(DATE_FIELD_RE, `$1${JSON.stringify(dateText)}`);
+}
+
 // ---------- AI (provider-swappable: gemini free-tier by default, or anthropic) ----------
 async function callOnce(system, user){
   const provider = (E.AI_PROVIDER||'gemini').toLowerCase();
@@ -155,7 +171,9 @@ async function generate(revise){
     id:String(Date.now()).slice(-7), slug:g.slug, title:g.title, excerpt:g.excerpt,
     content:'\n      '+bodyHtml+'\n    ',
     category:cat, author:prof.authors[0],
-    date:E.BLOG_DATE||new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
+    // Provisional: shown on the preview branch. The publish step below
+    // re-stamps it with the real go-live date before it reaches main.
+    date:E.BLOG_DATE||displayDate(),
     readTime:g.readTime||'10 min read',
     keywords:[E.BLOG_PRIMARY_KEYWORD,E.BLOG_SUPPORTING].filter(Boolean).join(', ')
   };
@@ -183,16 +201,16 @@ function previewUrl(slug){ const b=branch.replace(/[^a-zA-Z0-9]/g,'-'); return `
 
 async function loadInputs(){
   if(!item || !E.MONDAY_TOKEN) return;
-  const cols=["color_mm4wvg8w","long_text_mm4wmww","text_mm4xd3eq","long_text_mm4x1wk3","long_text_mm4x29jz","date_mm4w89q2"];
+  const cols=["color_mm4wvg8w","long_text_mm4wmww","text_mm4xd3eq","long_text_mm4x1wk3","long_text_mm4x29jz",MONDAY_DATE_COL];
   const r=await fetch('https://api.monday.com/v2',{method:'POST',headers:{'Authorization':E.MONDAY_TOKEN,'content-type':'application/json','API-Version':'2024-01'},body:JSON.stringify({query:`query($i:[ID!]){items(ids:$i){id name column_values(ids:${JSON.stringify(cols)}){id text}}}`,variables:{i:[item]}})});
   const j=await r.json(); const it=j.data&&j.data.items&&j.data.items[0]; if(!it) return;
   const cv=Object.fromEntries(it.column_values.map(c=>[c.id,(c.text||'').trim()]));
-  rowStatus=cv['color_mm4wvg8w']||''; rowPublishDate=cv['date_mm4w89q2']||'';
+  rowStatus=cv['color_mm4wvg8w']||''; rowPublishDate=cv[MONDAY_DATE_COL]||'';
   E.BLOG_TOPIC = E.BLOG_TOPIC || cv['long_text_mm4wmww'] || '';
   E.BLOG_PRIMARY_KEYWORD = E.BLOG_PRIMARY_KEYWORD || cv['text_mm4xd3eq'] || '';
   E.BLOG_SUPPORTING = E.BLOG_SUPPORTING || cv['long_text_mm4x1wk3'] || '';
   E.BLOG_EDIT_NOTES = E.BLOG_EDIT_NOTES || cv['long_text_mm4x29jz'] || '';
-  if(!E.BLOG_DATE && cv['date_mm4w89q2']){ try{ E.BLOG_DATE=new Date(cv['date_mm4w89q2']+'T00:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}); }catch{} }
+  if(!E.BLOG_DATE && cv[MONDAY_DATE_COL]){ try{ E.BLOG_DATE=displayDate(new Date(cv[MONDAY_DATE_COL]+'T12:00:00Z')); }catch{} }
   if(!E.BLOG_NAME_PREFIX){ const m=(it.name||'').match(/^(.*?-\s*Blog\s*\d+)\b/i); if(m) E.BLOG_NAME_PREFIX=m[1]; }
 }
 (async()=>{
@@ -231,6 +249,15 @@ async function loadInputs(){
     let cur = fs.readFileSync(f,'utf8');
     const sm = block.match(/slug:\s*"([^"]+)"/);
     const pslug = sm && sm[1];
+    // Stamp the real go-live date. The queued block still carries the date it was
+    // drafted with, which is wrong the moment approval or the schedule moves.
+    const goLiveIso = isoDate();
+    const goLiveDisplay = displayDate();
+    const restamped = stampDate(block, goLiveDisplay);
+    if(restamped){
+      if(restamped !== block) console.log('publish: stamped go-live date', goLiveDisplay, '(tz ' + CLIENT_TZ + ')');
+      block = restamped;
+    } else console.log('publish: WARNING no date field on the queued post, left as-is');
     // Ship a unique hero image: if the queued post still points at a generic (non-local)
     // stock image, generate a topic-matched one before publishing.
     const pimg = (block.match(/\n    image:\s*(["'])([\s\S]*?)\1/)||[])[2] || '';
@@ -261,7 +288,9 @@ async function loadInputs(){
     try { sh(`git commit -m "Publish blog (item ${item})"`); }
     catch(e){ console.log('nothing new to commit for item', item); }
     sh(`git push origin main`);
-    await monday({[E.MONDAY_STATUS_COL]:{label:'Published'}});
+    // Keep the board's Publish date equal to what the site shows, so the GBP
+    // promo CSV (which schedules off this column) never points at a 404.
+    await monday({[E.MONDAY_STATUS_COL]:{label:'Published'},[MONDAY_DATE_COL]:{date:goLiveIso}});
     console.log('PUBLISHED item', item);
   } else if(action==='reimage'){
     // Regenerate ONLY the hero image for one or more existing posts (by slug). Content is untouched.
@@ -367,5 +396,69 @@ async function loadInputs(){
     }
     try{ sh(`git checkout main`); }catch(e){}
     console.log('reimage-queue done, updated', done, 'preview branch(es)');
+  } else if(action==='redate'){
+    // Backfill: make already-published posts show the day they actually went live.
+    // Dry run by default. Set BLOG_APPLY=1 to write, commit and push.
+    // BLOG_REDATE takes explicit overrides: "slug=2026-07-27,other-slug=2026-07-24".
+    sh(`git checkout main`); sh(`git pull origin main`);
+    const f = `${REPO}/src/data/blogs.ts`;
+    let cur = fs.readFileSync(f,'utf8');
+    const pairs = {};
+    for(const p of (E.BLOG_REDATE||'').split(',').map(x=>x.trim()).filter(Boolean)){
+      const i = p.indexOf('='); if(i<0) continue;
+      pairs[p.slice(0,i).trim()] = p.slice(i+1).trim();
+    }
+    const rows = [];
+    const slugRe = /\n    slug:\s*(['"])([^'"]+)\1/g; let mm;
+    while((mm = slugRe.exec(cur))){
+      const slug = mm[2];
+      const objStart = cur.lastIndexOf('\n  {', mm.index);
+      const objEnd = cur.indexOf('\n  },', mm.index);
+      if(objStart<0 || objEnd<0) continue;
+      const block = cur.slice(objStart, objEnd + '\n  },'.length);
+      const shown = (block.match(/\n    date:\s*(['"])([^'"]+)\1/)||[])[2] || '';
+      let iso = pairs[slug] || '';
+      let why = iso ? 'given' : '';
+      if(!iso){
+        // Truth for "when did this go live" is the commit that first put the post on main.
+        let out = '';
+        try{ out = sh(`git log --first-parent --format=%H%x09%aI%x09%s -S${JSON.stringify('slug: '+JSON.stringify(slug))} -- src/data/blogs.ts`).trim(); }
+        catch(e){ out = ''; }
+        const line = out.split('\n').filter(Boolean).pop() || '';
+        const parts = line.split('\t');
+        const when = parts[1], subject = parts[2] || '';
+        if(!when){ rows.push({slug, shown, want:'', why:'no commit found, skipped'}); continue; }
+        if(!/^(publish|add) blog/i.test(subject)){ rows.push({slug, shown, want:'', why:'seeded post ("'+subject.slice(0,38)+'"), skipped'}); continue; }
+        iso = isoDate(new Date(when)); why = 'go-live commit';
+      }
+      rows.push({slug, shown, want: displayDate(new Date(iso+'T12:00:00Z')), why});
+    }
+    console.log('post | date shown | actual go-live | source');
+    for(const r of rows) console.log([r.slug, r.shown||'-', r.want||'-', r.why].join(' | '));
+    const changes = rows.filter(r=>r.want && r.want!==r.shown);
+    if(!changes.length){ console.log('redate: every post already shows its go-live date'); process.exit(0); }
+    if(E.BLOG_APPLY!=='1'){ console.log('redate: DRY RUN,', changes.length, 'post(s) would change. Re-run with apply=1 to write.'); process.exit(0); }
+    const before = (cur.match(/\n    slug:/g)||[]).length;
+    for(const r of changes){
+      const key = `slug: ${JSON.stringify(r.slug)}`;
+      const si = cur.indexOf(key);
+      if(si<0){ console.log('redate: slug not found, skipping', r.slug); continue; }
+      const objStart = cur.lastIndexOf('\n  {', si);
+      const objEnd = cur.indexOf('\n  },', si);
+      if(objStart<0 || objEnd<0){ console.log('redate: could not bound object, skipping', r.slug); continue; }
+      const block = cur.slice(objStart, objEnd + '\n  },'.length);
+      const nb = stampDate(block, r.want);
+      if(!nb){ console.log('redate: no date field on', r.slug, '- skipped'); continue; }
+      cur = cur.slice(0,objStart) + nb + cur.slice(objEnd + '\n  },'.length);
+      console.log('redated', r.slug, ':', r.shown||'(none)', '->', r.want);
+    }
+    const after = (cur.match(/\n    slug:/g)||[]).length;
+    if(after !== before) throw new Error('redate sanity failed: post count changed '+before+' -> '+after);
+    if(!cur.trimEnd().endsWith('];')) throw new Error('redate sanity failed: file no longer ends with ];');
+    fs.writeFileSync(f, cur);
+    sh(`git add -A`);
+    sh(`git commit -m "Correct blog post dates to their actual publish dates"`);
+    sh(`git push origin main`);
+    console.log('REDATED', changes.length, 'post(s)');
   } else throw new Error('unknown BLOG_ACTION: '+action);
 })().catch(e=>{ console.error('robot error:', e.message); process.exit(1); });

@@ -31,7 +31,8 @@
     "framework": "Vite + React + TypeScript + shadcn/ui",
     "deploy": "Vercel",
     "repo": "github.com/Second-Take-Agency/obrien-mountain-home",
-    "production_branch": "main"
+    "production_branch": "main",
+    "timezone": "America/Los_Angeles"
   },
   "blog_storage": {
     "type": "ts-array-file",

@@ -127,8 +127,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title="Fire Hardening, Decking & Siding in Redding CA"
-        description="Protect and upgrade your Northern California home with fire hardening, siding, and decking from O'Brien Mountain Home in Redding, CA."
+        title="Siding & Deck Contractor in Redding, CA"
+        description="Licensed siding and deck contractor in Redding, CA and the North State. O'Brien Mountain Home installs durable siding and custom decks. Free estimate."
         schema={homepageSchemas}
       />
       

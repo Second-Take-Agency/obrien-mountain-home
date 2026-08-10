@@ -24,7 +24,7 @@ export const blogs: BlogPost[] = [
     author: "Marcus Crans",
     date: "August 10, 2026",
     image: "/blog-images/redding-ca-fair-plan-wildfire-hardening-discounts.png",
-    readTime: 12,
+    readTime: "12 min read",
     keywords: "FAIR Plan wildfire hardening discount, California FAIR Plan discount 2026, wildfire insurance discount California, commercial fire hardening Redding, home hardening insurance savings"
   },
   {
@@ -37,7 +37,7 @@ export const blogs: BlogPost[] = [
     author: "Marcus Crans",
     date: "August 7, 2026",
     image: "/blog-images/paradise-ca-zone-0-defensible-space-fire-hardening-rules.png",
-    readTime: 9,
+    readTime: "9 min read",
     keywords: "Zone 0 defensible space California, ember-resistant zone 5 feet, AB 3074 Zone 0, Zone 0 requirements 2026, defensible space Paradise CA"
   },
   {
@@ -50,7 +50,7 @@ export const blogs: BlogPost[] = [
     author: "Marcus Crans",
     date: "August 3, 2026",
     image: "/blog-images/magalia-ca-decking-composite-vs-wood-longevity-total-cost.png",
-    readTime: 10,
+    readTime: "10 min read",
     keywords: "composite decking vs wood, composite vs wood deck cost, low maintenance decking, does composite decking last longer, best decking for sun"
   },
   {
@@ -63,7 +63,7 @@ export const blogs: BlogPost[] = [
     author: "Marcus Crans",
     date: "July 31, 2026",
     image: "/blog-images/redding-ca-composite-deck-costs-2026-pricing-guide.png",
-    readTime: "12-15 min",
+    readTime: "12-15 min read",
     keywords: "composite deck cost Mount Shasta CA, composite deck cost California, cost to build a deck 2026, Trex deck price, how much does a new deck cost"
   },
   {
@@ -76,7 +76,7 @@ export const blogs: BlogPost[] = [
     author: "Marcus Crans",
     date: "July 27, 2026",
     image: "/blog-images/multifamily-siding-replacement-oroville.png",
-    readTime: 15,
+    readTime: "15 min read",
     keywords: "multifamily siding replacement, apartment siding contractor, when to replace apartment siding, HOA siding replacement, multifamily exterior maintenance"
   },
   {
@@ -89,7 +89,7 @@ export const blogs: BlogPost[] = [
     author: "Marcus Crans",
     date: "July 24, 2026",
     image: "/blog-images/commercial-siding-project-timelines-red-bluff-ca.png",
-    readTime: "11 min",
+    readTime: "11 min read",
     keywords: "commercial siding project timeline, re-siding an occupied building, commercial construction timeline, minimizing tenant disruption, commercial siding installation schedule"
   },
   {
@@ -102,7 +102,7 @@ export const blogs: BlogPost[] = [
     author: "Marcus Crans",
     date: "July 20, 2026",
     image: "/blog-images/metal-panels-vs-fiber-cement-commercial-siding-chico-ca.png",
-    readTime: 11,
+    readTime: "11 min read",
     keywords: "commercial siding materials, metal panel vs fiber cement commercial, best commercial building siding, fiber cement cladding, commercial cladding options"
   },
   {
@@ -115,7 +115,7 @@ export const blogs: BlogPost[] = [
     author: "Marcus Crans",
     date: "July 22, 2026",
     image: "/blog-images/choosing-james-hardie-siding-colors-paradise-ca-colorplus-technology.png",
-    readTime: 11,
+    readTime: "11 min read",
     keywords: "James Hardie siding colors, ColorPlus technology, Hardie Statement Collection colors, best siding colors 2026, fade-resistant siding"
   },
   {
@@ -128,7 +128,7 @@ export const blogs: BlogPost[] = [
     author: "Marcus Crans",
     date: "July 15, 2026",
     image: "/blog-images/siding-cost-redding-ca-2026.png",
-    readTime: 11,
+    readTime: "11 min read",
     keywords: "siding cost Redding CA, house siding cost per square foot, fiber cement siding cost California, vinyl siding cost Redding, cost to replace siding 2026"
   },
   {
@@ -141,7 +141,7 @@ export const blogs: BlogPost[] = [
     author: "Marcus Crans",
     date: "July 9, 2026",
     image: "https://vibe.filesafe.space/1777345871363473576/assets/317434ae-1d2e-46bd-9dd1-37acd5e6a934.png",
-    readTime: 5,
+    readTime: "5 min read",
     keywords: "signs you need new siding, when to replace siding, siding damage signs, cracked fiber cement siding, fiber cement siding lifespan"
   },
   {

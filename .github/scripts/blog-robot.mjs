@@ -30,6 +30,34 @@ function stampDate(block, dateText){
   if(!DATE_FIELD_RE.test(block)) return null;
   return block.replace(DATE_FIELD_RE, `$1${JSON.stringify(dateText)}`);
 }
+const MONDAY_CLIENT_COL = E.MONDAY_CLIENT_COL || 'text_mm53ttsy';
+// readTime arrives from the model as 9, "11 min", "11-12 minutes"... — normalize to "N min read".
+function normReadTime(v){
+  const s = String(v==null?'':v).trim();
+  if(!s) return '10 min read';
+  if(/^\d+(?:-\d+)?$/.test(s)) return s+' min read';
+  if(/\bmin(?:ute)?s?$/i.test(s)) return s.replace(/\s*\bmin(?:ute)?s?$/i,' min')+' read';
+  return s;
+}
+// Every published post must be listed in public/sitemap.xml, or Google never finds it.
+function updateSitemap(slug, iso){
+  const f = `${REPO}/public/sitemap.xml`;
+  if(!fs.existsSync(f)){ console.log('sitemap: public/sitemap.xml not found, skipped'); return false; }
+  const base = ((prof.business && prof.business.base_url)||'').replace(/\/+$/,'');
+  if(!base){ console.log('sitemap: no business.base_url in profile, skipped'); return false; }
+  let s = fs.readFileSync(f,'utf8');
+  const loc = `${base}/blog/${slug}`;
+  if(s.includes(`<loc>${loc}</loc>`)){ console.log('sitemap: already listed', slug); return false; }
+  if(!s.includes('</urlset>')){ console.log('sitemap: no </urlset> tag, skipped'); return false; }
+  const nl = s.includes('\r\n') ? '\r\n' : '\n';
+  const entry = `  <url><loc>${loc}</loc><lastmod>${iso}</lastmod><priority>0.6</priority></url>${nl}`;
+  s = s.replace('</urlset>', entry + '</urlset>');
+  fs.writeFileSync(f, s);
+  console.log('sitemap: added', loc);
+  return true;
+}
+// git add that tolerates paths that don't exist yet (e.g. public/blog-images on a brand-new site).
+function stage(...paths){ for(const p of paths){ try{ sh(`git add ${p}`); }catch(e){ console.log('stage: skipped', p); } } }
 
 // ---------- AI (provider-swappable: gemini free-tier by default, or anthropic) ----------
 async function callOnce(system, user){
@@ -174,7 +202,7 @@ async function generate(revise){
     // Provisional: shown on the preview branch. The publish step below
     // re-stamps it with the real go-live date before it reaches main.
     date:E.BLOG_DATE||displayDate(),
-    readTime:g.readTime||'10 min read',
+    readTime:normReadTime(g.readTime),
     keywords:[E.BLOG_PRIMARY_KEYWORD,E.BLOG_SUPPORTING].filter(Boolean).join(', ')
   };
   post.image = await heroImage(g.image_prompt, post.slug, cat, services);
@@ -201,11 +229,16 @@ function previewUrl(slug){ const b=branch.replace(/[^a-zA-Z0-9]/g,'-'); return `
 
 async function loadInputs(){
   if(!item || !E.MONDAY_TOKEN) return;
-  const cols=["color_mm4wvg8w","long_text_mm4wmww","text_mm4xd3eq","long_text_mm4x1wk3","long_text_mm4x29jz",MONDAY_DATE_COL];
+  const cols=["color_mm4wvg8w","long_text_mm4wmww","text_mm4xd3eq","long_text_mm4x1wk3","long_text_mm4x29jz",MONDAY_DATE_COL,MONDAY_CLIENT_COL];
   const r=await fetch('https://api.monday.com/v2',{method:'POST',headers:{'Authorization':E.MONDAY_TOKEN,'content-type':'application/json','API-Version':'2024-01'},body:JSON.stringify({query:`query($i:[ID!]){items(ids:$i){id name column_values(ids:${JSON.stringify(cols)}){id text}}}`,variables:{i:[item]}})});
   const j=await r.json(); const it=j.data&&j.data.items&&j.data.items[0]; if(!it) return;
   const cv=Object.fromEntries(it.column_values.map(c=>[c.id,(c.text||'').trim()]));
   rowStatus=cv['color_mm4wvg8w']||''; rowPublishDate=cv[MONDAY_DATE_COL]||'';
+  const rowClient=(cv[MONDAY_CLIENT_COL]||'').trim();
+  if(rowClient && rowClient!==prof.client_id){
+    console.error(`item ${item} belongs to client "${rowClient}", not "${prof.client_id}" — refusing to run in this repo`);
+    process.exit(1);
+  }
   E.BLOG_TOPIC = E.BLOG_TOPIC || cv['long_text_mm4wmww'] || '';
   E.BLOG_PRIMARY_KEYWORD = E.BLOG_PRIMARY_KEYWORD || cv['text_mm4xd3eq'] || '';
   E.BLOG_SUPPORTING = E.BLOG_SUPPORTING || cv['long_text_mm4x1wk3'] || '';
@@ -228,7 +261,7 @@ async function loadInputs(){
     sh(`git checkout -B ${branch} origin/main`);    
     const post = await generate(action==='revise');
     insert(post);
-    sh(`git add src/data/blogs.ts public/blog-images`);
+    stage('src/data/blogs.ts','public/blog-images');
     sh(`git commit -m "${action==='revise'?'Revise':'Add'} blog: ${post.title.replace(/["'`$]/g,'')}"`);
     sh(`git push -u origin ${branch} --force`);
     await monday({[E.MONDAY_STATUS_COL]:{label:'Preview ready'},[E.MONDAY_LINK_COL]:{url:previewUrl(post.slug),text:'Open preview'}});
@@ -284,7 +317,8 @@ async function loadInputs(){
       fs.writeFileSync(f, cur);
     }
     try { sh(`git checkout origin/${branch} -- public/blog-images`); } catch(e) {}
-    sh(`git add src/data/blogs.ts public/blog-images`);
+    if(pslug) updateSitemap(pslug, goLiveIso);
+    stage('src/data/blogs.ts','public/blog-images','public/sitemap.xml');
     try { sh(`git commit -m "Publish blog (item ${item})"`); }
     catch(e){ console.log('nothing new to commit for item', item); }
     sh(`git push origin main`);
@@ -338,7 +372,7 @@ async function loadInputs(){
       console.log('reimaged', slug, '->', newImg);
     }
     if(!changed){ console.log('reimage: no images could be regenerated (nothing to commit)'); process.exit(0); }
-    sh(`git add src/data/blogs.ts public/blog-images`);
+    stage('src/data/blogs.ts','public/blog-images');
     sh(`git commit -m "Regenerate hero image(s): ${slugs.join(', ')}"`);
     sh(`git push origin main`);
     console.log('REIMAGED', changed, 'post(s)');
@@ -387,7 +421,7 @@ async function loadInputs(){
         cur=cur.slice(0,bo)+newBlock+cur.slice(eo+'\n  },'.length);
         if(!cur.trimEnd().endsWith('];')) throw new Error('sanity failed on '+branch);
         fs.writeFileSync(f,cur);
-        sh(`git add src/data/blogs.ts public/blog-images`);
+        stage('src/data/blogs.ts','public/blog-images');
         sh(`git commit -m "Regenerate hero image for preview (item ${id})"`);
         sh(`git push origin ${branch}`);
         done++;
@@ -456,7 +490,7 @@ async function loadInputs(){
     if(after !== before) throw new Error('redate sanity failed: post count changed '+before+' -> '+after);
     if(!cur.trimEnd().endsWith('];')) throw new Error('redate sanity failed: file no longer ends with ];');
     fs.writeFileSync(f, cur);
-    sh(`git add src/data/blogs.ts`);
+    stage('src/data/blogs.ts');
     sh(`git commit -m "Correct blog post dates to their actual publish dates"`);
     sh(`git push origin main`);
     console.log('REDATED', changes.length, 'post(s)');

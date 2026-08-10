@@ -70,5 +70,16 @@ Create `profiles/{client}.json` following `profiles/obrien-mountain-home.json`. 
 
 Also set `site_tech.timezone` to the client's local timezone (IANA name, e.g. `America/Los_Angeles`) so publish dates land on the right calendar day, and copy `.github/scripts/blog-robot.mjs`, `.github/workflows/blog-automation.yml` and `scripts/stamp-publish-date.mjs` across so the new client inherits the publish date rule. A client site running an older copy of the robot will keep stamping draft dates.
 
+## Keeping every client repo in sync
+
+The robot, scheduler, and workflows are **duplicated into each client repo** — a fix applied in one repo does NOT propagate. When `.github/scripts/blog-robot.mjs`, `.github/scripts/publish-scheduler.mjs`, or the workflow files change, copy the change to **every enrolled client repo in the same sitting**. A repo running a stale copy re-introduces the bug the fix removed: AW Puma's stale scheduler kept `git merge`, which conflicts on every publish because each draft adds its post at the top of the same array — that silently blocked a scheduled post, and its whole-board loop failed on other clients' rows on every single run.
+
+Invariants every copy must keep:
+
+- **One publish path.** The scheduler only delegates to the robot's `publish` action (which re-inserts the post onto current `main`). It must never `git merge` a preview branch.
+- **Client isolation.** All clients share board `18420374601`. The scheduler skips rows whose `blog/item-{id}` branch doesn't exist in the repo, and the robot refuses an item whose Client slug column (`text_mm53ttsy`) names a different client. A red scheduler run means a real failure for THIS client — never "someone else's row".
+- **Sitemap.** The robot appends every published post to `public/sitemap.xml`. If a live post is missing there, re-run `publish` for its item (idempotent) or add the entry by hand.
+- **Dates.** Post dates are stamped at publish time in the client's timezone (`site_tech.timezone` in the profile — set it for every new client; East Coast clients drift a whole day without it). The `redate` action backfills any post showing a draft date.
+
 ## Control panel
 The Monday board "Client Blog Pipeline" (board 18420374601) is the human control panel: pick the client, set Status → Ready, review the preview, set Approved. Client info is pulled from the linked Client Directory (board 18405274797).

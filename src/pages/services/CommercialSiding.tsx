@@ -386,6 +386,22 @@ const CommercialSiding = () => {
           </div>
         </section>
 
+        {/* ─── Video ─── */}
+        <section className="py-24 bg-white">
+          <div className="container mx-auto px-4">
+            <AnimatedSection className="max-w-4xl mx-auto">
+              <video
+                className="w-full h-auto rounded-2xl border border-slate-200 shadow-sm bg-slate-900"
+                src="/videos/commercial-siding.mp4"
+                poster="/videos/commercial-siding-poster.jpg"
+                controls
+                playsInline
+                preload="none"
+              />
+            </AnimatedSection>
+          </div>
+        </section>
+
         {/* ─── Services Grid ─── */}
         <section className="py-24 bg-slate-50">
           <div className="container mx-auto px-4">

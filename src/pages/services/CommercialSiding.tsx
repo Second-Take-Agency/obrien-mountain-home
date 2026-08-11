@@ -285,6 +285,23 @@ const materials = [
 ];
 
 const CommercialSiding = () => {
+  // Play the video only while it is on screen. Muted is required — browsers
+  // block autoplay with sound, and a rejected play() would leave a dead player.
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  React.useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) el.play().catch(() => {});
+        else el.pause();
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       <SEO
@@ -387,16 +404,19 @@ const CommercialSiding = () => {
         </section>
 
         {/* ─── Video ─── */}
-        <section className="py-24 bg-white">
+        <section className="py-24 bg-slate-900 text-white">
           <div className="container mx-auto px-4">
             <AnimatedSection className="max-w-4xl mx-auto">
               <video
-                className="w-full h-auto rounded-2xl border border-slate-200 shadow-sm bg-slate-900"
+                ref={videoRef}
+                className="w-full h-auto rounded-2xl border border-white/10 shadow-lg bg-slate-900"
                 src="/videos/commercial-siding.mp4"
                 poster="/videos/commercial-siding-poster.jpg"
                 controls
+                muted
+                loop
                 playsInline
-                preload="none"
+                preload="metadata"
               />
             </AnimatedSection>
           </div>

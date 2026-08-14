@@ -79,5 +79,16 @@ export const portfolioProjects: PortfolioProject[] = [
     image: '/images/waterdeck-1.jpg',
     images: ['/images/waterdeck-1.jpg', '/images/waterdeck-2.jpg', '/images/waterdeck-3.jpg'],
     tags: ['Fortress Steel Frame', 'TimberTech PVC', 'Cable Railing']
+  },
+  {
+    id: '11',
+    title: 'Wildfire Standards Upgrade in Redding',
+    category: 'fire-hardening',
+    location: 'Redding, CA',
+    challenge: 'The homeowners faced losing their insurance unless the property met California’s new IBHS wildfire-prepared standards — and they needed a contractor who could guide them through what actually qualified.',
+    solution: 'Upgraded every exterior vent to Vulcan Vents, screened the deck underside with wildfire defense mesh, and added 6" noncombustible cladding where needed — coverage retained, with a clean, detailed finish and real peace of mind.',
+    image: '/images/ibhs-1.jpg',
+    images: ['/images/ibhs-1.jpg', '/images/ibhs-2.jpg'],
+    tags: ['Vulcan Vents', 'IBHS Standards', 'Ember Defense']
   }
 ];

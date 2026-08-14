@@ -68,5 +68,16 @@ export const portfolioProjects: PortfolioProject[] = [
     image: '/images/farmhouse-1.jpg',
     images: ['/images/farmhouse-1.jpg', '/images/farmhouse-2.jpg'],
     tags: ['Siding & Trim', 'Fresh Paint', 'Curb Appeal']
+  },
+  {
+    id: '10',
+    title: 'Elevated Steel-Frame Deck Rebuild in Redding',
+    category: 'decking',
+    location: 'Redding, CA',
+    challenge: 'An aging deck had worn past the point of being safe to use — and the homeowner wanted a rebuild solid enough to sit out with his morning coffee without a second thought.',
+    solution: 'Rebuilt on a Fortress steel frame with TimberTech PVC decking and Fortress vertical cable railing — a rot-proof, low-maintenance structure with open sightlines from every seat.',
+    image: '/images/waterdeck-1.jpg',
+    images: ['/images/waterdeck-1.jpg', '/images/waterdeck-2.jpg', '/images/waterdeck-3.jpg'],
+    tags: ['Fortress Steel Frame', 'TimberTech PVC', 'Cable Railing']
   }
 ];

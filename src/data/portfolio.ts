@@ -16,14 +16,14 @@ export interface PortfolioProject {
 export const portfolioProjects: PortfolioProject[] = [
   {
     id: '2',
-    title: 'Custom Deck Build in Northern California',
-    category: 'decking',
-    location: 'Shasta Lake, CA',
-    challenge: 'Replacing a worn, aging wood deck and ramp with something safer, more durable, and fire-aware.',
-    solution: 'Rebuilt with TimberTech composite decking and new wood railings, keeping the accessible ramp for easy, year-round entry.',
+    title: 'Off-Grid Cabin Siding & Deck Rebuild in Red Bluff',
+    category: 'residential-siding',
+    location: 'Red Bluff, CA',
+    challenge: 'An off-grid family cabin in the mountains outside Red Bluff — the spot this family gathers at — needed its siding and decking replaced with materials that could stand up to fire risk and years of hard use.',
+    solution: 'Re-clad the cabin in James Hardie lap siding and Hardie trim, rebuilt the front deck in TimberTech PRIME composite, and upgraded the vents to fire-rated Vulcan Vents — a finished cabin that is both beautiful and fire-safe for years of family get-togethers.',
     image: '/images/deck-1.jpg',
     images: ['/images/deck-1.jpg', '/images/deck-2.jpg', '/images/deck-3.jpg'],
-    tags: ['TimberTech', 'Low Maintenance', 'Custom Design']
+    tags: ['James Hardie', 'TimberTech PRIME', 'Vulcan Vents']
   },
   {
     id: '4',
@@ -38,36 +38,36 @@ export const portfolioProjects: PortfolioProject[] = [
   },
   {
     id: '5',
-    title: 'Mountain Lodge Fire Hardening in Paradise',
+    title: 'Vacation Home Fire Hardening at Lake Almanor',
     category: 'fire-hardening',
-    location: 'Paradise, CA',
-    challenge: 'A large cedar-sided mountain lodge tucked among the pines needed protection from embers and radiant heat without losing its rustic character.',
-    solution: 'Hardened the exterior with a Class-A composite-shingle roof, enclosed eaves, metal gutters and fascia, and a noncombustible stone veneer base.',
+    location: 'Lake Almanor, CA',
+    challenge: 'A vacation home sitting in a wildfire risk zone was exposed at two of the most overlooked points on any house — gutters that clog with debris, and foundation vents that let embers straight underneath.',
+    solution: 'Installed heavy-duty gutter protection to keep debris and embers out, and retrofitted every foundation vent from the inside with fire-rated Vulcan Vents — real protection in a high-risk zone, and peace of mind while the house sits empty.',
     image: '/images/paradise-2.jpg',
     images: ['/images/paradise-2.jpg', '/images/paradise-3.jpg'],
-    tags: ['Ember-Resistant', 'Non-Combustible', 'WUI Compliant']
+    tags: ['Vulcan Vents', 'Gutter Protection', 'Ember Defense']
   },
   {
     id: '8',
-    title: 'Composite Deck & Aluminum Railing Build in Redding',
+    title: 'Composite Deck & Steel Railing Build in Redding',
     category: 'decking',
     location: 'Redding, CA',
-    challenge: 'Creating durable, low-maintenance outdoor space — from an elevated hillside view deck to a compact patio deck — that could stand up to North State sun and weather.',
-    solution: 'Built composite decks finished with sleek black aluminum railings for a clean, modern look that resists rot, fading, and fire without the upkeep of wood.',
+    challenge: 'An old deck had reached the end of its life. The homeowner was confident he could rebuild it himself, but wanted a professional to handle it and know it was done right the first time.',
+    solution: 'Rebuilt with Trex Enhance composite deck boards and Fortress steel railing — a low-maintenance deck at a price he was happy with, handled once and handled properly.',
     image: '/images/compdeck-1.jpg',
     images: ['/images/compdeck-1.jpg', '/images/compdeck-2.jpg', '/images/compdeck-3.jpg'],
-    tags: ['Composite', 'Aluminum Railing', 'Low Maintenance']
+    tags: ['Trex Enhance', 'Fortress Railing', 'Low Maintenance']
   },
   {
     id: '9',
-    title: 'Exterior Siding & Trim Refresh in Northern California',
-    category: 'residential-siding',
-    location: 'Northern California',
-    challenge: 'Older North State homes with tired, weather-worn siding needed a durable refresh and a cleaner, more modern look.',
-    solution: 'Refreshed the exteriors with new siding, bold trim, and fresh paint — a low-maintenance, fire-aware upgrade that transforms each home’s curb appeal.',
+    title: 'Whole-Home Wildfire Protection in Redding',
+    category: 'fire-hardening',
+    location: 'Redding, CA',
+    challenge: 'The homeowners wanted one thing — their house protected from wildfire, with the openings embers exploit sealed off before the next fire season.',
+    solution: 'Upgraded every exterior vent to fire-rated units and screened the front porch with wildfire defense mesh — the ember entry points closed, and peace of mind through fire season.',
     image: '/images/farmhouse-1.jpg',
     images: ['/images/farmhouse-1.jpg', '/images/farmhouse-2.jpg'],
-    tags: ['Siding & Trim', 'Fresh Paint', 'Curb Appeal']
+    tags: ['Vent Upgrades', 'Wildfire Mesh', 'Ember Defense']
   },
   {
     id: '10',

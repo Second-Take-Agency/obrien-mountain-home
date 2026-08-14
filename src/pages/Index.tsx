@@ -23,6 +23,8 @@ import { AnimatedSection, StaggeredGrid } from '@/components/AnimatedSection';
 import { useParallax } from '@/hooks/useParallax';
 import { ArrowRight, CheckCircle2, Flame, Hammer, Shield, Phone, Calendar, Tag, Star, DollarSign, ClipboardCheck } from 'lucide-react';
 const HERO_BG = "https://vibe.filesafe.space/1777345871363473576/assets/c1315190-a555-4031-ac6a-4a9b551f2b09.png";
+// First frame of /videos/hero.mp4 — doubles as the hero's LCP paint and the video poster.
+const HERO_POSTER = "/videos/hero-poster.jpg";
 const FOUNDER_IMG = "https://vibe.filesafe.space/1777345871363473576/assets/af37ff4b-7817-4b91-adfe-ee6cd1e695f0.png";
 const OPTIN_BG = "https://vibe.filesafe.space/1777345871363473576/assets/ae7de53d-c036-4874-96ab-b5aa446004c4.png";
 
@@ -104,7 +106,21 @@ const WEBSITE_SCHEMA = {
 const homepageSchemas = [LOCAL_BUSINESS_SCHEMA, FAQ_PAGE_SCHEMA, ORGANIZATION_SCHEMA, WEBSITE_SCHEMA];
 
 const Index = () => {
-  const heroImgRef = useParallax<HTMLImageElement>(0.35);
+  const heroVideoRef = useParallax<HTMLVideoElement>(0.35);
+
+  // Respect prefers-reduced-motion: hold on the poster frame instead of looping video.
+  React.useEffect(() => {
+    const el = heroVideoRef.current;
+    if (!el) return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const apply = () => {
+      if (mq.matches) el.pause();
+      else el.play().catch(() => {});
+    };
+    apply();
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, [heroVideoRef]);
   const [optInData, setOptInData] = useState({ name: '', email: '', phone: '', service: '' });
   const [optInSubmitted, setOptInSubmitted] = useState(false);
   const [optInLoading, setOptInLoading] = useState(false);
@@ -141,16 +157,21 @@ const Index = () => {
         {/* ─── Hero Section ─── */}
         <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <img
-              ref={heroImgRef}
-              src={HERO_BG}
-              alt="Beautiful mountain home with custom siding and decking in Northern California"
+            {/* Background video. The poster is this clip's own first frame, so it paints
+                instantly as the LCP element and the video fades in over it seamlessly. */}
+            <video
+              ref={heroVideoRef}
               className="w-full h-full object-cover scale-110 origin-center will-change-transform"
-              loading="eager"
-              fetchPriority="high"
-              width="1920"
-              height="1080"
-            />
+              poster={HERO_POSTER}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="none"
+              aria-label="Siding, decking, and fire hardening work across Northern California"
+            >
+              <source src="/videos/hero.mp4" type="video/mp4" />
+            </video>
             {/* Strong layered overlay for text readability */}
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/75 to-slate-900/40" />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />

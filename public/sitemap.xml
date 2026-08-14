@@ -155,6 +155,45 @@
   </url>
 
 
+  <!-- ══ Portfolio Projects ══ -->
+  <url>
+    <loc>https://obrienmountainhome.com/portfolio/off-grid-cabin-siding-deck-rebuild-red-bluff</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://obrienmountainhome.com/portfolio/vacation-home-fire-hardening-lake-almanor</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://obrienmountainhome.com/portfolio/composite-deck-steel-railing-redding</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://obrienmountainhome.com/portfolio/whole-home-wildfire-protection-redding</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://obrienmountainhome.com/portfolio/elevated-steel-frame-deck-redding</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://obrienmountainhome.com/portfolio/wildfire-standards-upgrade-redding</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+
   <!-- ══ Blog Posts (automation) ══ -->
   <url>
     <loc>https://obrienmountainhome.com/blog/redding-ca-fair-plan-wildfire-hardening-discounts</loc>

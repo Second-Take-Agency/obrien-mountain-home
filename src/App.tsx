@@ -18,6 +18,7 @@ const About = lazy(() => import("./pages/About"));
 const BlogHub = lazy(() => import("./pages/BlogHub"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const Portfolio = lazy(() => import("./pages/Portfolio"));
+const PortfolioProject = lazy(() => import("./pages/PortfolioProject"));
 const ServicesHub = lazy(() => import("./pages/services/ServicesHub"));
 const FireHardening = lazy(() => import("./pages/services/FireHardening"));
 const CustomDecks = lazy(() => import("./pages/services/CustomDecks"));
@@ -50,6 +51,7 @@ const App = () => (
                 <Route path="/blog" element={<BlogHub />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="/portfolio" element={<Portfolio />} />
+                <Route path="/portfolio/:slug" element={<PortfolioProject />} />
 
                 {/* Services */}
                 <Route path="/services" element={<ServicesHub />} />

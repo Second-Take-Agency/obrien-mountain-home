@@ -15,6 +15,9 @@ import CTASection from '@/components/CTASection';
 import GoogleReviews from '@/components/GoogleReviews';
 import PartnersSection from '@/components/PartnersSection';
 import StatCounterSection from '@/components/StatCounterSection';
+// Lazy: pulls in the blog data chunk, which the homepage should not pay for
+// until the reader actually scrolls down to the section.
+const LatestBlogSection = React.lazy(() => import('@/components/LatestBlogSection'));
 import LazySection from '@/components/LazySection';
 import { AnimatedSection, StaggeredGrid } from '@/components/AnimatedSection';
 import { useParallax } from '@/hooks/useParallax';
@@ -392,6 +395,11 @@ const Index = () => {
           <PortfolioGallery limit={3} />
         </LazySection>
 
+        {/* ─── Google Reviews ─── */}
+        <LazySection minHeight="400px">
+          <GoogleReviews />
+        </LazySection>
+
         {/* ─── Stat Counter ─── */}
         <LazySection minHeight="200px">
           <StatCounterSection />
@@ -402,9 +410,11 @@ const Index = () => {
           <NorCalMap />
         </LazySection>
 
-        {/* ─── Google Reviews ─── */}
+        {/* ─── Latest Blog Posts (auto-updates as posts publish) ─── */}
         <LazySection minHeight="400px">
-          <GoogleReviews />
+          <React.Suspense fallback={null}>
+            <LatestBlogSection limit={3} />
+          </React.Suspense>
         </LazySection>
 
         {/* ─── FAQ ─── */}

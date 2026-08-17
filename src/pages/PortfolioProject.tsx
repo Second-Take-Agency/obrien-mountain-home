@@ -5,7 +5,6 @@ import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
 import CTASection from '@/components/CTASection';
 import PortfolioCarousel from '@/components/PortfolioCarousel';
-import BeforeAfterSlider from '@/components/BeforeAfterSlider';
 import { AnimatedSection } from '@/components/AnimatedSection';
 import { portfolioProjects } from '@/data/portfolio';
 import NotFound from '@/pages/NotFound';
@@ -126,22 +125,48 @@ const PortfolioProject = () => {
           )}
         </section>
 
-        {/* ─── Before & After (only when the project has a pair) ─── */}
+        {/* ─── Before & After gallery (only when the project has photos) ─── */}
         {project.beforeAfter && (
           <section className="py-16 bg-slate-50 border-y border-slate-100">
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-4 max-w-5xl">
               <AnimatedSection className="text-center mb-10">
                 <p className="text-primary font-semibold uppercase tracking-widest text-sm mb-2">See the Difference</p>
-                <h2 className="text-2xl md:text-3xl font-bold">Before &amp; After</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-3">Before &amp; After</h2>
+                {project.beforeAfter.caption && (
+                  <p className="text-slate-600 max-w-2xl mx-auto">{project.beforeAfter.caption}</p>
+                )}
               </AnimatedSection>
-              <BeforeAfterSlider
-                beforeImage={project.beforeAfter.before}
-                afterImage={project.beforeAfter.after}
-                beforeLabel={project.beforeAfter.beforeLabel}
-                afterLabel={project.beforeAfter.afterLabel}
-                description={project.beforeAfter.caption}
-                isSplit={project.beforeAfter.isSplit}
-              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {Array.from({
+                  length: Math.max(project.beforeAfter.before.length, project.beforeAfter.after.length),
+                }).flatMap((_, i) =>
+                  [
+                    { src: project.beforeAfter!.before[i], label: 'Before', tone: 'bg-slate-900/80 text-white' },
+                    { src: project.beforeAfter!.after[i], label: 'After', tone: 'bg-primary text-slate-900' },
+                  ]
+                    // a row may be uneven — skip the missing half rather than render an empty box
+                    .filter(item => Boolean(item.src))
+                    .map(item => (
+                      <figure
+                        key={item.src}
+                        className="relative overflow-hidden rounded-2xl border border-slate-200 shadow-sm bg-white"
+                      >
+                        <img
+                          src={item.src}
+                          alt={`${item.label} — ${project.title}`}
+                          className="w-full h-full aspect-[4/3] object-cover"
+                          loading="lazy"
+                        />
+                        <figcaption
+                          className={`absolute top-4 left-4 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow ${item.tone}`}
+                        >
+                          {item.label}
+                        </figcaption>
+                      </figure>
+                    ))
+                )}
+              </div>
             </div>
           </section>
         )}

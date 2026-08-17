@@ -20,17 +20,13 @@ export interface PortfolioProject {
     result: string;
   };
   /**
-   * Optional before/after comparison shown on the detail page.
-   * Two separate photos: set `before` and `after` to different files.
-   * One side-by-side composite image: set both to the same file and `isSplit: true`
-   * (the slider then reveals the left half as "before", right half as "after").
+   * Optional before/after gallery on the detail page. Rendered as paired rows:
+   * before[0] sits beside after[0], and so on. The arrays can differ in length —
+   * a row with no counterpart just shows the one photo.
    */
   beforeAfter?: {
-    before: string;
-    after: string;
-    isSplit?: boolean;
-    beforeLabel?: string;
-    afterLabel?: string;
+    before: string[];
+    after: string[];
     caption?: string;
   };
 }
@@ -51,6 +47,12 @@ export const portfolioProjects: PortfolioProject[] = [
       challenge: 'This family cabin sits off-grid in the mountains outside Red Bluff, and it has been the spot the family gathers at for years. The siding and the front deck had both reached the end of their service life. Being off-grid and surrounded by timber, the owners were not looking for a quick cosmetic fix — they wanted materials that would hold up to real fire risk and to decades of family use, on a property where help is a long way off if a fire ever comes through.',
       solution: 'We replaced the exterior with James Hardie lap siding and James Hardie trim, giving the cabin a noncombustible shell that will not feed a fire the way old wood siding does. The front deck was rebuilt in TimberTech PRIME composite decking — no rot, no annual staining, and far better behaviour under ember exposure than bare wood. While we were on site we also upgraded the vents to fire-rated Vulcan Vents, closing off the openings embers use to get inside a structure. Together those three pieces cover the cabin\'s most vulnerable surfaces: the walls, the deck, and the openings.',
       result: 'The family now has a finished cabin that is both beautiful and genuinely fire-safe — a place they can keep using for get-togethers for years, without the maintenance cycle the old siding and decking demanded and without the worry that came with it.'
+    },
+    beforeAfter: {
+      // Rows are matched by angle: rear elevation, porch corner, tall elevation.
+      before: ['/images/cabin-before-1.jpg', '/images/cabin-before-2.jpg', '/images/cabin-before-3.jpg'],
+      after: ['/images/deck-2.jpg', '/images/deck-3.jpg', '/images/deck-1.jpg'],
+      caption: 'Old painted wood siding and a weathered deck, replaced with James Hardie lap siding, Hardie trim, and TimberTech PRIME composite decking.'
     }
   },
   {

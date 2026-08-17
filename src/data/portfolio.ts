@@ -132,6 +132,12 @@ export const portfolioProjects: PortfolioProject[] = [
       challenge: 'The old deck had worn out and was no longer safe to use. This homeowner lives right next to the water, and what he wanted was simple and specific: a deck he could sit out on with a cup of coffee in the morning, looking out over the water, without thinking about whether the structure under him was sound. Safety came first, and after that he wanted something genuinely high quality — not another deck he would be replacing in a decade.',
       solution: 'We rebuilt it on a steel frame structure from Fortress. Steel framing does not rot, warp, twist, or sag the way wood framing does, which matters on an elevated deck where the structure is doing real work. On top of that we installed new TimberTech PVC decking, and finished it with Fortress vertical cable railing. The cable railing was the right call for this house: it holds the line safely without putting a wall of pickets between him and the view he built the deck for.',
       result: 'He got exactly what he asked for — a deck that is solid underfoot, effectively maintenance-free, and open to the water from every seat. Somewhere he can sit out and enjoy his mornings, built to last far longer than the deck it replaced.'
+    },
+    beforeAfter: {
+      // Rows matched by angle: head-on elevation, three-quarter view, rail/structure detail.
+      before: ['/images/deckbefore-1.jpg', '/images/deckbefore-2.jpg', '/images/deckbefore-3.jpg'],
+      after: ['/images/waterdeck-1.jpg', '/images/waterdeck-2.jpg', '/images/waterdeck-3.jpg'],
+      caption: 'A weathered wood deck with rotting, moss-covered railings, rebuilt on a Fortress steel frame with TimberTech PVC decking and vertical cable railing.'
     }
   },
   {

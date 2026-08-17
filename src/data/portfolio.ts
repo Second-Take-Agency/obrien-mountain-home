@@ -165,13 +165,24 @@ export const portfolioProjects: PortfolioProject[] = [
     challenge: 'A general contractor needed a siding crew he could count on for a 35,000-square-foot senior living community — delivered on the timeline he had committed to, with extensive water damage waiting underneath the old siding.',
     solution: 'Ran a 16-person crew and installed James Hardie siding and James Hardie trim across the property, repairing the water-damaged areas as we went and finishing inside the expected timeline.',
     image: '/images/senior-living-1.jpg',
-    images: ['/images/senior-living-1.jpg', '/images/senior-living-2.jpg'],
+    images: [
+      '/images/senior-living-1.jpg',
+      '/images/senior-living-2.jpg',
+      '/images/senior-living-3.jpg',
+      '/images/senior-living-4.jpg',
+    ],
     tags: ['James Hardie', '35,000 Sq Ft', 'Water Damage Repair'],
     slug: 'senior-living-community-siding-redding',
     story: {
       challenge: 'A general contractor brought us in for a large siding project on a senior living community in Redding — 35,000 square feet of exterior. On a job this size the contractor\'s real problem is not the siding itself, it is finding a crew that will show up with the numbers to do it and hit the date they have already promised. Once we opened up the exterior there was another layer to it: the building had extensive water damage that had to be dealt with before any new siding went on.',
       solution: 'We put 16 people on it, which is what a 35,000-square-foot exterior takes if it is going to land on schedule rather than drag. The crew carried out extensive repairs to the water-damaged areas first — there is no point cladding over compromised substrate — and then installed James Hardie siding with James Hardie trim across the property. Hardie was the right specification here: noncombustible, dimensionally stable, and low enough maintenance to make sense on a building an operator has to keep looking good for years without disrupting residents.',
       result: 'The project came in at the size and the timeline the general contractor expected, water damage resolved and the full exterior finished in James Hardie. For a GC, that is the whole point — a siding sub who can staff a job this size properly and hand it back on the date everyone planned around.'
+    },
+    beforeAfter: {
+      // Rows: unit elevation, courtyard, and the water damage found behind the old siding.
+      before: ['/images/sl-before-1.jpg', '/images/sl-before-2.jpg', '/images/sl-before-3.jpg'],
+      after: ['/images/senior-living-3.jpg', '/images/senior-living-4.jpg', '/images/senior-living-1.jpg'],
+      caption: 'Tired original siding across 35,000 square feet — and the water-damaged framing found underneath it — replaced with James Hardie siding and trim.'
     }
   },
   {

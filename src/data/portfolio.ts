@@ -134,5 +134,39 @@ export const portfolioProjects: PortfolioProject[] = [
       solution: 'We walked the property with them and worked out what the standards required here. To meet them, we upgraded all of the exterior vents with Vulcan Vents, screened the underside of the deck with wildfire defense mesh so embers cannot collect and ignite beneath it, and added six inches of noncombustible cladding where it was needed at the base of the walls. Every piece of that targets the zone right around the structure, which is where a wildfire-prepared home is won or lost.',
       result: 'The customers successfully retained their insurance. Beyond that, they were genuinely pleased with how the work looked — the upgrades were done with real attention to detail rather than bolted on — and they came away with peace of mind about their wildfire risk on top of the coverage they were at risk of losing.'
     }
+  },
+  {
+    id: '12',
+    title: 'Senior Living Community Siding in Redding',
+    category: 'commercial-siding',
+    location: 'Redding, CA',
+    challenge: 'A general contractor needed a siding crew he could count on for a 35,000-square-foot senior living community — delivered on the timeline he had committed to, with extensive water damage waiting underneath the old siding.',
+    solution: 'Ran a 16-person crew and installed James Hardie siding and James Hardie trim across the property, repairing the water-damaged areas as we went and finishing inside the expected timeline.',
+    image: '/images/senior-living-1.jpg',
+    images: ['/images/senior-living-1.jpg', '/images/senior-living-2.jpg'],
+    tags: ['James Hardie', '35,000 Sq Ft', 'Water Damage Repair'],
+    slug: 'senior-living-community-siding-redding',
+    story: {
+      challenge: 'A general contractor brought us in for a large siding project on a senior living community in Redding — 35,000 square feet of exterior. On a job this size the contractor\'s real problem is not the siding itself, it is finding a crew that will show up with the numbers to do it and hit the date they have already promised. Once we opened up the exterior there was another layer to it: the building had extensive water damage that had to be dealt with before any new siding went on.',
+      solution: 'We put 16 people on it, which is what a 35,000-square-foot exterior takes if it is going to land on schedule rather than drag. The crew carried out extensive repairs to the water-damaged areas first — there is no point cladding over compromised substrate — and then installed James Hardie siding with James Hardie trim across the property. Hardie was the right specification here: noncombustible, dimensionally stable, and low enough maintenance to make sense on a building an operator has to keep looking good for years without disrupting residents.',
+      result: 'The project came in at the size and the timeline the general contractor expected, water damage resolved and the full exterior finished in James Hardie. For a GC, that is the whole point — a siding sub who can staff a job this size properly and hand it back on the date everyone planned around.'
+    }
+  },
+  {
+    id: '13',
+    title: 'Trex Deck with Picture Frame Border in Red Bluff',
+    category: 'decking',
+    location: 'Red Bluff, CA',
+    challenge: 'The homeowner was tired of repainting and maintaining an old wood deck every season, and he cared a great deal about how the replacement would look.',
+    solution: 'Installed Trex Enhance decking with a contrasting picture frame border and wrap-around fascia, after working through the design with him up front so he knew exactly what he was getting before we started.',
+    image: '/images/rbdeck-1.jpg',
+    images: ['/images/rbdeck-1.jpg', '/images/rbdeck-2.jpg', '/images/rbdeck-3.jpg'],
+    tags: ['Trex Enhance', 'Picture Frame Border', 'Wrap-Around Fascia'],
+    slug: 'trex-deck-picture-frame-red-bluff',
+    story: {
+      challenge: 'The existing deck was old, and the homeowner was frustrated with what owning it actually meant — repainting it and maintaining it, over and over, just to keep it looking decent. He wanted out of that cycle. He was also particular about the design. This was not a case of "just replace it"; how the finished deck looked mattered to him, and he wanted to know what he was getting before anyone started tearing anything out.',
+      solution: 'We spent the time up front working through the design with him until it was exactly what he was after, so there were no surprises once the build began. Then we installed Trex Enhance decking with a contrasting picture frame border and wrap-around fascia. The picture frame border runs a different colour around the perimeter, which finishes the edges cleanly and makes the deck read as a deliberate piece of the house rather than a slab of boards; the wrap-around fascia hides the framing and carries that finished look all the way down the sides.',
+      result: 'He got the design he had signed off on, built in a composite that never needs repainting — no more annual maintenance, and a deck whose detailing was the point rather than an afterthought.'
+    }
   }
 ];

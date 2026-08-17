@@ -31,6 +31,9 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+// Not lazy: it must be able to catch a failed lazy import.
+import ChunkErrorBoundary from "./components/ChunkErrorBoundary";
+
 const queryClient = new QueryClient();
 
 // Minimal fallback — white screen while route chunk downloads (typically <200ms on fast connection)
@@ -44,6 +47,7 @@ const App = () => (
         <BrowserRouter>
           <ScrollToTop />
           <PageTransition>
+            <ChunkErrorBoundary>
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -73,6 +77,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
+            </ChunkErrorBoundary>
           </PageTransition>
           <BackToTopButton />
 

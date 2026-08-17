@@ -19,6 +19,20 @@ export interface PortfolioProject {
     solution: string;
     result: string;
   };
+  /**
+   * Optional before/after comparison shown on the detail page.
+   * Two separate photos: set `before` and `after` to different files.
+   * One side-by-side composite image: set both to the same file and `isSplit: true`
+   * (the slider then reveals the left half as "before", right half as "after").
+   */
+  beforeAfter?: {
+    before: string;
+    after: string;
+    isSplit?: boolean;
+    beforeLabel?: string;
+    afterLabel?: string;
+    caption?: string;
+  };
 }
 
 export const portfolioProjects: PortfolioProject[] = [

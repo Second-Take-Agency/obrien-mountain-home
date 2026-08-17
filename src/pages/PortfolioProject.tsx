@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
 import CTASection from '@/components/CTASection';
 import PortfolioCarousel from '@/components/PortfolioCarousel';
+import BeforeAfterSlider from '@/components/BeforeAfterSlider';
 import { AnimatedSection } from '@/components/AnimatedSection';
 import { portfolioProjects } from '@/data/portfolio';
 import NotFound from '@/pages/NotFound';
@@ -123,9 +124,33 @@ const PortfolioProject = () => {
               <p className="text-slate-600 leading-relaxed text-lg">{story.result}</p>
             </AnimatedSection>
           )}
+        </section>
 
+        {/* ─── Before & After (only when the project has a pair) ─── */}
+        {project.beforeAfter && (
+          <section className="py-16 bg-slate-50 border-y border-slate-100">
+            <div className="container mx-auto px-4">
+              <AnimatedSection className="text-center mb-10">
+                <p className="text-primary font-semibold uppercase tracking-widest text-sm mb-2">See the Difference</p>
+                <h2 className="text-2xl md:text-3xl font-bold">Before &amp; After</h2>
+              </AnimatedSection>
+              <BeforeAfterSlider
+                beforeImage={project.beforeAfter.before}
+                afterImage={project.beforeAfter.after}
+                beforeLabel={project.beforeAfter.beforeLabel}
+                afterLabel={project.beforeAfter.afterLabel}
+                description={project.beforeAfter.caption}
+                isSplit={project.beforeAfter.isSplit}
+              />
+            </div>
+          </section>
+        )}
+
+        {/* Without a before/after section above, this keeps the original rule-and-spacing
+            that used to separate the story from the tags. */}
+        <section className={`container mx-auto px-4 max-w-3xl pb-16 ${project.beforeAfter ? 'pt-16' : 'pt-0'}`}>
           {/* Materials & methods — the tags carry the brand names and are shown nowhere else */}
-          <AnimatedSection className="mt-14 pt-10 border-t border-slate-100">
+          <AnimatedSection className={project.beforeAfter ? '' : 'pt-10 border-t border-slate-100'}>
             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-4">
               Materials &amp; Methods
             </span>

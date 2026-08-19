@@ -60,7 +60,10 @@ const ProjectPhotoGallery = ({ images, alt }: ProjectPhotoGalleryProps) => {
       <Carousel opts={{ loop: true, align: 'start' }} setApi={setApi} className="w-full">
         <CarouselContent className="-ml-4">
           {images.map((src, i) => (
-            <CarouselItem key={src} className="pl-4 basis-full">
+            <CarouselItem
+              key={src}
+              className="pl-4 basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+            >
               <button
                 type="button"
                 onClick={() => setLightboxAt(i)}
@@ -70,8 +73,8 @@ const ProjectPhotoGallery = ({ images, alt }: ProjectPhotoGalleryProps) => {
                 <img
                   src={src}
                   alt={alt}
-                  className="aspect-[16/10] max-h-[72vh] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading={i < 2 ? 'eager' : 'lazy'}
+                  className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading={i < 4 ? 'eager' : 'lazy'}
                 />
                 <span className="pointer-events-none absolute inset-0 bg-slate-950/0 transition-colors group-hover:bg-slate-950/20" />
                 <span className="pointer-events-none absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full bg-slate-950/70 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-white opacity-0 transition-opacity group-hover:opacity-100">

@@ -165,7 +165,15 @@ export const portfolioProjects: PortfolioProject[] = [
     challenge: 'The homeowners faced losing their insurance unless the property met California’s new IBHS wildfire-prepared standards — and they needed a contractor who could guide them through what actually qualified.',
     solution: 'Upgraded every exterior vent to Vulcan Vents, screened the deck underside with wildfire defense mesh, and added 6" noncombustible cladding where needed — coverage retained, with a clean, detailed finish and real peace of mind.',
     image: '/images/ibhs-1.jpg',
-    images: ['/images/ibhs-1.jpg', '/images/ibhs-2.jpg'],
+    images: [
+      '/images/ibhs-1.jpg',
+      '/images/ibhs-2.jpg',
+      '/images/ibhs-3.jpg',
+      '/images/ibhs-4.jpg',
+      '/images/ibhs-5.jpg',
+      '/images/ibhs-6.jpg',
+      '/images/ibhs-7.jpg',
+    ],
     tags: ['Vulcan Vents', 'IBHS Standards', 'Ember Defense'],
     slug: 'wildfire-standards-upgrade-redding',
     story: {

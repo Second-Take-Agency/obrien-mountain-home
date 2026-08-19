@@ -49,7 +49,7 @@ const LOCAL_BUSINESS_SCHEMA = {
     "streetAddress": "1304 East St",
     "addressLocality": "Redding",
     "addressRegion": "CA",
-    "postalCode": "96001",
+    "postalCode": "96003",
     "addressCountry": "US"
   },
   "geo": {
@@ -62,6 +62,20 @@ const LOCAL_BUSINESS_SCHEMA = {
   "priceRange": "$$",
   "hasMap": GBP_URL,
   "sameAs": [FACEBOOK_URL, GBP_URL],
+  // The Google Business Profile is listed under this name; declaring it as an
+  // alternateName ties the two identities together instead of leaving them unrelated.
+  "alternateName": "Obrien Mountain Home Decking and Siding",
+  // Google Business Profile primary category.
+  "additionalType": "https://en.wikipedia.org/wiki/Siding_(construction)",
+  // GBP hours: 9 AM-6 PM, seven days a week.
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "09:00",
+      "closes": "18:00"
+    }
+  ],
   "areaServed": ["Redding", "Red Bluff", "Chico", "Oroville", "Paradise", "Magalia", "Mount Shasta", "Northern California"]
 };
 
@@ -91,10 +105,11 @@ const ORGANIZATION_SCHEMA = {
     "streetAddress": "1304 East St",
     "addressLocality": "Redding",
     "addressRegion": "CA",
-    "postalCode": "96001",
+    "postalCode": "96003",
     "addressCountry": "US"
   },
-  "sameAs": ["https://www.facebook.com/obrienmountainhome"]
+  "alternateName": "Obrien Mountain Home Decking and Siding",
+  "sameAs": [FACEBOOK_URL, GBP_URL]
 };
 
 const WEBSITE_SCHEMA = {

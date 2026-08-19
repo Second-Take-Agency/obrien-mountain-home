@@ -7,6 +7,11 @@ import { Star, ExternalLink } from 'lucide-react';
 const GOOGLE_REVIEW_URL = "https://g.page/r/CdvSfOZj6Q6zEBM/review";
 const GOOGLE_PROFILE_URL = "https://maps.google.com/?cid=12902506597741023963";
 
+// Keep these in step with the live Google Business Profile — the figures are shown to
+// visitors, so a stale count is worse than none. Last checked: 19 Aug 2026.
+const GOOGLE_RATING = 5.0;
+const GOOGLE_REVIEW_COUNT = 19;
+
 const reviews = [
   {
     name: "Sarah T.",
@@ -65,7 +70,9 @@ export default function GoogleReviews() {
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900">What Homeowners Are Saying</h2>
             <div className="flex items-center gap-3 mt-2">
               <StarRating rating={5} />
-              <span className="text-slate-600 text-sm font-medium">5.0 · Verified Google Reviews</span>
+              <span className="text-slate-600 text-sm font-medium">
+                {GOOGLE_RATING.toFixed(1)} · {GOOGLE_REVIEW_COUNT} Google reviews
+              </span>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 shrink-0">
@@ -128,7 +135,8 @@ export default function GoogleReviews() {
         {/* Bottom trust line */}
         <div className="text-center mt-8">
           <p className="text-slate-500 text-sm">
-            Real reviews from real Northern California homeowners. No fake testimonials, ever.
+            Rated {GOOGLE_RATING.toFixed(1)} across {GOOGLE_REVIEW_COUNT} Google reviews from Northern
+            California homeowners — read every one on our Google Business Profile.
             {' '}
             <a
               href={GOOGLE_REVIEW_URL}

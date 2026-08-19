@@ -90,7 +90,7 @@ const residentialSidingServiceSchema = {
       "streetAddress": "1304 East St",
       "addressLocality": "Redding",
       "addressRegion": "CA",
-      "postalCode": "96001",
+      "postalCode": "96003",
       "addressCountry": "US"
     }
   },

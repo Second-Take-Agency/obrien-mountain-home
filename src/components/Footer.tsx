@@ -113,7 +113,7 @@ const Footer = () => {
             <ul className="flex flex-col gap-6">
               <li className="flex gap-4">
                 <MapPin className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-slate-400 text-sm">1304 East St, Redding, CA 96001</span>
+                <span className="text-slate-400 text-sm">1304 East St, Redding, CA 96003</span>
               </li>
               <li className="flex gap-4">
                 <Phone className="w-5 h-5 text-primary shrink-0" />

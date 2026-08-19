@@ -36,7 +36,7 @@ const ContactPage = () => {
                 "streetAddress": "1304 East St",
                 "addressLocality": "Redding",
                 "addressRegion": "CA",
-                "postalCode": "96001",
+                "postalCode": "96003",
                 "addressCountry": "US"
               },
               "geo": {
@@ -115,7 +115,7 @@ const ContactPage = () => {
                       </div>
                       <div>
                         <div className="font-bold text-slate-900">Address</div>
-                        <div className="text-slate-600">1304 East St, Redding, CA 96001</div>
+                        <div className="text-slate-600">1304 East St, Redding, CA 96003</div>
                       </div>
                     </div>
 
@@ -153,8 +153,8 @@ const ContactPage = () => {
                 <div className="aspect-video bg-slate-100 rounded-2xl overflow-hidden relative border border-slate-200">
                   {/* Points at the business address, not the Redding city centre as before. */}
                   <iframe
-                    src="https://www.google.com/maps?q=1304+East+St,+Redding,+CA+96001&output=embed"
-                    title="O'Brien Mountain Home — 1304 East St, Redding, CA 96001"
+                    src="https://www.google.com/maps?q=1304+East+St,+Redding,+CA+96003&output=embed"
+                    title="O'Brien Mountain Home — 1304 East St, Redding, CA 96003"
                     width="100%" 
                     height="100%" 
                     style={{ border: 0 }} 

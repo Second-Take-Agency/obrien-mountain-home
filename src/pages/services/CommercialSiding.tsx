@@ -43,7 +43,7 @@ const schema = {
     "streetAddress": "1304 East St",
     "addressLocality": "Redding",
     "addressRegion": "CA",
-    "postalCode": "96001",
+    "postalCode": "96003",
     "addressCountry": "US"
   },
   "geo": {
@@ -76,7 +76,8 @@ const schema = {
     ]
   },
   "priceRange": "$$",
-  "openingHours": "Mo-Fr 07:00-18:00",
+  // Matches the Google Business Profile: 9 AM–6 PM, seven days.
+  "openingHours": "Mo-Su 09:00-18:00",
   "hasMap": "https://maps.google.com/?cid=12902506597741023963",
   "sameAs": [
     "https://www.facebook.com/obrienmountainhome",

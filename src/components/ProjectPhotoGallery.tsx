@@ -60,7 +60,7 @@ const ProjectPhotoGallery = ({ images, alt }: ProjectPhotoGalleryProps) => {
       <Carousel opts={{ loop: true, align: 'start' }} setApi={setApi} className="w-full">
         <CarouselContent className="-ml-4">
           {images.map((src, i) => (
-            <CarouselItem key={src} className="pl-4 md:basis-1/2">
+            <CarouselItem key={src} className="pl-4 basis-full">
               <button
                 type="button"
                 onClick={() => setLightboxAt(i)}
@@ -70,7 +70,7 @@ const ProjectPhotoGallery = ({ images, alt }: ProjectPhotoGalleryProps) => {
                 <img
                   src={src}
                   alt={alt}
-                  className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="aspect-[16/10] max-h-[72vh] w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   loading={i < 2 ? 'eager' : 'lazy'}
                 />
                 <span className="pointer-events-none absolute inset-0 bg-slate-950/0 transition-colors group-hover:bg-slate-950/20" />
@@ -82,8 +82,10 @@ const ProjectPhotoGallery = ({ images, alt }: ProjectPhotoGalleryProps) => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-4 hidden sm:flex" />
-        <CarouselNext className="-right-4 hidden sm:flex" />
+        {/* Inset over the photo — the carousel now runs the full container width,
+            so arrows hung outside it would sit off-screen. */}
+        <CarouselPrevious className="left-4 h-11 w-11 border-none bg-slate-950/60 text-white hover:bg-slate-950/80 hover:text-white" />
+        <CarouselNext className="right-4 h-11 w-11 border-none bg-slate-950/60 text-white hover:bg-slate-950/80 hover:text-white" />
       </Carousel>
 
       {/* Dots */}

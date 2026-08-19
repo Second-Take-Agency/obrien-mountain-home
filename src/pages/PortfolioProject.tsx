@@ -39,6 +39,11 @@ const PortfolioProject = () => {
     result: '',
   };
 
+  // Projects with a before/after pair lay their photos out there; the rest need a
+  // plain gallery, or their extra photos only ever appear in the hero carousel.
+  const showPhotoGallery = !project.beforeAfter && (project.images?.length ?? 0) > 1;
+  const hasGallery = Boolean(project.beforeAfter) || showPhotoGallery;
+
   return (
     <div className="min-h-screen bg-white">
       <SEO
@@ -171,11 +176,42 @@ const PortfolioProject = () => {
           </section>
         )}
 
-        {/* Without a before/after section above, this keeps the original rule-and-spacing
+        {/* ─── Project photo gallery ───
+            Only for projects with no before/after pair. The hero carousel shows one
+            photo at a time behind an overlay, so without this the extra photos are
+            effectively invisible. Projects that DO have a before/after gallery already
+            lay their photos out above, so this would just repeat them. */}
+        {showPhotoGallery && (
+          <section className="py-16 bg-slate-50 border-y border-slate-100">
+            <div className="container mx-auto px-4 max-w-5xl">
+              <AnimatedSection className="text-center mb-10">
+                <p className="text-primary font-semibold uppercase tracking-widest text-sm mb-2">The Finished Work</p>
+                <h2 className="text-2xl md:text-3xl font-bold">Project Photos</h2>
+              </AnimatedSection>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {project.images.map(src => (
+                  <figure
+                    key={src}
+                    className="overflow-hidden rounded-2xl border border-slate-200 shadow-sm bg-white"
+                  >
+                    <img
+                      src={src}
+                      alt={project.title}
+                      className="w-full h-full aspect-[16/10] object-cover"
+                      loading="lazy"
+                    />
+                  </figure>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Without a gallery section above, this keeps the original rule-and-spacing
             that used to separate the story from the tags. */}
-        <section className={`container mx-auto px-4 max-w-3xl pb-16 ${project.beforeAfter ? 'pt-16' : 'pt-0'}`}>
+        <section className={`container mx-auto px-4 max-w-3xl pb-16 ${hasGallery ? 'pt-16' : 'pt-0'}`}>
           {/* Materials & methods — the tags carry the brand names and are shown nowhere else */}
-          <AnimatedSection className={project.beforeAfter ? '' : 'pt-10 border-t border-slate-100'}>
+          <AnimatedSection className={hasGallery ? '' : 'pt-10 border-t border-slate-100'}>
             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-4">
               Materials &amp; Methods
             </span>

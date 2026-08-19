@@ -23,7 +23,7 @@ export const blogs: BlogPost[] = [
     category: "Fire Hardening",
     author: "Marcus Crans",
     date: "August 17, 2026",
-    image: "/blog-images/magalia-ember-resistant-vents-cost-wildfire-safety.png",
+    image: "/blog-images/magalia-ember-resistant-vents-cost-wildfire-safety.webp",
     readTime: 10,
     keywords: "ember resistant vents cost, attic vent wildfire retrofit, 1/8 inch mesh vent code California, ASTM E2886 vents, home hardening cost California"
   },
@@ -36,7 +36,7 @@ export const blogs: BlogPost[] = [
     category: "Siding",
     author: "Marcus Crans",
     date: "August 14, 2026",
-    image: "/blog-images/chico-ca-siding-california-chapter-7a-wildfire-zones.png",
+    image: "/blog-images/chico-ca-siding-california-chapter-7a-wildfire-zones.webp",
     readTime: "11 min",
     keywords: "Chapter 7A siding requirements, WUI siding requirements California, fire rated siding California, is vinyl siding allowed in California fire zone, ignition resistant siding"
   },
@@ -49,7 +49,7 @@ export const blogs: BlogPost[] = [
     category: "Fire Hardening",
     author: "Marcus Crans",
     date: "August 10, 2026",
-    image: "/blog-images/redding-ca-fair-plan-wildfire-hardening-discounts.png",
+    image: "/blog-images/redding-ca-fair-plan-wildfire-hardening-discounts.webp",
     readTime: "12 min read",
     keywords: "FAIR Plan wildfire hardening discount, California FAIR Plan discount 2026, wildfire insurance discount California, commercial fire hardening Redding, home hardening insurance savings"
   },
@@ -62,7 +62,7 @@ export const blogs: BlogPost[] = [
     category: "Fire Hardening",
     author: "Marcus Crans",
     date: "August 7, 2026",
-    image: "/blog-images/paradise-ca-zone-0-defensible-space-fire-hardening-rules.png",
+    image: "/blog-images/paradise-ca-zone-0-defensible-space-fire-hardening-rules.webp",
     readTime: "9 min read",
     keywords: "Zone 0 defensible space California, ember-resistant zone 5 feet, AB 3074 Zone 0, Zone 0 requirements 2026, defensible space Paradise CA"
   },
@@ -75,7 +75,7 @@ export const blogs: BlogPost[] = [
     category: "Decking",
     author: "Marcus Crans",
     date: "August 3, 2026",
-    image: "/blog-images/magalia-ca-decking-composite-vs-wood-longevity-total-cost.png",
+    image: "/blog-images/magalia-ca-decking-composite-vs-wood-longevity-total-cost.webp",
     readTime: "10 min read",
     keywords: "composite decking vs wood, composite vs wood deck cost, low maintenance decking, does composite decking last longer, best decking for sun"
   },
@@ -88,7 +88,7 @@ export const blogs: BlogPost[] = [
     category: "Decking",
     author: "Marcus Crans",
     date: "July 31, 2026",
-    image: "/blog-images/redding-ca-composite-deck-costs-2026-pricing-guide.png",
+    image: "/blog-images/redding-ca-composite-deck-costs-2026-pricing-guide.webp",
     readTime: "12-15 min read",
     keywords: "composite deck cost Mount Shasta CA, composite deck cost California, cost to build a deck 2026, Trex deck price, how much does a new deck cost"
   },
@@ -101,7 +101,7 @@ export const blogs: BlogPost[] = [
     category: "Commercial Siding",
     author: "Marcus Crans",
     date: "July 27, 2026",
-    image: "/blog-images/multifamily-siding-replacement-oroville.png",
+    image: "/blog-images/multifamily-siding-replacement-oroville.webp",
     readTime: "15 min read",
     keywords: "multifamily siding replacement, apartment siding contractor, when to replace apartment siding, HOA siding replacement, multifamily exterior maintenance"
   },
@@ -114,7 +114,7 @@ export const blogs: BlogPost[] = [
     category: "Commercial Siding",
     author: "Marcus Crans",
     date: "July 24, 2026",
-    image: "/blog-images/commercial-siding-project-timelines-red-bluff-ca.png",
+    image: "/blog-images/commercial-siding-project-timelines-red-bluff-ca.webp",
     readTime: "11 min read",
     keywords: "commercial siding project timeline, re-siding an occupied building, commercial construction timeline, minimizing tenant disruption, commercial siding installation schedule"
   },
@@ -127,7 +127,7 @@ export const blogs: BlogPost[] = [
     category: 'Siding',
     author: "Marcus Crans",
     date: "July 20, 2026",
-    image: "/blog-images/metal-panels-vs-fiber-cement-commercial-siding-chico-ca.png",
+    image: "/blog-images/metal-panels-vs-fiber-cement-commercial-siding-chico-ca.webp",
     readTime: "11 min read",
     keywords: "commercial siding materials, metal panel vs fiber cement commercial, best commercial building siding, fiber cement cladding, commercial cladding options"
   },
@@ -140,7 +140,7 @@ export const blogs: BlogPost[] = [
     category: 'Siding',
     author: "Marcus Crans",
     date: "July 22, 2026",
-    image: "/blog-images/choosing-james-hardie-siding-colors-paradise-ca-colorplus-technology.png",
+    image: "/blog-images/choosing-james-hardie-siding-colors-paradise-ca-colorplus-technology.webp",
     readTime: "11 min read",
     keywords: "James Hardie siding colors, ColorPlus technology, Hardie Statement Collection colors, best siding colors 2026, fade-resistant siding"
   },
@@ -153,7 +153,7 @@ export const blogs: BlogPost[] = [
     category: 'Siding',
     author: "Marcus Crans",
     date: "July 15, 2026",
-    image: "/blog-images/siding-cost-redding-ca-2026.png",
+    image: "/blog-images/siding-cost-redding-ca-2026.webp",
     readTime: "11 min read",
     keywords: "siding cost Redding CA, house siding cost per square foot, fiber cement siding cost California, vinyl siding cost Redding, cost to replace siding 2026"
   },

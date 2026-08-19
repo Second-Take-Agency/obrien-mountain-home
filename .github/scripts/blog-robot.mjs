@@ -126,6 +126,22 @@ function pickImage(category, services){
   if(key){ const m=services.find(s=>s.title.toLowerCase().includes(key)); if(m&&m.image) return m.image; }
   return (prof.image_strategy&&prof.image_strategy.default)||services[0]?.image||'';
 }
+// Convert a PNG to WebP using whatever encoder the runner has (ffmpeg, then ImageMagick).
+// Returns true on success and removes the PNG; returns false and leaves the PNG otherwise.
+function toWebp(pngPath, webpPath){
+  const attempts = [
+    `ffmpeg -y -i "${pngPath}" -vf "scale='min(1600,iw)':-2" -c:v libwebp -quality 80 -compression_level 6 "${webpPath}"`,
+    `convert "${pngPath}" -resize 1600x\\> -quality 80 "${webpPath}"`,
+  ];
+  for(const cmd of attempts){
+    try{
+      execSync(cmd, {stdio:'ignore'});
+      if(fs.existsSync(webpPath) && fs.statSync(webpPath).size > 0){ fs.unlinkSync(pngPath); return true; }
+    }catch(e){ /* try the next encoder */ }
+  }
+  return false;
+}
+
 async function heroImage(promptText, slug, cat, services){
   const dir = `${REPO}/public/blog-images`;
   fs.mkdirSync(dir,{recursive:true});
@@ -134,9 +150,15 @@ async function heroImage(promptText, slug, cat, services){
   const prompt = promptText || `Professional photorealistic 16:9 photograph relevant to ${prof.client_name} in ${prof.service_area.region}. Natural daylight, no people. No text or watermarks.`;
   try{
     const b64 = await genImage(prompt);
-    fs.writeFileSync(`${dir}/${slug}.png`, Buffer.from(b64,'base64'));
-    console.log('generated hero image for', slug);
-    return `/blog-images/${slug}.png`;
+    const png = `${dir}/${slug}.png`;
+    fs.writeFileSync(png, Buffer.from(b64,'base64'));
+    // The generator returns PNG, which runs ~1.8MB per hero. Convert to WebP so a daily
+    // publish cadence doesn't keep adding megabytes to the repo and to every page load.
+    // Falls back to the PNG if no encoder is on the runner.
+    const webp = `${dir}/${slug}.webp`;
+    const converted = toWebp(png, webp);
+    console.log('generated hero image for', slug, converted ? '(webp)' : '(png — no encoder available)');
+    return converted ? `/blog-images/${slug}.webp` : `/blog-images/${slug}.png`;
   }catch(e){ console.log('image gen failed, using fallback:', String((e&&e.message)||e).slice(0,160)); return fallback; }
 }
 async function genImageOnce(model, prompt){

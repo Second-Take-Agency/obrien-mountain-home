@@ -218,7 +218,15 @@ export const portfolioProjects: PortfolioProject[] = [
     challenge: 'The homeowner was tired of repainting and maintaining an old wood deck every season, and he cared a great deal about how the replacement would look.',
     solution: 'Installed Trex Enhance decking with a contrasting picture frame border and wrap-around fascia, after working through the design with him up front so he knew exactly what he was getting before we started.',
     image: '/images/rbdeck-1.jpg',
-    images: ['/images/rbdeck-1.jpg', '/images/rbdeck-2.jpg', '/images/rbdeck-3.jpg'],
+    images: [
+      '/images/rbdeck-1.jpg',
+      '/images/rbdeck-2.jpg',
+      '/images/rbdeck-3.jpg',
+      '/images/rbdeck-4.jpg',
+      '/images/rbdeck-5.jpg',
+      '/images/rbdeck-6.jpg',
+      '/images/rbdeck-7.jpg',
+    ],
     tags: ['Trex Enhance', 'Picture Frame Border', 'Wrap-Around Fascia'],
     slug: 'trex-deck-picture-frame-red-bluff',
     story: {

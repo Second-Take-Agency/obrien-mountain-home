@@ -73,8 +73,13 @@ export const portfolioProjects: PortfolioProject[] = [
     location: 'Lake Almanor, CA',
     challenge: 'A vacation home sitting in a wildfire risk zone was exposed at two of the most overlooked points on any house — gutters that clog with debris, and foundation vents that let embers straight underneath.',
     solution: 'Installed heavy-duty gutter protection to keep debris and embers out, and retrofitted every foundation vent from the inside with fire-rated Vulcan Vents — real protection in a high-risk zone, and peace of mind while the house sits empty.',
-    image: '/images/paradise-2.jpg',
-    images: ['/images/paradise-2.jpg', '/images/paradise-3.jpg'],
+    image: '/images/almanor-1.jpg',
+    images: [
+      '/images/almanor-1.jpg',
+      '/images/almanor-2.jpg',
+      '/images/almanor-3.jpg',
+      '/images/almanor-4.jpg',
+    ],
     tags: ['Vulcan Vents', 'Gutter Protection', 'Ember Defense'],
     slug: 'vacation-home-fire-hardening-lake-almanor',
     story: {

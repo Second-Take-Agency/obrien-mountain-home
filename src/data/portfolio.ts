@@ -117,8 +117,15 @@ export const portfolioProjects: PortfolioProject[] = [
     location: 'Redding, CA',
     challenge: 'The homeowners wanted one thing — their house protected from wildfire, with the openings embers exploit sealed off before the next fire season.',
     solution: 'Upgraded every exterior vent to fire-rated units and screened the front porch with wildfire defense mesh — the ember entry points closed, and peace of mind through fire season.',
-    image: '/images/farmhouse-1.jpg',
-    images: ['/images/farmhouse-1.jpg', '/images/farmhouse-2.jpg'],
+    image: '/images/wildfire-1.jpg',
+    images: [
+      '/images/wildfire-1.jpg',
+      '/images/wildfire-2.jpg',
+      '/images/wildfire-3.jpg',
+      '/images/wildfire-4.jpg',
+      '/images/wildfire-5.jpg',
+      '/images/wildfire-6.jpg',
+    ],
     tags: ['Vent Upgrades', 'Wildfire Mesh', 'Ember Defense'],
     slug: 'whole-home-wildfire-protection-redding',
     story: {

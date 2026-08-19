@@ -184,11 +184,13 @@ const PortfolioProject = () => {
             lay their photos out above, so this would just repeat them. */}
         {showPhotoGallery && (
           <section className="py-16 bg-slate-50 border-y border-slate-100">
-            <div className="container mx-auto px-4">
-              <AnimatedSection className="text-center mb-10 max-w-3xl mx-auto">
-                <p className="text-primary font-semibold uppercase tracking-widest text-sm mb-2">The Finished Work</p>
-                <h2 className="text-2xl md:text-3xl font-bold">Project Photos</h2>
-              </AnimatedSection>
+            <AnimatedSection className="text-center mb-10 container mx-auto px-4 max-w-3xl">
+              <p className="text-primary font-semibold uppercase tracking-widest text-sm mb-2">The Finished Work</p>
+              <h2 className="text-2xl md:text-3xl font-bold">Project Photos</h2>
+            </AnimatedSection>
+            {/* Full-bleed: the carousel spans the viewport with only a small gutter,
+                rather than being boxed to the 1400px container like the text above. */}
+            <div className="px-4 sm:px-6 lg:px-10">
               <ProjectPhotoGallery images={project.images} alt={project.title} />
             </div>
           </section>

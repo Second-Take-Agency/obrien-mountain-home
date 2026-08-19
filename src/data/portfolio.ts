@@ -95,8 +95,13 @@ export const portfolioProjects: PortfolioProject[] = [
     location: 'Redding, CA',
     challenge: 'An old deck had reached the end of its life. The homeowner was confident he could rebuild it himself, but wanted a professional to handle it and know it was done right the first time.',
     solution: 'Rebuilt with Trex Enhance composite deck boards and Fortress steel railing — a low-maintenance deck at a price he was happy with, handled once and handled properly.',
-    image: '/images/compdeck-1.jpg',
-    images: ['/images/compdeck-1.jpg', '/images/compdeck-2.jpg', '/images/compdeck-3.jpg'],
+    image: '/images/redding-deck-1.jpg',
+    images: [
+      '/images/redding-deck-1.jpg',
+      '/images/redding-deck-2.jpg',
+      '/images/redding-deck-3.jpg',
+      '/images/redding-deck-4.jpg',
+    ],
     tags: ['Trex Enhance', 'Fortress Railing', 'Low Maintenance'],
     slug: 'composite-deck-steel-railing-redding',
     story: {

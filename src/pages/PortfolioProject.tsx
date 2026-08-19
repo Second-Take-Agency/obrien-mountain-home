@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
 import CTASection from '@/components/CTASection';
 import PortfolioCarousel from '@/components/PortfolioCarousel';
+import ProjectPhotoGallery from '@/components/ProjectPhotoGallery';
 import { AnimatedSection } from '@/components/AnimatedSection';
 import { portfolioProjects } from '@/data/portfolio';
 import NotFound from '@/pages/NotFound';
@@ -188,21 +189,7 @@ const PortfolioProject = () => {
                 <p className="text-primary font-semibold uppercase tracking-widest text-sm mb-2">The Finished Work</p>
                 <h2 className="text-2xl md:text-3xl font-bold">Project Photos</h2>
               </AnimatedSection>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {project.images.map(src => (
-                  <figure
-                    key={src}
-                    className="overflow-hidden rounded-2xl border border-slate-200 shadow-sm bg-white"
-                  >
-                    <img
-                      src={src}
-                      alt={project.title}
-                      className="w-full h-full aspect-[16/10] object-cover"
-                      loading="lazy"
-                    />
-                  </figure>
-                ))}
-              </div>
+              <ProjectPhotoGallery images={project.images} alt={project.title} />
             </div>
           </section>
         )}

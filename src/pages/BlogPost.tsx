@@ -25,7 +25,7 @@ const BlogPost = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title={`${post.title} | O'Brien Mountain Home`}
+        title={post.title}
         description={post.excerpt}
         canonical={`/blog/${post.slug}`}
         image={post.image}

@@ -15,7 +15,7 @@ const ServicesHub = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title="Decking, Siding & Fire Hardening Services | O’Brien Mountain Home"
+        title="Siding, Decking & Fire Hardening Services"
         description="Explore fire hardening, custom decking, residential siding, and commercial siding services from O’Brien Mountain Home in Northern California."
         canonical="/services"
         schema={[
@@ -27,7 +27,7 @@ const ServicesHub = () => {
             "description": "Fire hardening, custom decking, residential siding, and commercial siding services from O’Brien Mountain Home in Northern California.",
             "provider": {
               "@type": "LocalBusiness",
-              "name": "O’Brien Mountain Home",
+              "name": "O'Brien Mountain Home",
               "url": "https://obrienmountainhome.com"
             }
           },
@@ -52,7 +52,7 @@ const ServicesHub = () => {
         >
           <div className="container mx-auto px-4 text-center py-32">
             <AnimatedSection>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Our Services</h1>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Siding, Decking &amp; Fire Hardening Services in Redding, CA</h1>
               <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
                 Comprehensive exterior solutions designed for the unique challenges of Northern California living.
               </p>

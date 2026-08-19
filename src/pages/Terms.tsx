@@ -7,7 +7,7 @@ const Terms = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title="Terms and Conditions | O’Brien Mountain Home"
+        title="Terms and Conditions"
         description="Terms and conditions for using the O’Brien Mountain Home website and services."
         canonical="/terms"
         robots="noindex,follow"

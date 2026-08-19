@@ -15,10 +15,12 @@ import PartnersSection from '@/components/PartnersSection';
 import ContactForm from '@/components/ContactForm';
 import { AnimatedSection, StaggeredGrid } from '@/components/AnimatedSection';
 import ParallaxHero from '@/components/ParallaxHero';
-import { blogs } from '@/data/blogs';
+import LazySection from '@/components/LazySection';
+
+// Lazy: keeps the 233 KB blog data chunk out of this page's critical bundle.
+const RelatedPosts = React.lazy(() => import('@/components/RelatedPosts'));
 import { locations } from '@/data/locations';
 
-const fireHardeningRelatedPosts = blogs.filter(b => b.category === 'Fire Hardening').slice(0, 2);
 const serviceAreaLocations = locations.filter(l => l.slug !== 'northern-california').slice(0, 6);
 
 const ventAreas = [
@@ -148,7 +150,7 @@ const FireHardening = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title="Fire Hardening Contractor in Redding CA | O'Brien Mountain Home"
+        title="Fire Hardening Contractor in Redding, CA"
         description="Protect your Northern California home with fire hardening, ember-resistant vents, Vulcan vents, gutter protection, and exterior hardening upgrades."
         canonical="/services/fire-hardening"
         schema={[fireHardeningServiceSchema, fireHardeningFaqSchema, fireHardeningBreadcrumbSchema]}
@@ -315,32 +317,11 @@ const FireHardening = () => {
         </section>
 
         {/* ─── From Our Blog ─── */}
-        {fireHardeningRelatedPosts.length > 0 && (
-          <section className="py-16 bg-white border-t border-slate-100">
-            <div className="container mx-auto px-4">
-              <AnimatedSection className="text-center mb-10">
-                <h2 className="text-2xl md:text-3xl font-bold mb-2">From Our Blog</h2>
-                <p className="text-slate-500 text-sm">Resources for Northern California homeowners</p>
-              </AnimatedSection>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {fireHardeningRelatedPosts.map(post => (
-                  <Link
-                    key={post.id}
-                    to={`/blog/${post.slug}`}
-                    className="group bg-slate-50 rounded-2xl overflow-hidden border border-slate-100 hover:border-primary/30 hover:shadow-md transition-all"
-                  >
-                    <img src={post.image} alt={post.title} className="w-full h-40 object-cover" loading="lazy" />
-                    <div className="p-5">
-                      <h3 className="font-bold text-slate-900 group-hover:text-primary transition-colors mb-2 leading-snug">{post.title}</h3>
-                      <p className="text-sm text-slate-500 line-clamp-2">{post.excerpt}</p>
-                      <span className="inline-block mt-3 text-xs font-semibold text-primary">Read Article →</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+        <LazySection minHeight="380px">
+          <React.Suspense fallback={null}>
+            <RelatedPosts category="Fire Hardening" />
+          </React.Suspense>
+        </LazySection>
 
         <CTASection
           title="Ready to Protect Your Northern California Home?"

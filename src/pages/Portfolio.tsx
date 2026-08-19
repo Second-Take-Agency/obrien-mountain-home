@@ -37,7 +37,7 @@ const PortfolioPage = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO 
-        title="Decking, Siding & Fire Hardening Projects | O'Brien Mountain Home"
+        title="Recent Siding & Decking Projects"
         description="View recent decking, siding, commercial siding, and fire hardening projects from O'Brien Mountain Home in Northern California."
         canonical="/portfolio"
         schema={[
@@ -136,7 +136,7 @@ const PortfolioPage = () => {
           <div className="container mx-auto px-4 text-center py-32">
             <AnimatedSection>
               <p className="text-primary font-semibold uppercase tracking-widest text-sm mb-3">Our Work</p>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Recent Projects</h1>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Recent Siding &amp; Decking Projects in Northern California</h1>
               <p className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
                 A look at fire hardening, siding, decking, and exterior upgrades completed for homes and properties across Northern California.
               </p>

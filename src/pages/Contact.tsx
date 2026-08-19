@@ -12,26 +12,37 @@ const ContactPage = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO 
-        title="Contact O’Brien Mountain Home | Redding CA"
+        title="Contact Us — Redding, CA"
         description="Contact O’Brien Mountain Home for fire hardening, siding, decking, and commercial siding estimates in Redding and Northern California."
         canonical="/contact"
         schema={[
           {
             "@context": "https://schema.org",
             "@type": "ContactPage",
-            "name": "Contact O’Brien Mountain Home",
+            "name": "Contact O'Brien Mountain Home",
             "url": "https://obrienmountainhome.com/contact",
             "mainEntity": {
               "@type": "LocalBusiness",
-              "name": "O’Brien Mountain Home",
+              "name": "O'Brien Mountain Home",
               "telephone": "+15309997495",
               "email": "mcrans@obrienmountainhome.com",
+              "hasMap": "https://maps.google.com/?cid=12902506597741023963",
+              "sameAs": [
+                "https://www.facebook.com/obrienmountainhome",
+                "https://maps.google.com/?cid=12902506597741023963"
+              ],
               "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "1304 East St",
                 "addressLocality": "Redding",
                 "addressRegion": "CA",
-                "postalCode": "96001"
+                "postalCode": "96001",
+                "addressCountry": "US"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 40.5866927,
+                "longitude": -122.3892927
               }
             }
           },
@@ -140,8 +151,10 @@ const ContactPage = () => {
                 </div>
 
                 <div className="aspect-video bg-slate-100 rounded-2xl overflow-hidden relative border border-slate-200">
-                  <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d49184.81437651047!2d-122.42848443306877!3d40.58431940176865!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54d29227ad1963b7%3A0x7000e318858a740!2sRedding%2C%20CA!5e0!3m2!1sen!2sus!4v1714334567890!5m2!1sen!2sus" 
+                  {/* Points at the business address, not the Redding city centre as before. */}
+                  <iframe
+                    src="https://www.google.com/maps?q=1304+East+St,+Redding,+CA+96001&output=embed"
+                    title="O'Brien Mountain Home — 1304 East St, Redding, CA 96001"
                     width="100%" 
                     height="100%" 
                     style={{ border: 0 }} 

@@ -20,10 +20,12 @@ import PartnersSection from '@/components/PartnersSection';
 import ContactForm from '@/components/ContactForm';
 import { AnimatedSection, StaggeredGrid } from '@/components/AnimatedSection';
 import ParallaxHero from '@/components/ParallaxHero';
-import { blogs } from '@/data/blogs';
+import LazySection from '@/components/LazySection';
+
+// Lazy: keeps the 233 KB blog data chunk out of this page's critical bundle.
+const RelatedPosts = React.lazy(() => import('@/components/RelatedPosts'));
 import { locations } from '@/data/locations';
 
-const commercialRelatedPosts = blogs.filter(b => b.category === 'Siding').slice(0, 2);
 const commercialServiceAreaLocations = locations.filter(l => l.slug !== 'northern-california').slice(0, 6);
 
 const HERO_IMG = "https://vibe.filesafe.space/1777345871363473576/assets/459e268e-bc09-44a5-baf2-77ea643e1b61.png";
@@ -46,8 +48,9 @@ const schema = {
   },
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": 40.5865,
-    "longitude": -122.3917
+    // Matches the Google Business Profile pin (see Index.tsx).
+    "latitude": 40.5866927,
+    "longitude": -122.3892927
   },
   "areaServed": { "@type": "State", "name": "Northern California" },
   "hasOfferCatalog": {
@@ -74,8 +77,23 @@ const schema = {
   },
   "priceRange": "$$",
   "openingHours": "Mo-Fr 07:00-18:00",
-  "sameAs": ["https://www.facebook.com/obrienmountainhome"],
-  "license": "CA Contractor License #1135995"
+  "hasMap": "https://maps.google.com/?cid=12902506597741023963",
+  "sameAs": [
+    "https://www.facebook.com/obrienmountainhome",
+    "https://maps.google.com/?cid=12902506597741023963"
+  ],
+  // `license` is not a schema.org property; the credential belongs in hasCredential.
+  "hasCredential": {
+    "@type": "EducationalOccupationalCredential",
+    "credentialCategory": "license",
+    "name": "California Contractors State License Board (CSLB) License",
+    "identifier": "1135995",
+    "recognizedBy": {
+      "@type": "Organization",
+      "name": "California Contractors State License Board",
+      "url": "https://www.cslb.ca.gov"
+    }
+  }
 };
 
 const commercialBreadcrumbSchema = {
@@ -305,7 +323,7 @@ const CommercialSiding = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title="Commercial Siding Contractor in Redding, CA | O'Brien Mountain Home"
+        title="Commercial Siding Contractor in Redding, CA"
         description="Licensed commercial siding installation and repair for property managers, general contractors, and business owners across Northern California. Fiber cement, metal, and vinyl. Call (530) 999-7495."
         canonical="/services/commercial-siding"
         schema={[schema, commercialBreadcrumbSchema]}
@@ -647,32 +665,11 @@ const CommercialSiding = () => {
         </section>
 
         {/* ─── From Our Blog ─── */}
-        {commercialRelatedPosts.length > 0 && (
-          <section className="py-16 bg-white border-t border-slate-100">
-            <div className="container mx-auto px-4">
-              <AnimatedSection className="text-center mb-10">
-                <h2 className="text-2xl md:text-3xl font-bold mb-2">From Our Blog</h2>
-                <p className="text-slate-500 text-sm">Resources for Northern California property owners</p>
-              </AnimatedSection>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {commercialRelatedPosts.map(post => (
-                  <Link
-                    key={post.id}
-                    to={`/blog/${post.slug}`}
-                    className="group bg-slate-50 rounded-2xl overflow-hidden border border-slate-100 hover:border-primary/30 hover:shadow-md transition-all"
-                  >
-                    <img src={post.image} alt={post.title} className="w-full h-40 object-cover" loading="lazy" />
-                    <div className="p-5">
-                      <h3 className="font-bold text-slate-900 group-hover:text-primary transition-colors mb-2 leading-snug">{post.title}</h3>
-                      <p className="text-sm text-slate-500 line-clamp-2">{post.excerpt}</p>
-                      <span className="inline-block mt-3 text-xs font-semibold text-primary">Read Article →</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+        <LazySection minHeight="380px">
+          <React.Suspense fallback={null}>
+            <RelatedPosts category="Siding" />
+          </React.Suspense>
+        </LazySection>
 
         <CTASection
           title="Ready to Talk About Your Commercial Project?"

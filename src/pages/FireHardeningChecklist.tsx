@@ -168,7 +168,7 @@ const FireHardeningChecklist = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Free Fire Checklist Download | O'Brien Mountain Home"
+        title="Free Fire Hardening Checklist"
         description="Download the free Northern California Fire Hardening Checklist. Identify ember entry points, vent vulnerabilities, and exterior risks on your home."
         canonical="https://obrienmountainhome.com/fire-hardening-checklist"
         schema={checklistSchemas}

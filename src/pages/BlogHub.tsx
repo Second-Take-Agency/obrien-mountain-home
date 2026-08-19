@@ -30,7 +30,7 @@ const BlogHub = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title="North State Homeowner's Guide | O'Brien Mountain Home Blog"
+        title="The North State Homeowner's Guide"
         description="Expert articles on fire hardening, Vulcan vents, decking, and siding for Northern California homeowners from O'Brien Mountain Home."
         canonical="/blog"
         schema={[

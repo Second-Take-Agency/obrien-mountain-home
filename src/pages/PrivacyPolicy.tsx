@@ -7,7 +7,7 @@ const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title="Privacy Policy | O’Brien Mountain Home"
+        title="Privacy Policy"
         description="Privacy policy for O’Brien Mountain Home. Learn how we collect and use your information."
         canonical="/privacy-policy"
         robots="noindex,follow"

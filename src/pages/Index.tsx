@@ -29,6 +29,12 @@ const FOUNDER_IMG = "https://vibe.filesafe.space/1777345871363473576/assets/af37
 const OPTIN_BG = "https://vibe.filesafe.space/1777345871363473576/assets/ae7de53d-c036-4874-96ab-b5aa446004c4.png";
 
 // ── Homepage Structured Data ──────────────────────────────────────────────────
+// Canonical off-site profiles. The cid value is the Google Business Profile's CID
+// (0xb30ee963e67cd2db, taken from the listing's own Maps URL) — this is what ties the
+// site to the listing for entity disambiguation.
+const GBP_URL = "https://maps.google.com/?cid=12902506597741023963";
+const FACEBOOK_URL = "https://www.facebook.com/obrienmountainhome";
+
 // Four JSON-LD blocks: LocalBusiness entity, FAQPage (for AI Overviews),
 // Organization (with sameAs for entity disambiguation), WebSite (SearchAction).
 const LOCAL_BUSINESS_SCHEMA = {
@@ -48,11 +54,14 @@ const LOCAL_BUSINESS_SCHEMA = {
   },
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": 40.5865,
-    "longitude": -122.3917
+    // Matches the Google Business Profile pin exactly; the previous value was ~205m off.
+    "latitude": 40.5866927,
+    "longitude": -122.3892927
   },
   "url": "https://obrienmountainhome.com",
   "priceRange": "$$",
+  "hasMap": GBP_URL,
+  "sameAs": [FACEBOOK_URL, GBP_URL],
   "areaServed": ["Redding", "Red Bluff", "Chico", "Oroville", "Paradise", "Magalia", "Mount Shasta", "Northern California"]
 };
 
@@ -448,7 +457,8 @@ const Index = () => {
           <div className="absolute inset-0 z-0">
             <img
               src={OPTIN_BG}
-              alt="Northern California mountain landscape at dusk"
+              /* Decorative: sits behind a heavy overlay as section background. */
+              alt=""
               className="w-full h-full object-cover"
               loading="lazy"
             />

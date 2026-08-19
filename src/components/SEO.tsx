@@ -30,7 +30,20 @@ const SEO: React.FC<SEOProps> = ({
   robots,
 }) => {
   const siteName = "O'Brien Mountain Home";
-  const fullTitle = `${title} | ${siteName}`;
+  // Guard against a doubled brand: some page titles (and anything the blog robot
+  // generates) may already carry the site name. Matches either apostrophe style.
+  const alreadyBranded = /O['’]Brien Mountain Home/.test(title);
+  const fullTitle = alreadyBranded ? title : `${title} | ${siteName}`;
+
+  // Google truncates meta descriptions around 155-160 characters. Several data-driven
+  // descriptions (blog excerpts, portfolio solutions) run far longer, so trim at a word
+  // boundary rather than letting the tail be cut mid-word in the SERP.
+  const MAX_DESC = 155;
+  const trimmedDescription =
+    description.length <= MAX_DESC
+      ? description
+      : description.slice(0, description.lastIndexOf(' ', MAX_DESC - 1)).replace(/[,;:.\s]+$/, '') + '…';
+
   const baseUrl = "https://obrienmountainhome.com";
   const fullUrl = canonical.startsWith("http") ? canonical : `${baseUrl}${canonical}`;
   const fullImage = image.startsWith("http") ? image : `${baseUrl}${image}`;
@@ -45,7 +58,7 @@ const SEO: React.FC<SEOProps> = ({
   return (
     <Helmet>
       <title>{fullTitle}</title>
-      <meta name="description" content={description} />
+      <meta name="description" content={trimmedDescription} />
       <link rel="canonical" href={fullUrl} />
       {robots && <meta name="robots" content={robots} />}
 
@@ -53,7 +66,7 @@ const SEO: React.FC<SEOProps> = ({
       <meta property="og:locale" content="en_US" />
       <meta property="og:site_name" content={siteName} />
       <meta property="og:title" content={fullTitle} />
-      <meta property="og:description" content={description} />
+      <meta property="og:description" content={trimmedDescription} />
       <meta property="og:type" content={ogType} />
       <meta property="og:url" content={fullUrl} />
       <meta property="og:image" content={fullImage} />
@@ -72,7 +85,7 @@ const SEO: React.FC<SEOProps> = ({
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
-      <meta name="twitter:description" content={description} />
+      <meta name="twitter:description" content={trimmedDescription} />
       <meta name="twitter:image" content={fullImage} />
 
       {/* JSON-LD Structured Data — one block per schema object */}

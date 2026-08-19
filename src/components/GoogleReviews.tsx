@@ -1,8 +1,11 @@
 import React from 'react';
 import { Star, ExternalLink } from 'lucide-react';
 
-const GOOGLE_REVIEW_URL = "https://www.google.com/search?sca_esv=74e8f3377864fd67&rlz=1C5CHFA_enUS728US745&sxsrf=ANbL-n7UgaPHvavVES-m6lEIry-6SmE-9A:1777356252313&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOZTvVM5PaVLzhzJpKO79EzuxiO52v24AJvDBjzF3948BH3gafAW29oU3SWzyHqIzrWDz60J3wx2ZCpG7LVY54RBOedUrxrfi8RFUNu6nAXs5jb4oDUjKcpy9Z9YACnRQK2A-N58%3D&q=Obrien+Mountain+Home+Decking+and+Siding+Reviews&sa=X&ved=2ahUKEwjgybuA8I-UAxVEoisGHa6pPUsQ0bkNegQIIRAH&biw=1710&bih=982&dpr=2";
-const GOOGLE_PROFILE_URL = "https://www.google.com/search?sca_esv=74e8f3377864fd67&rlz=1C5CHFA_enUS728US745&sxsrf=ANbL-n7UgaPHvavVES-m6lEIry-6SmE-9A:1777356252313&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOZTvVM5PaVLzhzJpKO79EzuxiO52v24AJvDBjzF3948BH3gafAW29oU3SWzyHqIzrWDz60J3wx2ZCpG7LVY54RBOedUrxrfi8RFUNu6nAXs5jb4oDUjKcpy9Z9YACnRQK2A-N58%3D&q=Obrien+Mountain+Home+Decking+and+Siding+Reviews&sa=X&ved=2ahUKEwjgybuA8I-UAxVEoisGHa6pPUsQ0bkNegQIIRAH&biw=1710&bih=982&dpr=2";
+// Stable Google-issued links for this profile (CID 0xb30ee963e67cd2db). These replace
+// two copies of a session-bound SERP URL that carried rlz/sxsrf/ved/biw/bih/dpr params
+// from someone's browser and would have rotted.
+const GOOGLE_REVIEW_URL = "https://g.page/r/CdvSfOZj6Q6zEBM/review";
+const GOOGLE_PROFILE_URL = "https://maps.google.com/?cid=12902506597741023963";
 
 const reviews = [
   {

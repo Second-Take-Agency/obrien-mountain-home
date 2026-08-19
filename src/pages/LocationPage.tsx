@@ -53,16 +53,23 @@ const LocationPage = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title={`Fire Hardening, Decking & Siding in ${location.name}`}
-        description={`Protect and upgrade your ${location.name} home with fire hardening, siding, and decking from O’Brien Mountain Home.`}
+        title={`Siding, Decking & Fire Hardening in ${location.name}`}
+        /* Each location has hand-written, differentiated copy — use it instead of a
+           templated sentence, so the 8 location pages stop sharing one description. */
+        description={location.description}
         canonical={`/locations/${location.slug}`}
         schema={[
           {
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
-            "name": "O’Brien Mountain Home",
+            "name": "O'Brien Mountain Home",
             "telephone": "+15309997495",
             "url": "https://obrienmountainhome.com",
+            "hasMap": "https://maps.google.com/?cid=12902506597741023963",
+            "sameAs": [
+              "https://www.facebook.com/obrienmountainhome",
+              "https://maps.google.com/?cid=12902506597741023963"
+            ],
             "address": {
               "@type": "PostalAddress",
               "streetAddress": "1304 East St",
@@ -71,10 +78,14 @@ const LocationPage = () => {
               "postalCode": "96001",
               "addressCountry": "US"
             },
+            /* The business sits in Redding regardless of which location page this is —
+               previously each page claimed the *city's* coordinates as the business's,
+               which contradicted the address and the GBP pin. The city belongs in
+               areaServed below, not in geo. */
             "geo": {
               "@type": "GeoCoordinates",
-              "latitude": location.latitude,
-              "longitude": location.longitude
+              "latitude": 40.5866927,
+              "longitude": -122.3892927
             },
             "areaServed": {
               "@type": "City",
@@ -113,7 +124,7 @@ const LocationPage = () => {
                 <MapPin className="w-4 h-4" />
                 {location.county}
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Fire Hardening, Decking & Siding in {location.name}</h1>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Siding, Decking &amp; Fire Hardening in {location.name}</h1>
               <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-10">
                 {location.description}
               </p>

@@ -49,7 +49,7 @@ const PortfolioProject = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title={`${project.title} | ${project.location}`}
+        title={project.title}
         description={project.solution}
         canonical={`/portfolio/${project.slug}`}
         image={project.image}

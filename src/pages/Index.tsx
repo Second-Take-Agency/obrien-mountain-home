@@ -25,7 +25,7 @@ import { ArrowRight, CheckCircle2, Flame, Hammer, Shield, Phone, Calendar, Tag, 
 const HERO_BG = "https://vibe.filesafe.space/1777345871363473576/assets/c1315190-a555-4031-ac6a-4a9b551f2b09.png";
 // First frame of /videos/hero.mp4 — doubles as the hero's LCP paint and the video poster.
 const HERO_POSTER = "/videos/hero-poster.jpg";
-const FOUNDER_IMG = "https://vibe.filesafe.space/1777345871363473576/assets/af37ff4b-7817-4b91-adfe-ee6cd1e695f0.png";
+const FOUNDER_IMG = "/images/team.jpg";
 const OPTIN_BG = "https://vibe.filesafe.space/1777345871363473576/assets/ae7de53d-c036-4874-96ab-b5aa446004c4.png";
 
 // ── Homepage Structured Data ──────────────────────────────────────────────────
@@ -387,7 +387,7 @@ const Index = () => {
                 <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
                 <img 
                   src={FOUNDER_IMG}
-                  alt="O'Brien Mountain Home — Northern California mountain home with custom decking and siding" 
+                  alt="The O'Brien Mountain Home team" 
                   className="rounded-3xl shadow-2xl relative z-10 w-full max-w-md mx-auto object-cover aspect-[4/3]"
                   loading="lazy"
                 />

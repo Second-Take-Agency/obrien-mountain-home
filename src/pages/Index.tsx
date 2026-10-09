@@ -26,6 +26,8 @@ const HERO_BG = "https://vibe.filesafe.space/1777345871363473576/assets/c1315190
 // First frame of /videos/hero.mp4 — doubles as the hero's LCP paint and the video poster.
 const HERO_POSTER = "/videos/hero-poster.jpg";
 const FOUNDER_IMG = "/images/team.jpg";
+// Homepage service card order: siding and decking lead, fire hardening last.
+const HOME_SERVICE_ORDER = ["residential-siding", "commercial-siding", "decking", "fire-hardening"];
 const OPTIN_BG = "https://vibe.filesafe.space/1777345871363473576/assets/ae7de53d-c036-4874-96ab-b5aa446004c4.png";
 
 // ── Homepage Structured Data ──────────────────────────────────────────────────
@@ -236,7 +238,7 @@ const Index = () => {
             </AnimatedSection>
             
             <StaggeredGrid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" staggerMs={120}>
-              {services.map((service) => (
+              {HOME_SERVICE_ORDER.map((id) => services.find((s) => s.id === id)!).map((service) => (
                 <ServiceCard key={service.id} service={service} />
               ))}
             </StaggeredGrid>
@@ -406,7 +408,7 @@ const Index = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button asChild className="rounded-full px-8 bg-primary text-slate-900 font-bold hover:bg-primary/90 hover:text-slate-900">
-                    <Link to="/about">Meet Marcus</Link>
+                    <Link to="/about">Meet The Team</Link>
                   </Button>
                   <Button asChild variant="outline" className="rounded-full px-8 border-slate-300 text-slate-700 font-bold hover:border-primary hover:text-primary">
                     <Link to="/contact">Request an Estimate</Link>

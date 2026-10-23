@@ -40,17 +40,17 @@ const schema = {
   "telephone": "+15309997495",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "1304 East St",
+    "streetAddress": "1308 Court St",
     "addressLocality": "Redding",
     "addressRegion": "CA",
-    "postalCode": "96003",
+    "postalCode": "96001",
     "addressCountry": "US"
   },
   "geo": {
     "@type": "GeoCoordinates",
     // Matches the Google Business Profile pin (see Index.tsx).
-    "latitude": 40.5866927,
-    "longitude": -122.3892927
+    "latitude": 40.5848753,
+    "longitude": -122.3966021
   },
   "areaServed": { "@type": "State", "name": "Northern California" },
   "hasOfferCatalog": {

@@ -117,8 +117,8 @@ const PrivacyPolicy = () => {
                   exterior services across Northern California.
                 </p>
                 <p className="mt-4">
-                  1304 East St, Redding, CA 96003<br />
-                  <a href="mailto:mcrans@obrienmountainhome.com" className="text-primary font-semibold">mcrans@obrienmountainhome.com</a><br />
+                  1308 Court St, Redding, CA 96001<br />
+                  <a href="mailto:admin@obrienmountainhome.com" className="text-primary font-semibold">admin@obrienmountainhome.com</a><br />
                   <a href="tel:+15309997495" className="text-primary font-semibold">(530) 999-7495</a>
                 </p>
               </section>
@@ -340,8 +340,8 @@ const PrivacyPolicy = () => {
                 </p>
                 <p className="mt-4">
                   <strong>O’Brien Mountain Home</strong><br />
-                  1304 East St, Redding, CA 96003<br />
-                  <a href="mailto:mcrans@obrienmountainhome.com" className="text-primary font-semibold">mcrans@obrienmountainhome.com</a><br />
+                  1308 Court St, Redding, CA 96001<br />
+                  <a href="mailto:admin@obrienmountainhome.com" className="text-primary font-semibold">admin@obrienmountainhome.com</a><br />
                   <a href="tel:+15309997495" className="text-primary font-semibold">(530) 999-7495</a>
                 </p>
                 <p className="mt-6 text-sm text-slate-500">

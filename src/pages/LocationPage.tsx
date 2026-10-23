@@ -80,10 +80,10 @@ const LocationPage = () => {
             ],
             "address": {
               "@type": "PostalAddress",
-              "streetAddress": "1304 East St",
+              "streetAddress": "1308 Court St",
               "addressLocality": "Redding",
               "addressRegion": "CA",
-              "postalCode": "96003",
+              "postalCode": "96001",
               "addressCountry": "US"
             },
             /* The business sits in Redding regardless of which location page this is —
@@ -92,8 +92,8 @@ const LocationPage = () => {
                areaServed below, not in geo. */
             "geo": {
               "@type": "GeoCoordinates",
-              "latitude": 40.5866927,
-              "longitude": -122.3892927
+              "latitude": 40.5848753,
+              "longitude": -122.3966021
             },
             // The Northern California page covers a region, not a city, so it is
             // typed as an AdministrativeArea. The city pages keep City + the

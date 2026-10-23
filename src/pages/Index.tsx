@@ -45,20 +45,20 @@ const LOCAL_BUSINESS_SCHEMA = {
   "name": "O'Brien Mountain Home",
   "image": HERO_BG,
   "telephone": "+15309997495",
-  "email": "mcrans@obrienmountainhome.com",
+  "email": "admin@obrienmountainhome.com",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "1304 East St",
+    "streetAddress": "1308 Court St",
     "addressLocality": "Redding",
     "addressRegion": "CA",
-    "postalCode": "96003",
+    "postalCode": "96001",
     "addressCountry": "US"
   },
   "geo": {
     "@type": "GeoCoordinates",
     // Matches the Google Business Profile pin exactly; the previous value was ~205m off.
-    "latitude": 40.5866927,
-    "longitude": -122.3892927
+    "latitude": 40.5848753,
+    "longitude": -122.3966021
   },
   "url": "https://obrienmountainhome.com",
   "priceRange": "$$",
@@ -90,14 +90,14 @@ const ORGANIZATION_SCHEMA = {
   "name": "O'Brien Mountain Home",
   "url": "https://obrienmountainhome.com",
   "telephone": "+15309997495",
-  "email": "mcrans@obrienmountainhome.com",
+  "email": "admin@obrienmountainhome.com",
   "logo": "https://vibe.filesafe.space/1777345871363473576/assets/99cdc4bc-0ac2-4dd1-b0b7-0cc82cf49e32.png",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "1304 East St",
+    "streetAddress": "1308 Court St",
     "addressLocality": "Redding",
     "addressRegion": "CA",
-    "postalCode": "96003",
+    "postalCode": "96001",
     "addressCountry": "US"
   },
   "alternateName": "Obrien Mountain Home Decking and Siding",

@@ -16,8 +16,8 @@ This file is the source of truth for O'Brien Mountain Home business data. It is 
 
 - **Website:** https://obrienmountainhome.com
 - **Phone:** (530) 999-7495
-- **Email:** mcrans@obrienmountainhome.com
-- **Address:** 1304 East St, Redding, CA 96001
+- **Email:** admin@obrienmountainhome.com
+- **Address:** 1308 Court St, Redding, CA 96001
 - **Primary City:** Redding, CA
 - **County:** Shasta County
 
@@ -76,10 +76,10 @@ See `competitors.md` for the full competitor list. Top known competitors in the 
 {
   "name": "O'Brien Mountain Home",
   "telephone": "+15309997495",
-  "email": "mcrans@obrienmountainhome.com",
+  "email": "admin@obrienmountainhome.com",
   "url": "https://obrienmountainhome.com",
   "address": {
-    "streetAddress": "1304 East St",
+    "streetAddress": "1308 Court St",
     "addressLocality": "Redding",
     "addressRegion": "CA",
     "postalCode": "96001",

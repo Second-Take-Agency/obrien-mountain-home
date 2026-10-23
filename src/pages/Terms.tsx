@@ -105,8 +105,8 @@ const Terms = () => {
                 <h2 className="text-2xl font-bold mb-4">2. Who We Are</h2>
                 <p>
                   <strong>O’Brien Mountain Home</strong><br />
-                  1304 East St, Redding, CA 96003<br />
-                  <a href="mailto:mcrans@obrienmountainhome.com" className="text-primary font-semibold">mcrans@obrienmountainhome.com</a> ·{' '}
+                  1308 Court St, Redding, CA 96001<br />
+                  <a href="mailto:admin@obrienmountainhome.com" className="text-primary font-semibold">admin@obrienmountainhome.com</a> ·{' '}
                   <a href="tel:+15309997495" className="text-primary font-semibold">(530) 999-7495</a>
                 </p>
                 <p className="mt-4">
@@ -330,8 +330,8 @@ const Terms = () => {
                 <h2 className="text-2xl font-bold mb-4">17. Contact</h2>
                 <p>
                   <strong>O’Brien Mountain Home</strong><br />
-                  1304 East St, Redding, CA 96003<br />
-                  <a href="mailto:mcrans@obrienmountainhome.com" className="text-primary font-semibold">mcrans@obrienmountainhome.com</a> ·{' '}
+                  1308 Court St, Redding, CA 96001<br />
+                  <a href="mailto:admin@obrienmountainhome.com" className="text-primary font-semibold">admin@obrienmountainhome.com</a> ·{' '}
                   <a href="tel:+15309997495" className="text-primary font-semibold">(530) 999-7495</a><br />
                   CSLB License No. 1135995
                 </p>

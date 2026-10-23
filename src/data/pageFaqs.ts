@@ -50,7 +50,7 @@ export const homeFaqs: FAQItem[] = [
   {
     question: "Where are you based, and which areas do you cover?",
     answer:
-      "We are based in Redding, at 1304 East St, and most of our work is in Redding, Red Bluff, Chico, Oroville, Paradise, Magalia and Mount Shasta, along with the smaller communities in between. That is where we work most, not a hard boundary — if you are elsewhere in Northern California, ask and we will tell you straight whether we can take the job.",
+      "We are based in Redding, at 1308 Court St, and most of our work is in Redding, Red Bluff, Chico, Oroville, Paradise, Magalia and Mount Shasta, along with the smaller communities in between. That is where we work most, not a hard boundary — if you are elsewhere in Northern California, ask and we will tell you straight whether we can take the job.",
   },
   {
     question: "Why do material choices matter so much for homes in Northern California?",

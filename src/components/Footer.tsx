@@ -115,7 +115,7 @@ const Footer = () => {
             <ul className="flex flex-col gap-6">
               <li className="flex gap-4">
                 <MapPin className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-slate-400 text-sm">1304 East St, Redding, CA 96003</span>
+                <span className="text-slate-400 text-sm">1308 Court St, Redding, CA 96001</span>
               </li>
               <li className="flex gap-4">
                 <Phone className="w-5 h-5 text-primary shrink-0" />
@@ -125,8 +125,8 @@ const Footer = () => {
               </li>
               <li className="flex gap-4">
                 <Mail className="w-5 h-5 text-primary shrink-0" />
-                <a href="mailto:mcrans@obrienmountainhome.com" className="text-slate-400 hover:text-primary transition-colors text-sm break-all">
-                  mcrans@obrienmountainhome.com
+                <a href="mailto:admin@obrienmountainhome.com" className="text-slate-400 hover:text-primary transition-colors text-sm break-all">
+                  admin@obrienmountainhome.com
                 </a>
               </li>
               <li className="pt-2">

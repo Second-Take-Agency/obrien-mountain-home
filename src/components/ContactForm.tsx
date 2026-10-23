@@ -73,7 +73,7 @@ const ContactForm = () => {
       // Tell the visitor it failed and give them a way through. Deliberately
       // NOT resetting the form — they keep what they typed.
       toast.error(
-        "Something went wrong sending your request. Please call (530) 999-7495 or email mcrans@obrienmountainhome.com and we'll take care of you.",
+        "Something went wrong sending your request. Please call (530) 999-7495 or email admin@obrienmountainhome.com and we'll take care of you.",
         { duration: 12000 }
       );
     }

@@ -27,7 +27,7 @@ const ContactPage = () => {
               "@type": "LocalBusiness",
               "name": "O'Brien Mountain Home",
               "telephone": "+15309997495",
-              "email": "mcrans@obrienmountainhome.com",
+              "email": "admin@obrienmountainhome.com",
               "hasMap": "https://maps.google.com/?cid=12902506597741023963",
               "sameAs": [
                 "https://www.facebook.com/obrienmountainhome",
@@ -35,16 +35,16 @@ const ContactPage = () => {
               ],
               "address": {
                 "@type": "PostalAddress",
-                "streetAddress": "1304 East St",
+                "streetAddress": "1308 Court St",
                 "addressLocality": "Redding",
                 "addressRegion": "CA",
-                "postalCode": "96003",
+                "postalCode": "96001",
                 "addressCountry": "US"
               },
               "geo": {
                 "@type": "GeoCoordinates",
-                "latitude": 40.5866927,
-                "longitude": -122.3892927
+                "latitude": 40.5848753,
+                "longitude": -122.3966021
               }
             }
           },
@@ -102,13 +102,13 @@ const ContactPage = () => {
                       </div>
                     </a>
                     
-                    <a href="mailto:mcrans@obrienmountainhome.com" className="flex items-start gap-4 group">
+                    <a href="mailto:admin@obrienmountainhome.com" className="flex items-start gap-4 group">
                       <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
                         <Mail className="w-6 h-6" />
                       </div>
                       <div>
                         <div className="font-bold text-slate-900">Email</div>
-                        <div className="text-slate-600 break-all">mcrans@obrienmountainhome.com</div>
+                        <div className="text-slate-600 break-all">admin@obrienmountainhome.com</div>
                       </div>
                     </a>
 
@@ -118,7 +118,7 @@ const ContactPage = () => {
                       </div>
                       <div>
                         <div className="font-bold text-slate-900">Address</div>
-                        <div className="text-slate-600">1304 East St, Redding, CA 96003</div>
+                        <div className="text-slate-600">1308 Court St, Redding, CA 96001</div>
                       </div>
                     </div>
 
@@ -156,8 +156,8 @@ const ContactPage = () => {
                 <div className="aspect-video bg-slate-100 rounded-2xl overflow-hidden relative border border-slate-200">
                   {/* Points at the business address, not the Redding city centre as before. */}
                   <iframe
-                    src="https://www.google.com/maps?q=1304+East+St,+Redding,+CA+96003&output=embed"
-                    title="O'Brien Mountain Home — 1304 East St, Redding, CA 96003"
+                    src="https://www.google.com/maps?q=1308+Court+St,+Redding,+CA+96001&output=embed"
+                    title="O'Brien Mountain Home — 1308 Court St, Redding, CA 96001"
                     width="100%" 
                     height="100%" 
                     style={{ border: 0 }} 

@@ -145,7 +145,7 @@ const FireHardeningChecklist = () => {
     } catch (error) {
       console.error('Checklist webhook error:', error);
       setSendError(
-        "We couldn't send your request just now. Please call (530) 999-7495 or email mcrans@obrienmountainhome.com and we'll get the checklist straight over to you."
+        "We couldn't send your request just now. Please call (530) 999-7495 or email admin@obrienmountainhome.com and we'll get the checklist straight over to you."
       );
     } finally {
       setLoading(false);

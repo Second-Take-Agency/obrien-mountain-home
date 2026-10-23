@@ -87,10 +87,10 @@ const residentialSidingServiceSchema = {
     "url": "https://obrienmountainhome.com",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "1304 East St",
+      "streetAddress": "1308 Court St",
       "addressLocality": "Redding",
       "addressRegion": "CA",
-      "postalCode": "96003",
+      "postalCode": "96001",
       "addressCountry": "US"
     }
   },

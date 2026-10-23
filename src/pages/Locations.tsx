@@ -59,10 +59,10 @@ const LocationsHub = () => {
               "telephone": "+15309997495",
               "address": {
                 "@type": "PostalAddress",
-                "streetAddress": "1304 East St",
+                "streetAddress": "1308 Court St",
                 "addressLocality": "Redding",
                 "addressRegion": "CA",
-                "postalCode": "96003",
+                "postalCode": "96001",
                 "addressCountry": "US"
               },
               "areaServed": locations.map(loc =>
